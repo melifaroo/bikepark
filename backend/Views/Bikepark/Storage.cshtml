@@ -6,6 +6,8 @@
 
 <div class="text-center">
     <h1 class="display-4">Bike Park Storage</h1>
+    
+    
 <table class="table">
         <thead>
             <tr>
@@ -13,10 +15,10 @@
                                      
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Category)                    
+                    @Html.DisplayNameFor(model => model.CategoryID)                    
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.SubCategory)                    
+                    @Html.DisplayNameFor(model => model.SubCategoryID)                    
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Name)
@@ -34,40 +36,8 @@
                                      
                 </th>
             </tr>
-            <tr>
-                
-                @* @using (Html.BeginForm("Filter", "Bikepark", FormMethod.Post, new { @Id = "WebGridForm" })) *@
-                @* { *@
-                
-                <form asp-action="Filter">
-                    <th>                             
-                        <input type="submit" value="Filter" />           
-                    </th>
-                    <th>    
-                        @Html.DropDownList("CategoryID", new SelectList(Model.DistinctBy(item=>item.CategoryID), "CategoryID", "Category.Name"), "All")  
-                    </th>
-                    <th>
-                        @* @Html.DropDownList("Filter.SubCategoryID", new SelectList(Model.DistinctBy(item=>item.SubCategoryID), "SubCategoryID", "SubCategory.Name"), "All")              *@
-                    </th>
-                    <th>
-                        @* @Html.DropDownList("Filter.Name", new SelectList(Model.DistinctBy(item=>item.Name), "Name", "Name"), "All")                              *@
-                    </th>
-                    <th> 
-                        @* @Html.DropDownList("Filter.Size", new SelectList(Model.DistinctBy(item=>item.Size), "Size", "Size"), "All")       *@
-                    </th>
-                    <th>
-                        @* @Html.DropDownList("Filter.Number", new SelectList(Model.DistinctBy(item=>item.Number), "Number", "Number"), "All")    *@
-                    </th>
-                    <th>
-                        @* @Html.DropDownList("Filter.Status", new SelectList(Model.DistinctBy(item=>item.Status), "Status", "Status"), "All")                  *@
-                    </th>
-                </form>
-                @* }   *@
-
-                <th>
-                                     
-                </th>
-            </tr>
+            <partial name="Filter" model="new ItemFilter(Model)"/>
+            
         </thead>
         <tbody>
             @foreach (var item in Model) {
@@ -76,10 +46,10 @@
 
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Category.Name)
+                    @Html.DisplayFor(modelItem => item.CategoryID)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.SubCategory.Name)
+                    @Html.DisplayFor(modelItem => item.SubCategoryID)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)

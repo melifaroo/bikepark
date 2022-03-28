@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace backend.Data.Migrations
 {
-    [DbContext(typeof(BikeParkDbContext))]
+    [DbContext(typeof(BikeparkDbContext))]
     partial class BikeParkDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

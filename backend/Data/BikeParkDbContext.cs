@@ -6,19 +6,19 @@ using Bikepark.Authorization;
 
 namespace Bikepark.Data
 {
-    public class BikeParkDbContext : IdentityDbContext
+    public class BikeparkDbContext : IdentityDbContext
     {
         public DbSet<Item> Storage { get; set; }
         public DbSet<ItemCategory> Categories { get; set; }
         public DbSet<ItemSubCategory> SubCategories { get; set; }
         
-        public BikeParkDbContext(DbContextOptions<BikeParkDbContext> options) : base(options)
+        public BikeparkDbContext(DbContextOptions<BikeparkDbContext> options) : base(options)
         {
         }
 
         public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw="")
         {
-            using (var context = new BikeParkDbContext( serviceProvider.GetRequiredService<DbContextOptions<BikeParkDbContext>>()))
+            using (var context = new BikeparkDbContext( serviceProvider.GetRequiredService<DbContextOptions<BikeparkDbContext>>()))
             {
                 var adminID = await EnsureUser(serviceProvider, testUserPw, "admin@bikepark.ru");
                 await EnsureRole(serviceProvider, adminID, Constants.ContactAdministratorsRole);

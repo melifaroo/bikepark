@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace backend.Data.Migrations
 {
-    [DbContext(typeof(BikeParkDbContext))]
+    [DbContext(typeof(BikeparkDbContext))]
     [Migration("20220327200130_InitialCreate")]
     partial class InitialCreate
     {
