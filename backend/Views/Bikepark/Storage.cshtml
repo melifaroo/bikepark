@@ -1,0 +1,105 @@
+﻿@model IEnumerable<Item>
+
+@{
+    ViewData["Title"] = "Bike Park Storage";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Bike Park Storage</h1>
+<table class="table">
+        <thead>
+            <tr>
+                <th>
+                                     
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Category)                    
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SubCategory)                    
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Size)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Number)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)                    
+                </th>
+                <th>
+                                     
+                </th>
+            </tr>
+            <tr>
+                
+                @* @using (Html.BeginForm("Filter", "Bikepark", FormMethod.Post, new { @Id = "WebGridForm" })) *@
+                @* { *@
+                
+                <form asp-action="Filter">
+                    <th>                             
+                        <input type="submit" value="Filter" />           
+                    </th>
+                    <th>    
+                        @Html.DropDownList("CategoryID", new SelectList(Model.DistinctBy(item=>item.CategoryID), "CategoryID", "Category.Name"), "All")  
+                    </th>
+                    <th>
+                        @* @Html.DropDownList("Filter.SubCategoryID", new SelectList(Model.DistinctBy(item=>item.SubCategoryID), "SubCategoryID", "SubCategory.Name"), "All")              *@
+                    </th>
+                    <th>
+                        @* @Html.DropDownList("Filter.Name", new SelectList(Model.DistinctBy(item=>item.Name), "Name", "Name"), "All")                              *@
+                    </th>
+                    <th> 
+                        @* @Html.DropDownList("Filter.Size", new SelectList(Model.DistinctBy(item=>item.Size), "Size", "Size"), "All")       *@
+                    </th>
+                    <th>
+                        @* @Html.DropDownList("Filter.Number", new SelectList(Model.DistinctBy(item=>item.Number), "Number", "Number"), "All")    *@
+                    </th>
+                    <th>
+                        @* @Html.DropDownList("Filter.Status", new SelectList(Model.DistinctBy(item=>item.Status), "Status", "Status"), "All")                  *@
+                    </th>
+                </form>
+                @* }   *@
+
+                <th>
+                                     
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+            <tr>
+                <td>
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubCategory.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Size)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ItemID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ItemID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ItemID">Delete</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+</table>
+</div>
