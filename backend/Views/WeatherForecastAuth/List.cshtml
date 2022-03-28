@@ -1,0 +1,56 @@
+﻿@model IEnumerable<WeatherForecast>
+
+@{
+    ViewData["Title"] = "Weather Forecast";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Weather Forecast</h1>
+<p>
+    <a asp-action="Refresh">Refresh</a>
+</p>
+<table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TemperatureC)                    
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TemperatureF)                    
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Summary)                    
+                </th>
+                <th>
+                                     
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TemperatureC)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TemperatureF)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Summary)
+                </td>
+                @* <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td> *@
+            </tr>
+            }
+        </tbody>
+</table>
+</div>
