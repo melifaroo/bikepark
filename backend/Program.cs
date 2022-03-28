@@ -8,12 +8,12 @@ using Bikepark.Authorization;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("SQLiteConnection");
-builder.Services.AddDbContext<BikeParkDbContext>(options => options.UseSqlite(connectionString)); 
+builder.Services.AddDbContext<BikeparkDbContext>(options => options.UseSqlite(connectionString)); 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<BikeParkDbContext>();
+                .AddEntityFrameworkStores<BikeparkDbContext>();
 
 builder.Services.AddControllersWithViews(config =>
 {
@@ -50,7 +50,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var testUserPw = builder.Configuration.GetValue<string>("SeedUserPW");
-    await BikeParkDbContext.Initialize(services, testUserPw);
+    await BikeparkDbContext.Initialize(services, testUserPw);
 }
 
 // Configure the HTTP request pipeline.
