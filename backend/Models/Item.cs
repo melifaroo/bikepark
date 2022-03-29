@@ -6,20 +6,22 @@ namespace Bikepark.Models
     {
         public int ItemID { get; set; }
 
-        public int Number { get; set; }
+        public string ItemNumber { get; set; }
 
-        public string? Name { get; set; }
+        public string ItemName { get; set; }
 
-        public ItemStatus? Status {get; set;}
+        public ItemStatus? ItemStatus {get; set;}
         
-        public int? CategoryID {get; set;}
+        public int? ItemCategoryID {get; set;}
 
-        public virtual ItemCategory? Category {get; set;}
+        public virtual ItemCategory? ItemCategory {get; set;}
 
-        public int? SubCategoryID {get; set;}
-        public virtual ItemSubCategory? SubCategory {get; set;}
-        
-        public int Size { get; set; }
+        public int? ItemSubCategoryID {get; set;}
+        public virtual ItemSubCategory? ItemSubCategory {get; set;}
+
+        public string? ItemSize { get; set; }
+        public string? ItemDescription { get; set; }
+        public string? ItemImageURL { get; set; }
 
     }
 
