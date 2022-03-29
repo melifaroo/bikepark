@@ -20,7 +20,6 @@ namespace Bikepark.Models
             Sizes = items.DistinctBy(item => item.Size).Select(item => new SelectListItem { Value = item.Size.ToString(), Text = item.Size.ToString() }).ToList();
             Statuses = items.DistinctBy(item => item.Status).Select(item => new SelectListItem { Value = item.Status.ToString(), Text = item.Status.ToString() }).ToList();
 
-
         }
     }
 }
