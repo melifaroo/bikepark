@@ -1,4 +1,4 @@
-﻿namespace backend.Models
+﻿namespace Bikepark.Models
 {
     public class ServiceRecord
     {

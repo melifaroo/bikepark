@@ -5,12 +5,12 @@ namespace Bikepark.Models
     public class ItemCategory
     {
 
-        public int ItemCategoryID { get; set;}
+        public int ItemCategoryID { get; set; } = -1;
 
-        public string Name { get; set;}
+        public string Name { get; set;} = string.Empty;
 
         [ForeignKey("ItemCategoryID")]
-        public List<ItemSubCategory> ItemSubCategories { get; set; } 
+        public List<ItemSubCategory> ItemSubCategories { get; set; } = new List<ItemSubCategory>();
 
     }
 }

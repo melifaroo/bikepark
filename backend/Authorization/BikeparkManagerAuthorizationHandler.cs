@@ -16,8 +16,7 @@ public class BikeparkManagerAuthorizationHandler : AuthorizationHandler<Operatio
             }
 
             // If not asking for approval/reject, return.
-            if (requirement.Name != Constants.ApproveOperationName &&
-                requirement.Name != Constants.RejectOperationName)
+            if (requirement.Name != Constants.ApproveOperationName && requirement.Name != Constants.RejectOperationName)
             {
                 return Task.CompletedTask;
             }
