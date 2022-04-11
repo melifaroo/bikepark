@@ -9,10 +9,15 @@ namespace Bikepark.Data
     public class BikeparkDbContext : IdentityDbContext
     {
         public DbSet<Item> Storage { get; set; }
-        public DbSet<ItemCategory> Categories { get; set; }
-        public DbSet<ItemSubCategory> SubCategories { get; set; }
-        
+        public DbSet<RentalRecord> RentalLog { get; set; }
+        public DbSet<ServiceRecord> ServiceLog { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<ItemCategory> ItemCategories { get; set; }
+        public DbSet<ItemSubCategory> ItemSubCategories { get; set; }
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public BikeparkDbContext(DbContextOptions<BikeparkDbContext> options) : base(options)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
         }
 
@@ -101,47 +106,47 @@ namespace Bikepark.Data
 
             ItemCategory Bike, Scooter, Accessories;
             ItemSubCategory MTB, BMX, eBike, BalanceBike, eScooter, KickScooter, Helmet, Paddings, Gloves, Cam;
-            
-            modelBuilder.Entity<ItemSubCategory>().HasData( MTB = new ItemSubCategory { ItemSubCategoryID = 1, Name = "MTB", ItemCategoryID = 1 });
-            
-            modelBuilder.Entity<ItemSubCategory>().HasData( BMX = new ItemSubCategory { ItemSubCategoryID = 2, Name = "BMX", ItemCategoryID = 1 });
 
-            modelBuilder.Entity<ItemSubCategory>().HasData( eBike = new ItemSubCategory { ItemSubCategoryID = 3, Name = "eBike", ItemCategoryID = 1} );
+            modelBuilder.Entity<ItemSubCategory>().HasData(MTB = new ItemSubCategory { ItemSubCategoryID = 1, Name = "MTB", ItemCategoryID = 1 });
 
-            modelBuilder.Entity<ItemSubCategory>().HasData( BalanceBike = new ItemSubCategory { ItemSubCategoryID = 4, Name = "BalanceBike", ItemCategoryID = 1} );
+            modelBuilder.Entity<ItemSubCategory>().HasData(BMX = new ItemSubCategory { ItemSubCategoryID = 2, Name = "BMX", ItemCategoryID = 1 });
 
-            modelBuilder.Entity<ItemSubCategory>().HasData( eScooter = new ItemSubCategory { ItemSubCategoryID = 5, Name = "eScooter", ItemCategoryID = 2} );
+            modelBuilder.Entity<ItemSubCategory>().HasData(eBike = new ItemSubCategory { ItemSubCategoryID = 3, Name = "eBike", ItemCategoryID = 1 });
 
-            modelBuilder.Entity<ItemSubCategory>().HasData( KickScooter = new ItemSubCategory { ItemSubCategoryID = 6, Name = "KickScooter", ItemCategoryID = 2} );
+            modelBuilder.Entity<ItemSubCategory>().HasData(BalanceBike = new ItemSubCategory { ItemSubCategoryID = 4, Name = "BalanceBike", ItemCategoryID = 1 });
 
-            modelBuilder.Entity<ItemSubCategory>().HasData( Helmet = new ItemSubCategory { ItemSubCategoryID = 7, Name = "Helmet", ItemCategoryID = 3} );
+            modelBuilder.Entity<ItemSubCategory>().HasData(eScooter = new ItemSubCategory { ItemSubCategoryID = 5, Name = "eScooter", ItemCategoryID = 2 });
 
-            modelBuilder.Entity<ItemSubCategory>().HasData( Paddings = new ItemSubCategory { ItemSubCategoryID = 8, Name = "Paddings", ItemCategoryID = 3} );
+            modelBuilder.Entity<ItemSubCategory>().HasData(KickScooter = new ItemSubCategory { ItemSubCategoryID = 6, Name = "KickScooter", ItemCategoryID = 2 });
 
-            modelBuilder.Entity<ItemSubCategory>().HasData( Gloves = new ItemSubCategory { ItemSubCategoryID = 9, Name = "Gloves", ItemCategoryID = 3} );
+            modelBuilder.Entity<ItemSubCategory>().HasData(Helmet = new ItemSubCategory { ItemSubCategoryID = 7, Name = "Helmet", ItemCategoryID = 3 });
 
-            modelBuilder.Entity<ItemSubCategory>().HasData( Cam = new ItemSubCategory { ItemSubCategoryID = 10, Name = "Cam", ItemCategoryID = 3} );
+            modelBuilder.Entity<ItemSubCategory>().HasData(Paddings = new ItemSubCategory { ItemSubCategoryID = 8, Name = "Paddings", ItemCategoryID = 3 });
 
-            modelBuilder.Entity<ItemCategory>().HasData( Bike = new ItemCategory { ItemCategoryID = 1, Name = "Bike"} );
-            
-            modelBuilder.Entity<ItemCategory>().HasData( Scooter = new ItemCategory { ItemCategoryID = 2, Name = "Scooter"} );
+            modelBuilder.Entity<ItemSubCategory>().HasData(Gloves = new ItemSubCategory { ItemSubCategoryID = 9, Name = "Gloves", ItemCategoryID = 3 });
 
-            modelBuilder.Entity<ItemCategory>().HasData( Accessories = new ItemCategory { ItemCategoryID = 3, Name = "Accessories"} );
+            modelBuilder.Entity<ItemSubCategory>().HasData(Cam = new ItemSubCategory { ItemSubCategoryID = 10, Name = "Cam", ItemCategoryID = 3 });
 
-            modelBuilder.Entity<Item>().HasData(new Item { ItemID = 1, ItemNumber = "1", ItemCategoryID = 1, ItemSubCategoryID = 1, ItemName = "Mongoose", Size = 20, Status = ItemStatus.Ready });
-        
-            modelBuilder.Entity<Item>().HasData(new Item { ItemID = 2, ItemNumber = "2", ItemCategoryID = 1, ItemSubCategoryID = 1, ItemName = "Mongoose", Size = 20, Status = ItemStatus.Ready });
-        
-            modelBuilder.Entity<Item>().HasData(new Item { ItemID = 3, ItemNumber = "3", ItemCategoryID = 1, ItemSubCategoryID = 1, ItemName = "Mongoose", Size = 30, Status = ItemStatus.Ready });
-        
-            modelBuilder.Entity<Item>().HasData(new Item { ItemID = 4, ItemNumber = "4", ItemCategoryID = 1, ItemSubCategoryID = 1, ItemName = "GT", Size = 40, Status = ItemStatus.Ready });
+            modelBuilder.Entity<ItemCategory>().HasData(Bike = new ItemCategory { ItemCategoryID = 1, Name = "Bike" });
 
-            modelBuilder.Entity<Item>().HasData(new Item { ItemID = 5, ItemNumber = 5, ItemCategoryID = 1, ItemSubCategoryID = 1, ItemName = "GT", Size = 40, Status = ItemStatus.Ready });
+            modelBuilder.Entity<ItemCategory>().HasData(Scooter = new ItemCategory { ItemCategoryID = 2, Name = "Scooter" });
 
-            modelBuilder.Entity<Item>().HasData(new Item { ItemID = 6, ItemNumber = 1, ItemCategoryID = 1, ItemSubCategoryID = 2, ItemName = "GT", Status = ItemStatus.Ready});
+            modelBuilder.Entity<ItemCategory>().HasData(Accessories = new ItemCategory { ItemCategoryID = 3, Name = "Accessories" });
 
-            modelBuilder.Entity<Item>().HasData(new Item { ItemID = 7, ItemNumber = 2, ItemCategoryID = 1, ItemSubCategoryID = 2, ItemName = "GT", Status = ItemStatus.Ready});
-        ItemSubCategoryID
+            modelBuilder.Entity<Item>().HasData(new Item { ItemID = 1, ItemNumber = "1", ItemCategoryID = 1, ItemSubCategoryID = 1, ItemName = "Mongoose", ItemSize = "M", ItemStatus = ItemStatus.Ready });
+
+            modelBuilder.Entity<Item>().HasData(new Item { ItemID = 2, ItemNumber = "2", ItemCategoryID = 1, ItemSubCategoryID = 1, ItemName = "Mongoose", ItemSize = "M", ItemStatus = ItemStatus.Ready });
+
+            modelBuilder.Entity<Item>().HasData(new Item { ItemID = 3, ItemNumber = "3", ItemCategoryID = 1, ItemSubCategoryID = 1, ItemName = "Mongoose", ItemSize = "L", ItemStatus = ItemStatus.Ready });
+
+            modelBuilder.Entity<Item>().HasData(new Item { ItemID = 4, ItemNumber = "4", ItemCategoryID = 1, ItemSubCategoryID = 1, ItemName = "GT", ItemSize = "M", ItemStatus = ItemStatus.Ready });
+
+            modelBuilder.Entity<Item>().HasData(new Item { ItemID = 5, ItemNumber = "5", ItemCategoryID = 1, ItemSubCategoryID = 1, ItemName = "GT", ItemSize = "L", ItemStatus = ItemStatus.Ready });
+
+            modelBuilder.Entity<Item>().HasData(new Item { ItemID = 6, ItemNumber = "1", ItemCategoryID = 1, ItemSubCategoryID = 2, ItemName = "GT", ItemStatus = ItemStatus.Ready });
+
+            modelBuilder.Entity<Item>().HasData(new Item { ItemID = 7, ItemNumber = "2", ItemCategoryID = 1, ItemSubCategoryID = 2, ItemName = "GT", ItemStatus = ItemStatus.Ready });
+        }
         
     }
 }
