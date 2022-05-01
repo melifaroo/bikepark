@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bikepark.Data
 {
-    public class BikeParkDbContextFactory: IDesignTimeDbContextFactory<BikeparkDbContext>
+    public class BikeParkDbContextFactory: IDesignTimeDbContextFactory<BikeparkContext>
     {
-        public BikeparkDbContext CreateDbContext(string[] args)
+        public BikeparkContext CreateDbContext(string[] args)
         {
             IConfiguration config = new ConfigurationBuilder()
                 .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "./"))
@@ -13,10 +13,10 @@ namespace Bikepark.Data
                 .Build();
             var connectionString = config.GetConnectionString("SQLiteConnection");    
 
-            var optionsBuilder = new DbContextOptionsBuilder<BikeparkDbContext>();    
+            var optionsBuilder = new DbContextOptionsBuilder<BikeparkContext>();    
             optionsBuilder.UseSqlite(connectionString);
 
-            return new BikeparkDbContext(optionsBuilder.Options);
+            return new BikeparkContext(optionsBuilder.Options);
         }
     }
 }

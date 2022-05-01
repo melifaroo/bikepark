@@ -28,7 +28,7 @@ namespace Bikepark.Authorization
         public static readonly string ApproveOperationName = "Approve";
         public static readonly string RejectOperationName = "Reject";
 
-        public static readonly string ContactAdministratorsRole = "BikeParkAdministrators";
-        public static readonly string ContactManagersRole = "BikeParkManagers";
+        public static readonly string AdministratorsRole = "BikeparkAdministrators";
+        public static readonly string ManagersRole = "BikeparkManagers";
     }
 }

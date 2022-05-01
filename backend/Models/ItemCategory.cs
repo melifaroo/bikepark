@@ -1,16 +1,14 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bikepark.Models
 {
     public class ItemCategory
     {
-
-        public int ItemCategoryID { get; set; } = -1;
-
-        public string Name { get; set;} = string.Empty;
-
-        [ForeignKey("ItemCategoryID")]
-        public List<ItemSubCategory> ItemSubCategories { get; set; } = new List<ItemSubCategory>();
-
+        public int ItemCategoryID { get; set; }
+        [Required]
+        [Column(TypeName = "nvarchar(255)")]
+        [Display(Name = "Категория")]
+        public string? ItemCategoryName { get; set; }
     }
 }

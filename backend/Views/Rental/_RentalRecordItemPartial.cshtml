@@ -1,0 +1,42 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model Bikepark.Models.RentalItem
+@using Microsoft.EntityFrameworkCore;
+@using HtmlHelpers.BeginCollectionItemCore
+@{
+    DbSet<RentalPricing> Prices = ViewBag.Prices;
+}   
+<tr>  
+    @using (Html.BeginCollectionItem("RentalItems"))
+    {                
+        <td>
+            @Html.HiddenFor(m => m.ItemID)
+        </td>
+        <td>
+            @*@Html.HiddenFor(m => m.RentalFareID)*@
+        </td>
+        <td>
+            @Html.DisplayFor(m => m.Item.ItemType.ItemTypeName)
+        </td>
+        <td>
+            @Html.DisplayFor(m => m.Item.ItemNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(m => m.Item.ItemStatus)
+        </td>
+        <td>
+            @*@Html.DisplayFor(m => m.RentalFare.RentalFareName)*@
+            @Html.DropDownListFor(m => m.RentalPricingID, Prices
+                .Where(price => price.ItemCategoryID == Model.Item.ItemType.ItemCategoryID)
+                .Select(price => new SelectListItem { Value = price.RentalPricingID.ToString(), Text = price.RentalPricingName } ).ToList() )
+        </td>
+        <td>
+            @Html.DisplayFor(m => m.RentalPricing.Price)
+        </td>
+        <td>
+            <input class="button-delete" type="button" value="Убрать" data-itemid="@Model.Item.ItemID"/>
+        </td>  
+    }        
+</tr>   

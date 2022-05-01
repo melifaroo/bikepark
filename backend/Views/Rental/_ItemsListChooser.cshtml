@@ -1,0 +1,112 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.EntityFrameworkCore;
+@model Bikepark.Models.RentalRecord
+@{
+    DbSet<Item> Items = ViewBag.Items;
+    DbSet<RentalRecord> Rents = ViewBag.Rents;
+    DbSet<RentalItem> RentedItems = ViewBag.RentedItems;
+    Item someItem = new Item();
+}
+
+<div class="table-responsive-sm tablealign">
+    <table class="table table-sm">
+        <thead class="thead">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => someItem.ItemStatus)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => someItem.ItemType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => someItem.ItemNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => someItem.ItemType.ItemCategory.ItemCategoryName)
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+                @foreach (var item in Items) {
+                    bool overlap = false;
+                    await RentedItems.Where(renteditem => renteditem.ItemID == item.ItemID).ForEachAsync(renteditem => {
+                        overlap = overlap || RentalRecord.Overlap(Model, renteditem.RentalRecord);
+                        if (overlap)
+                            return;
+                    });
+
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(m => item.ItemStatus)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => item.ItemType.ItemTypeName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => item.ItemNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => item.ItemType.ItemCategory.ItemCategoryName)
+                        </td>
+                        <td>                            
+                            <input class="button-add" type="button" value="Добавить" data-itemid="@item.ItemID" disabled="@overlap"/>
+                        </td>
+                    </tr>
+                }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .tablealign .table {
+        border-collapse: collapse;
+        width: 95%;
+    }
+    .tablealign  .table td {
+            overflow: hidden;
+            word-break: normal;
+            text-align: center;
+        }
+    .tablealign  .table th  {
+            text-align: center;
+            word-break: normal;
+            min-width: 100px;
+        }
+    .tablealign {
+        float: right;
+        width: 100%;
+        height: 100%;
+        border-radius: 3px;
+        padding-bottom: 50px;
+    }
+   .tablealign  tbody {
+         overflow-y: auto;
+        overflow-x: hidden;
+        height: 336px;
+        display: block;
+    }
+   .tablealign  tbody::-webkit-scrollbar {
+    }
+   .tablealign  thead {
+        display: table;
+        width: calc(100% - 17px);
+        table-layout: auto;
+    }
+
+  .tablealign  tbody tr {
+        table-layout: fixed;
+        display: table;
+        width: 100%;
+    }
+
+    .tablealign tr[disabled] td {
+      filter: blur(1px);
+      pointer-events: none;
+    }
+
+</style>
