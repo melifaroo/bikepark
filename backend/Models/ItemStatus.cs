@@ -1,13 +1,18 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Bikepark.Models
 {
     public enum ItemStatus
     {
-
-        Ready,
+        [Display(Name = "Доступен")]
+        Available,
+        [Display(Name = "Есть брони")]
         Reserved,
-        Rented,
+        [Display(Name = "В прокате")]
+        RentedOut,
+        [Display(Name = "На ремонте")]
         OnService
-
     }
 }
 

@@ -2,18 +2,21 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.EntityFrameworkCore.Proxies;
 using Bikepark.Data;
 using Bikepark.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("SQLiteConnection");
-builder.Services.AddDbContext<BikeparkDbContext>(options => options.UseSqlite(connectionString)); 
+builder.Services.AddDbContext<BikeparkContext>(options => options
+                                                .UseLazyLoadingProxies()
+                                                .UseSqlite(connectionString)); 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<BikeparkDbContext>();
+                .AddEntityFrameworkStores<BikeparkContext>();
 
 builder.Services.AddControllersWithViews(config =>
 {
@@ -44,13 +47,22 @@ builder.Services.AddSingleton<IAuthorizationHandler,
                       BikeparkManagerAuthorizationHandler>();
 
 
+var supportedCultures = new[] { "ru-RU", "ru" };
+var localizationOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0])
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+
+
+
 var app = builder.Build();
+
+app.UseRequestLocalization(localizationOptions);
 
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var testUserPw = builder.Configuration.GetValue<string>("SeedUserPW");
-    await BikeparkDbContext.Initialize(services, testUserPw);
+    await BikeparkContext.Initialize(services, testUserPw);
 }
 
 // Configure the HTTP request pipeline.

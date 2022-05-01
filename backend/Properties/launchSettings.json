@@ -12,7 +12,7 @@
     "backend": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "home",
+      "launchUrl": "rental",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
