@@ -5,11 +5,11 @@ namespace Bikepark.Models
 {
     public enum ItemAge
     {
-        [Display(Name = "Взрослый")]
+        [Display(Name = "")]
         Adult,
-        [Display(Name = "Подростковый")]
+        [Display(Name = "Подросток")]
         Teen,
-        [Display(Name = "Детский")]
+        [Display(Name = "Ребенок")]
         Kid,
     }
 }

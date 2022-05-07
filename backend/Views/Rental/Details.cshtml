@@ -2,7 +2,8 @@
 
 @{
     Layout = "_RentalLayout";
-    ViewData["Title2"] = "Details";
+    ViewData["Title"] = "Прокат";
+}
 }
 
 <h1>Details</h1>
@@ -36,10 +37,10 @@
             @Html.DisplayFor(model => model.End)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ActualEnd)
+            @Html.DisplayNameFor(model => model.EndActual)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ActualEnd)
+            @Html.DisplayFor(model => model.EndActual)
         </dd>
     </dl>
 </div>

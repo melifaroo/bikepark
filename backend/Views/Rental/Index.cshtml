@@ -2,7 +2,7 @@
 
 @{
     Layout = "_RentalLayout";
-    ViewData["Title2"] = "Журнал";
+    ViewData["Title"] = "Журнал проката";
 }
 
 
@@ -24,7 +24,7 @@
                 @Html.DisplayNameFor(model => model.End)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ActualEnd)
+                @Html.DisplayNameFor(model => model.EndActual)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Customer)
@@ -45,7 +45,7 @@
                 @Html.DisplayFor(modelItem => item.End)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ActualEnd)
+                @Html.DisplayFor(modelItem => item.EndActual)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Customer.CustomerFullName)
@@ -63,8 +63,7 @@
     <script>        
         
         $(document).ready(function(){
-           $("#navbar-rental .active").removeClass("active");
-           $("#rental-link-log").addClass("active");
+           $(".navbar-nav #link-rental-log").addClass("active");
         });
     
     </script>

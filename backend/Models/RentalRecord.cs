@@ -5,7 +5,7 @@ namespace Bikepark.Models
 {
     public class RentalRecord : RentalInfo
     {
-        public int RentalRecordID { get; set; }
+        public int? RentalRecordID { get; set; }
         public int? CustomerID  { get; set; }
         [Display(Name = "Клиент")]
         public virtual Customer? Customer { get; set; }

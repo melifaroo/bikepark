@@ -5,7 +5,7 @@ namespace Bikepark.Models
 {
     public class Item
     {
-        public int ItemID { get; set; }
+        public int? ItemID { get; set; }
         public int ItemTypeID { get; set; }
 
         [Display(Name = "Наименование")]

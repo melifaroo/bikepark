@@ -2,7 +2,7 @@
 
 @{
     Layout = "_ManageLayout";
-    ViewData["Title2"] = "Склад";
+    ViewData["Title"] = "Склад";
 }
 
 <h1>Склад</h1>
@@ -52,9 +52,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
         $(document).ready(function(){
-           $("#navbar-manage .active").removeClass("active");
-           $("#manage-link-storage").addClass("active");
-        });
-    
+           $(".navbar-nav #link-manage-storage").addClass("active");
+        });    
     </script>
 }

@@ -1,62 +1,89 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@using Microsoft.EntityFrameworkCore;
 @model Bikepark.Models.RentalRecord
+
+@using Microsoft.EntityFrameworkCore
+@using Bikepark.Views.Helpers
 @{
     DbSet<Item> Items = ViewBag.Items;
+    DbSet<ItemType> Types = ViewBag.Types;
     DbSet<RentalRecord> Rents = ViewBag.Rents;
     DbSet<RentalItem> RentedItems = ViewBag.RentedItems;
-    Item someItem = new Item();
+    ItemType someItemType = new ItemType();
 }
 
 <div class="table-responsive-sm tablealign">
-    <table class="table table-sm">
+    <table class="table">
         <thead class="thead">
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => someItem.ItemStatus)
+                    @Html.DisplayNameFor(model => someItemType.ItemTypeName)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => someItem.ItemType)
+                    @Html.DisplayNameFor(model => someItemType.ItemCategory)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => someItem.ItemNumber)
+                    @Html.DisplayNameFor(model => someItemType.ItemAge)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => someItem.ItemType.ItemCategory.ItemCategoryName)
+                    @Html.DisplayNameFor(model => someItemType.ItemGender)
                 </th>
                 <th>
-
+                    @Html.DisplayNameFor(model => someItemType.ItemSize)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => someItemType.ItemWheelSize)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => someItemType.ItemColor)
+                </th>
+                <th>
+                    Номера
                 </th>
             </tr>
         </thead>
         <tbody>
-                @foreach (var item in Items) {
-                    bool overlap = false;
-                    await RentedItems.Where(renteditem => renteditem.ItemID == item.ItemID).ForEachAsync(renteditem => {
-                        overlap = overlap || RentalRecord.Overlap(Model, renteditem.RentalRecord);
-                        if (overlap)
-                            return;
-                    });
-
+                @foreach (var type in Types) {
                     <tr>
                         <td>
-                            @Html.DisplayFor(m => item.ItemStatus)
+                            @Html.DisplayFor(m => type.ItemTypeName)
                         </td>
                         <td>
-                            @Html.DisplayFor(m => item.ItemType.ItemTypeName)
+                            @Html.DisplayFor(m => type.ItemCategory.ItemCategoryName)
                         </td>
                         <td>
-                            @Html.DisplayFor(m => item.ItemNumber)
+                            @Html.DisplayFor(m => type.ItemAge)
                         </td>
                         <td>
-                            @Html.DisplayFor(m => item.ItemType.ItemCategory.ItemCategoryName)
+                            @Html.DisplayFor(m => type.ItemGender)
                         </td>
-                        <td>                            
-                            <input class="button-add" type="button" value="Добавить" data-itemid="@item.ItemID" disabled="@overlap"/>
+                        <td>
+                            @Html.DisplayFor(m => type.ItemSize)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => type.ItemWheelSize)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => type.ItemColor)
+                        </td> 
+                        <td>
+                            <div class="d-flex flex-row">
+                                @foreach (var item in Items.Where(i => i.ItemTypeID==type.ItemTypeID).ToList() ){
+                                    bool overlap = false;
+                                    await RentedItems.Where(renteditem => renteditem.ItemID == item.ItemID).ForEachAsync(renteditem => {
+                                        overlap = overlap || RentalRecord.Overlap(Model, renteditem.RentalRecord);
+                                        if (overlap)
+                                            return;
+                                    });
+                        
+                                    <input type="checkbox" id="chk-item-add-@item.ItemID" class="btn-check" data-itemid="@item.ItemID" disabled="@overlap"/>                                
+                                    <label                for="chk-item-add-@item.ItemID" class="btn btn-outline-success"> @item.ItemNumber  </label>  
+                                }
+                            </div>
                         </td>
                     </tr>
+
                 }
         </tbody>
     </table>
@@ -94,7 +121,7 @@
     }
    .tablealign  thead {
         display: table;
-        width: calc(100% - 17px);
+        width: calc(100%-17px);
         table-layout: auto;
     }
 

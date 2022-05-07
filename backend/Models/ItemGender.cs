@@ -5,11 +5,11 @@ namespace Bikepark.Models
 {
     public enum ItemGender
     {
-        [Display(ShortName = "-", Name = "Унисекс") ]
+        [Display(Name = "") ]
         Unisex,
-        [Display(ShortName = "М", Name = "Мужской")]
+        [Display(Name = "М")]
         M,
-        [Display(ShortName = "Ж", Name = "Женский")]
+        [Display(Name = "Ж")]
         W,
     }
 }

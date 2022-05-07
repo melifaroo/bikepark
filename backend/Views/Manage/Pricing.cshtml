@@ -2,7 +2,7 @@
 
 @{
     Layout = "_ManageLayout";
-    ViewData["Title2"] = "Тарифы";
+    ViewData["Title"] = "Тарифы";
 }
 
 <h1>Тарифы</h1>
@@ -80,9 +80,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
         $(document).ready(function(){
-           $("#navbar-manage .active").removeClass("active");
-           $("#manage-link-pricing").addClass("active");
-        });
-    
+           $(".navbar-nav #link-manage-pricing").addClass("active");
+        });    
     </script>
 }

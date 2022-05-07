@@ -5,8 +5,8 @@ namespace Bikepark.Models
 {
     public class RentalItem : RentalInfo
     {
-        public int RentalItemID { get; set; }
-        public int RentalRecordID { get; set; }
+        public int? RentalItemID { get; set; }
+        public int? RentalRecordID { get; set; }
         [Display(Name = "Запись о прокате")]
         public virtual RentalRecord? RentalRecord { get; set; }
         public int? ItemID { get; set; }

@@ -1,232 +1,581 @@
-﻿@model Bikepark.Models.RentalRecord
+﻿
+@model Bikepark.Models.RentalRecord
+
+@using Bikepark.Views.Helpers
 
 @{
     Layout = "_RentalLayout";
-    ViewData["Title2"] = "Новый";
-    Item someItem = new Item();
-    RentalPricing someFare = new RentalPricing();
+    ViewData["Title"] = "Запись проката";
+    RentalItem someRentalItem = new RentalItem();
     SelectList customersList = new SelectList( ViewBag.Customers,  "CustomerID",  "CustomerFullName");
+    
+    var Scheduled = Model.RentalStatus == RentalStatus.Scheduled;
+    var Active = Model.RentalStatus == RentalStatus.Active;
+    var Closed = Model.RentalStatus == RentalStatus.Closed;
+    var Empty = Model.RentalItems.Count == 0;
+
+    var Duration = 1;
+    if (Model.Start!=null && Model.End!=null){
+        if (Model.RentalType == RentalType.Daily)
+            Duration = (Model.End - Model.Start).GetValueOrDefault(TimeSpan.FromDays(1)).Days;
+        else 
+        if (Model.RentalType == RentalType.Hourly)
+            Duration = (Model.End - Model.Start).GetValueOrDefault(TimeSpan.FromHours(1)).Hours;
+    }}
+@{
+    var btn_schedule_style = "";
+    var btn_cancel_style = "";
+    var btn_permit_style = "";
+    var btn_giveout_style = "";
+    var btn_giveout_more_style = "";
+    var chk_getbackall_style = "";
+    var actions_schedule_style = "";
+    var customer_details_style = "";
+    var rental_info_style = "";
+
+    var timer_start_active = "";
+    var timer_end_active = "";
+    var  action_giveout = true;
+    var  action_schedule = false;
+    var  rental_type_once = Model.RentalType == RentalType.OneTime;
+    var  rental_type_hourly = Model.RentalType == RentalType.Hourly;
+    var  rental_type_daily = Model.RentalType == RentalType.Daily;
+
+    if(Model.Customer!=null)
+    {
+        customer_details_style = "display: none";
+    }
+
+    if(Model.RentalStatus!=null)
+    {
+        rental_info_style = "display: none";
+    }
+
+    if(Model.RentalStatus==null)
+    {
+        btn_schedule_style = "display: none";
+        btn_cancel_style = "display: none";
+        if (Empty)
+        {
+            btn_permit_style = "";
+            btn_giveout_style = "display: none";
+        }
+        else
+        {
+            btn_permit_style = "display: none";
+            btn_giveout_style = "";            
+        }
+        btn_giveout_more_style = "display: none";
+        chk_getbackall_style = "display: none";
+        actions_schedule_style = "";
+        action_giveout = true;
+        action_schedule = false;
+        timer_start_active = "timer-active";
+        timer_end_active = "";
+    }else
+    if(Model.RentalStatus==RentalStatus.Scheduled)
+    {
+        btn_schedule_style = "";
+        btn_cancel_style = "";
+        btn_permit_style = "display: none";
+        btn_giveout_style = "";        
+        btn_giveout_more_style = "display: none";
+        chk_getbackall_style = "display: none";
+        actions_schedule_style = "";
+        action_giveout = false;
+        action_schedule = true;
+        timer_start_active = "";
+        timer_end_active = "";
+    }else
+    if(Model.RentalStatus==RentalStatus.Closed)
+    {
+        btn_schedule_style = "display: none";
+        btn_cancel_style = "display: none";
+        btn_permit_style = "display: none";
+        btn_giveout_style = "display: none";
+        btn_giveout_more_style = "display: none";
+        chk_getbackall_style = "display: none";
+        actions_schedule_style = "display: none";
+        action_giveout = false;
+        action_schedule = false;
+        timer_start_active = "";
+        timer_end_active = "";
+    }else
+    if(Model.RentalStatus==RentalStatus.Active)
+    {
+        btn_schedule_style = "display: none";
+        btn_cancel_style = "display: none";
+        btn_permit_style = "display: none";
+        btn_giveout_style = "display: none";
+        btn_giveout_more_style = "";
+        chk_getbackall_style = "";
+        actions_schedule_style = "display: none";
+        action_giveout = false;
+        action_schedule = false;
+        timer_start_active = "";
+        timer_end_active = "timer-active";
+    }
 }
+    <div id="rental-control"> 
 
-<div class="row">
-    <div class="col">
-        <form asp-action="Create">                
-            <div class="form-group">                
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="RentalRecordID" />
-            </div>  
+        <div class="container-fluid"> 
+            <div class="row justify-content-center mx-0" >  
+                <div class="col-12 align-self-baseline"> 
+                    <div class="row"> 
+                        <h4 class="col-2">Заказ: </h4> 
+                        <h4 class="col-10">#                  
+                            @if (Model.RentalRecordID != null) {
+                                <i>@Html.DisplayFor(m => m.RentalRecordID)</i>
+                            }
+                            <input type="hidden" asp-for="RentalRecordID" />         
+                            @if (Model.RentalRecordID != null) {
+                                <i>@Html.DisplayFor(m => m.RentalStatus)</i>
+                            }
+                        </h4>  
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container-fluid" >   
+            <div class="row row-cols-3 justify-content-center mx-0" >  
+                <div class="d-flex justify-content-start"> 
+                    <button type="button" id="btn-giveout"        class="btn btn-success col-6 mx-0 text-truncate"       style = "@btn_giveout_style">
+                        <i class="bi bi-bicycle"></i> Выдать
+                    </button> 
+                    <button type="button" id="btn-permit"        class="btn btn-success col-6 mx-0 text-truncate"       style = "@btn_permit_style">
+                        <i class="bi bi-ticket-perforated"></i> Допуск
+                    </button> 
+                    <button type="button" id="btn-giveout-more"   class="btn btn-success col-6 mx-0 text-truncate"       style = "@btn_giveout_more_style" disabled>
+                        <i class="bi bi-plus"></i><i class="bi bi-bicycle"></i> Дополнить
+                    </button> 
+                    <button type="button" id="btn-getback"        class="btn btn-primary col-6 mx-0 text-truncate"       style = "@chk_getbackall_style" disabled> 
+                        <i class="bi bi-hand-thumbs-up"></i> Принять
+                    </button>
+                    <button type="button" id="btn-schedule"       class="btn btn-warning col-6 mx-0 text-truncate"       style = "@btn_schedule_style" disabled="@Empty">
+                        <i class="bi bi-calendar-check"></i> Бронировать
+                    </button>
+                    <button type="button" id="btn-cancel"         class="btn btn-outline-danger col-6 mx-0 text-truncate"style = "@btn_cancel_style">
+                        <i class="bi bi-calendar-minus"></i> Снять бронь
+                    </button>
+                </div>
+                <div class="d-flex justify-content-end"> 
+                </div>
+                <div class="d-flex justify-content-end"> 
+                    <button type="button" class="btn btn-light col-4 " id="btn-back">
+                        <i class="bi bi-arrow-return-left"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
                 
-            <div class="row" >
+        <form asp-action="Create">
+            <div class="container-fluid"> 
+                <div class="row row-cols-3 mx-0" >  
+                    <h4 class="col-2 align-self-baseline">Клиент: </h4> 
+                    <div class="col-6 align-self-baseline">            
+                        @Html.DisplayFor(m => m.Customer.CustomerFullName)
+                        @Html.DisplayFor(m => m.Customer.CustomerContactNumber)
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-light col-4" id="btn-customer">
+                                <i class="bi bi-chevron-expand"></i>
+                        </button>
+                    </div>          
+                </div>               
+            </div>
 
-            </div>  
-                        
-            <div class="row" id="customer-main-detail" >
-                <input asp-for="Customer.CustomerID" class="form-control" id="customer-id" type="hidden"/>
-                <div class="col-sm-4 mb-3 align-self-end">
-                    <div class="form-group">  
+            <div class="container-fluid " id="customer-details" style="@customer_details_style">                                        
+                <div class="row row-cols-3 mx-0" id="customer-main-detail" >
+                    <input asp-for="Customer.CustomerID" class="form-control" id="customer-id" type="hidden"/>
+                    
+                    <div class="form-group" >  
                         <label asp-for="Customer.CustomerContactNumber" class="control-label"></label>
                         <input asp-for="Customer.CustomerContactNumber" type="tel" class="form-control" />
                         <span asp-validation-for="Customer.CustomerContactNumber" class="text-danger"></span>
                     </div>
-                </div>
-                <div class="col-sm-4 mb-3 align-self-end">
                     <div class="form-group">
                         <label asp-for="Customer.CustomerFullName" class="control-label"></label>
                         <input asp-for="Customer.CustomerFullName" class="form-control" />
                         <span asp-validation-for="Customer.CustomerFullName" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-sm-4 mb-3  align-items-sm-stretch">                        
-                    <input class="btn-check"                  id="chk-new-customer" type="checkbox" autocomplete="off" checked>
-                    <label class="btn btn-outline-primary"    for="chk-new-customer">Новый</label>
-
-                    <input type="button" value="Найти" id="btn-search-customer" name="SearchCustomer" class="btn btn-success" /> 
-
-                    <input type="button" value="Больше" id="btn-more-customer-detail" name="MoreCustomerData" class="btn btn-secondary" /> 
+                    </div> 
+                    <div class="align-self-end ">                                
+                        <div class="row row-cols-3 mx-0">
+                            <input type="checkbox"  id="chk-new-customer"   class="btn-check"   checked disabled>
+                            <label                  for="chk-new-customer" class="btn btn-outline-primary  " >Новый</label>
+                            <input type="button" value="Найти" id="btn-search-customer" class="btn btn-outline-secondary " /> 
+                            <input type="button" value="Больше" id="btn-more-customer-detail" class="btn btn-outline-secondary " /> 
+                        </div>  
+                    </div>  
                 </div>  
-            </div>
-                    
-            <div class="row" id="customer-more-detail" style="display: none">
-                <div  class="col-md-4 mb-3 align-self-end">
-                    <div class="form-group">
+                <div class="row row-cols-3 mx-0" id="customer-more-detail" style="display: none" >                    
+                    <div class="form-group" >
                         <label asp-for="Customer.CustomerEMail" class="control-label"></label>
                         <input asp-for="Customer.CustomerEMail" type="email" class="form-control" />
                         <span asp-validation-for="Customer.CustomerEMail" class="text-danger"></span>
                     </div>
-                    <div  class="form-group">
+                    <div  class="form-group" >
                         <label asp-for="Customer.CustomerPassport" class="control-label"></label>
                         <input asp-for="Customer.CustomerPassport" class="form-control" />
                         <span asp-validation-for="Customer.CustomerPassport" class="text-danger"></span>
                     </div>
-                </div>
-            </div>
-                
-
-            <div id="сustomer-search-results" style="display: none">
+                </div>                                  
+                 
+                <div id="сustomer-search-results" style="display: none">
                 @*<partial name="_CustomersSearchResults"/>   *@
+                </div>    
             </div>
-
-            <div class="row" >
-                <div class="col-md-3 align-self-end">
-                    <div class="form-group" disabled>
-                        <label for="RentalDuration" class="control-label"></label>
-                        <input name="RentalDuration" class="form-control" />
+                    
+            <div class="container-fluid"> 
+                <div class="row row-cols-3 mx-0" >  
+                    <h4 class="col-2 align-self-baseline">Время: </h4> 
+                    <div class="col-6 align-self-baseline text-truncate">            
+                        @if (Model.RentalStatus == RentalStatus.Active)
+                        {
+                            <i>Выдан </i>
+                        }
+                        @if (Model.RentalStatus == RentalStatus.Scheduled)
+                        {
+                            <i>Запланирован </i>
+                        }
+                        @if (Model.RentalStatus == RentalStatus.Closed)
+                        {
+                            <i>Завершен </i>
+                        }
+                        @if (Model.Start != null) 
+                        {
+                            <i>c @Html.DisplayFor(m => m.Start)</i>
+                        }
+                        @if (Model.End != null && Model.RentalStatus != RentalStatus.Closed) 
+                        {
+                            <i>по @Html.DisplayFor(m => m.End)</i>
+                        }
+                        @if (Model.EndActual != null && Model.RentalStatus == RentalStatus.Closed) 
+                        {
+                            <i>по @Html.DisplayFor(m => m.EndActual)</i>
+                        }
                     </div>
-                </div>
-                <div class="col-md-3 align-self-end">
-                    <input type="radio" class="btn-check"  name="billing-options" id="chk-hourly" autocomplete="off" checked>
-                    <label class="btn btn-outline-danger" for="chk-hourly">Почасовой</label>
-
-                    <input type="radio" class="btn-check" name="billing-options" id="chk-daily" autocomplete="off">
-                    <label class="btn btn-outline-warning" for="chk-daily">Посуточный</label>
-
-                    <input type="radio" class="btn-check" name="billing-options" id="chk-onetime" autocomplete="off">
-                    <label class="btn btn-outline-success" for="chk-hourly">Разовый</label>
+                    <div class="col-4 d-flex justify-content-end">    
+                        <button type="button" class="btn btn-light col-4" id="btn-rental-info">
+                            <i class="bi bi-chevron-expand"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             
-            <div class="row" >
-                <div class="col-md-3 align-self-end">
+            <div class="container-fluid" id="rental-info"  style="@rental_info_style">   
+                <div class="row row-cols-3 mx-0" >                
+                    <div class="align-self-end">
+                        <div class="row row-cols-2 mx-0">
+                            <input type="radio" class="btn-check"  name="action-todo" id="chk-action-giveout" autocomplete="off" checked="@action_giveout">
+                            <label class="btn col-6 btn-outline-success" for="chk-action-giveout">Выдача</label>
+                            <input type="radio" class="btn-check" name="action-todo" id="chk-action-schedule" autocomplete="off" checked="@action_schedule">
+                            <label class="btn col-6 btn-outline-warning" for="chk-action-schedule">Бронь</label>
+                        </div>              
+                    </div>    
                     <div class="form-group">
                         <label asp-for="Start" class="control-label"></label>
-                        <input asp-for="Start" class="form-control" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}"/>
+                        <input asp-for="Start" id="time-start" class="form-control timer-start @timer_start_active" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" disabled="@Active"/>
                         <span asp-validation-for="Start" class="text-danger"></span>
-                    </div>
-                </div>             
-                <div class="col-md-3 align-self-end">
+                    </div> 
+                    <div class="align-self-end ">
+                        <div class="row row-cols-3 mx-0">
+                            <input type="radio" class="btn-check" name="billing-options" id="chk-onetime" autocomplete="off" checked="@rental_type_once">
+                            <label class="btn btn-outline-secondary" for="chk-onetime"><i class="bi bi-ticket"></i> </label>    
+                            <input type="radio" class="btn-check"  name="billing-options" id="chk-hourly" autocomplete="off" checked="@rental_type_hourly">
+                            <label class="btn btn-outline-secondary" for="chk-hourly"><i class="bi bi-clock"></i> </label>
+                            <input type="radio" class="btn-check" name="billing-options" id="chk-daily" autocomplete="off" checked="@rental_type_daily">
+                            <label class="btn btn-outline-secondary" for="chk-daily"><i class="bi bi-sun"></i> </label>
+                        </div>
+                    </div>  
+                </div>    
+                <div class="row row-cols-3 mx-0">
+                    <div class="">                   
+                    </div>  
                     <div class="form-group">
                         <label asp-for="End" class="control-label"></label>
-                        <input asp-for="End" class="form-control" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}"/>
+                        <input asp-for="End" id="time-end" class="form-control timer_end" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}"/>
                         <span asp-validation-for="End" class="text-danger"></span>
                     </div>
+                    <div class="">
+                        <label                      for="Duration" class="control-label">Продолжительность</label>
+                        <input id="input-duration" name="Duration" class="form-control" type="number" min="1" value="@Duration" disabled="@rental_type_once"/>
+                    </div>     
+                </div>              
+                <div class="row row-cols-3 mx-0" >
+                    <div class="">                   
+                    </div>  
+                    <div class="form-group">
+                        <label asp-for="EndActual" class="control-label"></label>
+                        <input asp-for="EndActual" class="form-control @timer_end_active" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" disabled/>
+                        <span asp-validation-for="EndActual" class="text-danger"></span>
+                    </div>          
+                    <div class="">
+                        <label                      for="DurationActual" class="control-label">по факту</label>
+                        <input id="actual-duration" name="DurationActual" class="form-control" type="number" min="1" disabled/>
+                    </div>  
                 </div>
-                <div class="col-md-3  align-self-end" style="display: none">
-                    <div class="form-group" >
-                        <label asp-for="ActualEnd" class="control-label"></label>
-                        <input asp-for="ActualEnd" class="form-control" type="datetime-local" asp-format="{0:yyyy-MM-dd HH:mm}"/>
-                        <span asp-validation-for="ActualEnd" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row" >
-                <div class="col-md-3 align-self-end">
-                    <input type="button" value="Забронировать" id="btn-schedule-rent" class="btn btn-danger" /> 
-                </div>    
-                <div class="col-md-3 align-self-end">
-                    <input type="button" value="Снять бронь" id="btn-schedule-rent" class="btn btn-danger" /> 
-                </div>     
-            </div>
-            <div class="row" >
-                <div class="col-md-3 align-self-end">
-                    <input type="button" value="Выдать все" id="btn-start-rent" class="btn btn-success" /> 
-                </div>   
-                <div class="col-md-3 align-self-end">
-                    <input type="button" value="Выдать дополнение" id="btn-end-rent" class="btn btn-primary" disabled/> 
-                </div>   
-            </div>
-            <div class="row" >
-                <div class="col-md-3 align-self-end">
-                    <input type="button" value="Принять все" id="btn-end-rent" class="btn btn-primary" disabled/> 
-                </div>   
-                <div class="col-md-3 align-self-end">
-                    <input type="button" value="Принять по частям" id="btn-end-rent" class="btn btn-primary" disabled/> 
-                </div>   
             </div>
             
-            <div class="row" style="display: none">
-                <div class="col-sm align-self-end" style="display: none">
-                    <div class="form-group">
-                        <label asp-for="ActualEnd" class="control-label"></label>
-                        <input asp-for="ActualEnd" class="form-control"  type="datetime-local" asp-format="{0:yyyy-MM-dd HH:mm}" disabled="true"/>
-                        <span asp-validation-for="ActualEnd" class="text-danger"></span>
+            <div class="container-fluid"> 
+                <div class="row row-cols-3 mx-0" >  
+                    <h4 class="col-2 align-self-baseline">Состав: </h4> 
+                    <div class="col-6 align-self-baseline">            
                     </div>
+                    <div class="col-4 d-flex justify-content-end">  
+                        <button type="button" class="btn btn-light col-4" id="btn-rental-items">
+                            <i class="bi bi-chevron-expand"></i>
+                        </button>                     
+                    </div>  
                 </div>
             </div>
-
-
-                <table id="rental-items" class="table">
+      
+            <div class="container-fluid" id="rental-items">   
+                <table id="rental-items-list" class="table mx-0">
                     <thead>
                         <tr>
                             <th>
+                                @Html.DisplayNameFor(m => someRentalItem.Item.ItemType)
                             </th>
                             <th>
+                                @Html.DisplayNameFor(m => someRentalItem.Item.ItemNumber)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(m => someItem.ItemType)
+                                @HtmlX.ShortNameFor(Html, m => someRentalItem.Start)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(m => someItem.ItemNumber)
+                                @HtmlX.ShortNameFor(Html, m => someRentalItem.End)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(m => someItem.ItemStatus)
+                                @HtmlX.ShortNameFor(Html, m => someRentalItem.EndActual)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(m => someFare.RentalPricingName)
+                                @Html.DisplayNameFor(m => someRentalItem.RentalPricing.RentalPricingName)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(m => someFare.Price)
+                                Стоимость
                             </th>
-                            <th></th>
+                            <th style="width:200px"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var rentedItem in Model.RentalItems)
                         {
-                            <partial name="_RentalRecordItemPartial" model = "@rentedItem" />   
+                            <partial name="_RentalRecordItemPartial" model = "@rentedItem" />  
                         }
                     </tbody>
                 </table>
+                                
+                <div class="row row-cols-3 justify-content-start  mx-0" >  
+                    <div class="flex justify-content-start">     
+                        <button type="button" class="btn btn-success col-6" id="btn-show-items-chooser">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>                 
+                    </div>  
+                </div>
+            
+            </div>
+
+            <div class="container-fluid" id="rental-items-chooser" style="display: none" >
+                <partial name="_ItemsListChooser"  />  
+            </div>
                 
-            <div class="form-group">
-                <input type="button" id="btn-show-items-chooser" value="Добавить" class="btn btn-success" />
-            </div>
-
-            <div id="rental-items-chooser" style="display: none">
-                <partial name="_ItemsListChooser"/>   
-            </div>
-
         </form>
     </div>
-</div>
+
+
+<style>
+    label.btn.btn-outline-secondary {
+      color: #6c757d;
+      background-color: transparent;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    label.btn.btn-outline-secondary.active {
+      color: #fff;
+      background-color: #6c757d;
+    }
+</style>
+
 
 @section Scripts {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}    
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }    
     
-    <script>
-        
-        $(document).ready(function(){
-           $("#navbar-rental .active").removeClass("active");
-           $("#rental-link-create").addClass("active");
-        });
-    
+    <script>           
+        $(document).ready(function(){   
+            d = new Date();               
+            if ($("#chk-action-giveout").is(":checked")){
+                $(".timer-start").val(time2str(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()));
+                update_endtime(); 
+            }
+            $(".timer-end").val(time2str(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()));
+                
+            $(".navbar-nav #link-rental-create").addClass("active");
+        });        
 
-        $(document).on("click", '.button-add', function () {
-            var id = $(this).data('itemid');
-            var url = '@Url.Action("addRentedItem", "rental")';
+        setInterval(function(){
+            d = new Date();  
+            $("#rental-control .timer-active").val(time2str(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()));            
+            if (!@Json.Serialize(Active))
+                update_endtime(); 
+        }, 1000);
+         
+        function zeroPadded(val) {
+            if (val >= 10)
+                return val;
+            else
+                return "0" + val;
+        }
+
+        $(document).on("click", "#rental-control #rental-items-chooser .btn-item-add", function () {
+            var id = $(this).data("itemid");
+            var url = "@Url.Action("addRentedItem", "rental")";
             $.get( url, { ItemID : id }, 
                 function(result){
-                  $('#rental-items tbody').append(result);
+                  $("#rental-items-list tbody").append(result);
                 }
             );
-            $(this).prop( "disabled", true );
+            $(this).prop( "disabled", true );            
+            $("#btn-schedule").prop( "disabled", false );
         });
 
-        $(document).on("click", '#rental-items tbody .button-delete', function () {
-            var id = $(this).data('itemid').toString();
-            console.log( $(this).data('itemid') );
-            $('#rental-items-chooser input[data-itemid=' + id + ']').prop( "disabled", false );
-            $(this).parent().parent().remove();
+        $(document).on("click", "#rental-control #rental-items-list .btm-item-delete", function () {
+            var id = $(this).data("itemid").toString();
+            $("#rental-items-chooser input[data-itemid=" + id + "]").prop( "disabled", false );
+            console.log("#rental-items-list tr #rental-item-row-"+id);
+            $("#rental-items-list tr#rental-item-row-"+id).remove();
+            $("#btn-schedule").prop( "disabled", itemsCount()==0 );
+
         });
         
-        $('#btn-show-items-chooser').on("click", function () {
-            $("#rental-items-chooser").toggle('slow');
+        $("#btn-show-items-chooser").on("click", function () {
+            $("#rental-items-chooser").toggle("slow");
         });
-        $('#btn-more-customer-detail').on("click", function () {
-            $("#customer-more-detail").toggle('slow');
+                
+        $("#btn-more-customer-detail").on("click", function () {
+            $("#customer-more-detail").toggle("slow");
+        });
+        
+        $("#btn-customer").on("click", function () {
+            $("#customer-details").toggle("slow");
+        });
+        
+        $("#btn-rental-info").on("click", function () {
+            $("#rental-info").toggle("slow");
+        });
+        $("#btn-rental-items").on("click", function () {
+            $("#rental-items").toggle("slow");
         });
 
+
+        function time2str(year, month, day, hours, minutes) {
+            return year+"-"+zeroPadded(month + 1)+"-"+zeroPadded(day)+"T"+zeroPadded(hours)+":"+zeroPadded(minutes)
+        }
+
+        function itemsCount() {
+            return $("#rental-items-list tbody tr").length;
+        }
+
+        function update_endtime() {
+            d = new Date($("#time-start").val());  
+            t = $("#input-duration").val();  
+
+            if ($("#chk-onetime").is(":checked")){
+                $("#time-end").val( time2str(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59) );
+            }else if ($("#chk-hourly").is(":checked")){
+                d.setTime(d.getTime() + t*60*60*1000);
+                $("#time-end").val( time2str(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()) );
+            }else if ($("#chk-daily").is(":checked")){
+                d.setDate(d.getDate() + t*1);
+                $("#time-end").val( time2str(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()) );
+            }
+
+            console.log("end time updated")
+        }                
+        
+        function update_duration() {
+            d1 = new Date($("#time-start").val());  
+            d2 = new Date($("#time-end").val());  
+            if ($("#chk-onetime").is(":checked")){
+                $("#input-duration").val( 1 );
+            }else if ($("#chk-hourly").is(":checked")){
+                $("#input-duration").val( Math.round( (d2.getTime()-d1.getTime())/60/60/1000 ) );
+            }else if ($("#chk-daily").is(":checked")){
+                $("#input-duration").val( Math.round( (d2.getDate()-d1.getDate())/1 ) );
+            }
+            console.log("duration updated")
+        }
+
+        $("#input-duration").on("change", function () { 
+            update_endtime() 
+        });
+        $("#time-start").on("change", function () {
+            update_endtime();
+        });
+        $("#time-end").on("change", function () {
+            update_duration();
+        });
+
+        function change_action() {
+            $("#rental-info").show("slow");                
+            if ($("#chk-action-giveout").is(":checked")){
+                $(".timer-start").addClass("timer-active");
+                d = new Date();  
+                $(".timer-start").val( time2str(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()) );
+                update_endtime();  
+                if (itemsCount()>0){
+                    $("#btn-giveout").show("slow");
+                    $("#btn-permit").hide("slow");
+                }else{
+                    $("#btn-giveout").hide("slow");
+                    $("#btn-permit").show("slow");
+                }
+                $("#btn-schedule").hide("slow");
+                $("#btn-cancel").hide("slow");
+            } else {            
+                 $(".timer-start").removeClass("timer-active");
+                 $("#btn-giveout").hide("slow");
+                 $("#btn-permit").hide("slow");
+                 $("#btn-schedule").show("slow");
+                 if (@Json.Serialize(Scheduled)){
+                    $("#btn-cancel").show("slow");
+                 }
+            }
+        }
+
+        
+        function change_rentaltype() {
+            $("#input-duration").prop( "disabled", $("#chk-onetime").is(":checked") );
+            if ($("#chk-onetime").is(":checked")){
+            }else 
+            if ($("#chk-hourly").is(":checked")){
+            }else
+            if ($("#chk-onetime").is(":checked")){
+            }
+        
+        }
+
+        
+        $("#chk-action-schedule").on("change", function () {
+            change_action()
+        });
+        $("#chk-action-giveout").on("change", function () {
+            change_action()
+        });                
+       
+                
+        $("#chk-hourly").on("change", function () {
+            change_rentaltype()
+        });
+        $("#chk-daily").on("change", function () {
+            change_rentaltype()
+        });  
+        $("#chk-onetime").on("change", function () {
+            change_rentaltype()
+        });    
     </script>
 }
-

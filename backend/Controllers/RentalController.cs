@@ -52,9 +52,10 @@ namespace Bikepark.Controllers
             ViewData["Customers"] = _context.Set<Customer>();
             ViewData["Items"] = _context.Storage;
             ViewData["Prices"] = _context.Set<RentalPricing>();
+            ViewData["Types"] = _context.Set<ItemType>();
             ViewData["Rents"] = _context.RentalLog;
             ViewData["RentedItems"] = _context.Set<RentalItem>();
-            return View(new RentalRecord());
+            return View("RentalControl", new RentalRecord());
         }
 
         public PartialViewResult AddRentedItem(int? ItemID)
@@ -76,7 +77,12 @@ namespace Bikepark.Controllers
             {
                 return NotFound();
             }
-            ViewData["CustomerID"] = new SelectList(_context.Set<Customer>(), "CustomerID", "CustomerID", rentalRecord.CustomerID);
+            ViewData["Customers"] = _context.Set<Customer>();
+            ViewData["Items"] = _context.Storage;
+            ViewData["Prices"] = _context.Set<RentalPricing>();
+            ViewData["Types"] = _context.Set<ItemType>();
+            ViewData["Rents"] = _context.RentalLog;
+            ViewData["RentedItems"] = _context.Set<RentalItem>();
             return View("RentalControl", rentalRecord);
         }
 
@@ -141,7 +147,7 @@ namespace Bikepark.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RentalRecordExists(rentalRecord.RentalRecordID))
+                    if (!RentalRecordExists((int)rentalRecord.RentalRecordID))
                     {
                         return NotFound();
                     }
