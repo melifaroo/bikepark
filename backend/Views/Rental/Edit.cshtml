@@ -2,7 +2,7 @@
 
 @{
     Layout = "_RentalLayout";
-    ViewData["Title2"] = "Edit";
+    ViewData["Title"] = "Прокат";
 }
 
 <h1>Edit</h1>
@@ -30,9 +30,9 @@
                 <span asp-validation-for="Start" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ActualEnd" class="control-label"></label>
-                <input asp-for="ActualEnd" class="form-control" />
-                <span asp-validation-for="ActualEnd" class="text-danger"></span>
+                <label asp-for="EndActual" class="control-label"></label>
+                <input asp-for="EndActual" class="form-control" />
+                <span asp-validation-for="EndActual" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

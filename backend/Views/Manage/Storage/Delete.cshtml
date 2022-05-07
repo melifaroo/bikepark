@@ -1,0 +1,39 @@
+﻿@model Bikepark.Models.Item
+
+@{
+    Layout = "_ManageLayout";
+    ViewData["Title"] = "Склад - удалить инвентарь";
+}
+
+<h1>Удаление</h1>
+
+<h3>Подтверждение удаление инвентаря</h3>
+<div>
+    <h4>{@Model.ItemType.ItemCategory.ItemCategoryName} </h4>
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ItemType)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ItemType.ItemTypeName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ItemNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ItemNumber)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ItemStatus)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ItemStatus)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ItemID" />
+        <input type="submit" value="Удалить" class="btn btn-danger" /> |
+        <a asp-action="Storage">Весь инвентарь</a>
+    </form>
+</div>

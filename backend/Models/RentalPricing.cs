@@ -5,7 +5,7 @@ namespace Bikepark.Models
 {
     public class RentalPricing
     {
-        public int RentalPricingID { get; set; }
+        public int? RentalPricingID { get; set; }
         [Display(Name = "Тариф")]
         public string? RentalPricingName { get; set; }
         public int ItemCategoryID { get; set; }
@@ -19,7 +19,7 @@ namespace Bikepark.Models
         public Boolean IsHoliday { get; set; }
         [Display(Name = "Льготный")]
         public Boolean IsReduced { get; set; }
-        [Display(Name = "Ставка [руб]")]
+        [Display(Name = "Ставка")]
         public double Price { get; set; } = 1;
 
     }

@@ -1,0 +1,44 @@
+﻿@model Bikepark.Models.Item
+
+@{
+    Layout = "_ManageLayout";
+    ViewData["Title"] = "Склад - изменить данные об инвентаре";
+}
+
+<h1>Внести изменения</h1>
+
+<h4>{@Model.ItemType.ItemCategory.ItemCategoryName} </h4>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ItemID" />
+            <div class="form-group">
+                <label asp-for="ItemTypeID" class="control-label"></label>
+                <select asp-for="ItemTypeID" class="form-control" asp-items="ViewBag.ItemTypeID"></select>
+                <span asp-validation-for="ItemTypeID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ItemNumber" class="control-label"></label>
+                <input asp-for="ItemNumber" class="form-control" />
+                <span asp-validation-for="ItemNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ItemStatus" class="control-label"></label>
+                <input asp-for="ItemStatus" class="form-control" />
+                <span asp-validation-for="ItemStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Storage">Весь инвентарь</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

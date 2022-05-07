@@ -9,24 +9,27 @@ namespace Bikepark.Models
         public RentalStatus? RentalStatus { get; set; }
 
         [Display(Name = "Тарификация")]
-        public RentalType RentalType { get; set; } = RentalType.Hourly;
+        public RentalType RentalType { get; set; } = RentalType.OneTime;
 
-        [Display(Name = "Начало")]
+        [Display(Name = "Начало", ShortName = "C")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime? Start { get; set; }
 
-        [Display(Name = "Завершение план")]
+        [Display(Name = "Спланирован до", ShortName = "До")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime? End { get; set; }
 
-        [Display(Name = "Завершение факт")]
+
+        [Display(Name = "Завершение", ShortName = "Закрыт")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
-        public DateTime? ActualEnd { get; set; }
+        public DateTime? EndActual { get; set; }
+
         public static bool Overlap(RentalRecord a, RentalRecord b)
         {
-            return (b.ActualEnd is not null || b.ActualEnd is not null) ? false :
+            return (a.RentalStatus == Models.RentalStatus.Closed || b.RentalStatus == Models.RentalStatus.Closed ) ? false :
                                             (a.Start < b.End &&
                                               a.End > b.Start);
         }
+
     }
 }

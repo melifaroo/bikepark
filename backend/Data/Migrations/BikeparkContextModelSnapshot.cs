@@ -60,7 +60,7 @@ namespace backend.Data.Migrations
 
             modelBuilder.Entity("Bikepark.Models.Item", b =>
                 {
-                    b.Property<int>("ItemID")
+                    b.Property<int?>("ItemID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -962,14 +962,14 @@ namespace backend.Data.Migrations
 
             modelBuilder.Entity("Bikepark.Models.RentalItem", b =>
                 {
-                    b.Property<int>("RentalItemID")
+                    b.Property<int?>("RentalItemID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("ActualEnd")
+                    b.Property<DateTime?>("End")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("End")
+                    b.Property<DateTime?>("EndActual")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsPaid")
@@ -981,7 +981,7 @@ namespace backend.Data.Migrations
                     b.Property<int?>("RentalPricingID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("RentalRecordID")
+                    b.Property<int?>("RentalRecordID")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("RentalStatus")
@@ -1088,7 +1088,7 @@ namespace backend.Data.Migrations
 
             modelBuilder.Entity("Bikepark.Models.RentalPricing", b =>
                 {
-                    b.Property<int>("RentalPricingID")
+                    b.Property<int?>("RentalPricingID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -1422,12 +1422,9 @@ namespace backend.Data.Migrations
 
             modelBuilder.Entity("Bikepark.Models.RentalRecord", b =>
                 {
-                    b.Property<int>("RentalRecordID")
+                    b.Property<int?>("RentalRecordID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("ActualEnd")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("CustomInformation")
                         .HasColumnType("TEXT");
@@ -1436,6 +1433,9 @@ namespace backend.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("End")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("EndActual")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("RentalStatus")
@@ -1805,9 +1805,7 @@ namespace backend.Data.Migrations
 
                     b.HasOne("Bikepark.Models.RentalRecord", "RentalRecord")
                         .WithMany("RentalItems")
-                        .HasForeignKey("RentalRecordID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RentalRecordID");
 
                     b.Navigation("Item");
 

@@ -7,16 +7,14 @@
 @using HtmlHelpers.BeginCollectionItemCore
 @{
     DbSet<RentalPricing> Prices = ViewBag.Prices;
+    var PricesForItem = new SelectList(Prices
+    .Where(price => price.ItemCategoryID == Model.Item.ItemType.ItemCategoryID), "RentalPricingID", "RentalPricingName");
+
+    //.Select(price => new SelectListItem { Value = price.RentalPricingID.ToString(), Text = price.RentalPricingName }).ToList();
 }   
-<tr>  
+<tr id="rental-item-row-@Model.Item.ItemID">  
     @using (Html.BeginCollectionItem("RentalItems"))
     {                
-        <td>
-            @Html.HiddenFor(m => m.ItemID)
-        </td>
-        <td>
-            @*@Html.HiddenFor(m => m.RentalFareID)*@
-        </td>
         <td>
             @Html.DisplayFor(m => m.Item.ItemType.ItemTypeName)
         </td>
@@ -24,19 +22,41 @@
             @Html.DisplayFor(m => m.Item.ItemNumber)
         </td>
         <td>
-            @Html.DisplayFor(m => m.Item.ItemStatus)
+            @Html.DisplayFor(m => m.Start)
         </td>
         <td>
-            @*@Html.DisplayFor(m => m.RentalFare.RentalFareName)*@
-            @Html.DropDownListFor(m => m.RentalPricingID, Prices
-                .Where(price => price.ItemCategoryID == Model.Item.ItemType.ItemCategoryID)
-                .Select(price => new SelectListItem { Value = price.RentalPricingID.ToString(), Text = price.RentalPricingName } ).ToList() )
+            <div class="d-flex flex-row">
+                @Html.DisplayFor(m => m.End)
+                <input asp-for="End" class="form-control" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" style="display: none"/>
+                <input type="checkbox"   id="chk-item-diftime-@Model.Item.ItemID"  class="btn-check"  data-itemid="@Model.Item.ItemID" unchecked>
+                <label                  for="chk-item-diftime-@Model.Item.ItemID" class="btn btn-outline-secondary" ><i class="bi bi-clock-history"></i></label>     
+            </div>
+        </td>
+        <td>
+            @Html.DisplayFor(m => m.EndActual)
+        </td>
+        <td>
+            <select asp-for="RentalPricingID" class="form-control" asp-items="@PricesForItem"> </select>
         </td>
         <td>
             @Html.DisplayFor(m => m.RentalPricing.Price)
         </td>
         <td>
-            <input class="button-delete" type="button" value="Убрать" data-itemid="@Model.Item.ItemID"/>
+            <div class="d-flex flex-row">
+                @if (Model.RentalItemID == null || Model.RentalStatus == null || Model.RentalStatus == RentalStatus.Scheduled)
+                {
+                    <input type="checkbox"   id="chk-item-togiveout-@Model.Item.ItemID" class="btn-check"  data-itemid="@Model.Item.ItemID" checked disabled>
+                    <label                  for="chk-item-togiveout-@Model.Item.ItemID" class="btn btn-outline-success" ><i class="bi bi-plus"></i></label>    
+                    <button class="btm-item-delete btn btn-outline-danger"  type="button" data-itemid="@Model.Item.ItemID"><i class="bi bi-x"></i></button>
+                } 
+                @if (Model.RentalItemID != null && Model.RentalStatus==RentalStatus.Active)
+                {
+                    <input type="checkbox"   id="chk-item-togetback-@Model.Item.ItemID" class="btn-check"  data-itemid="@Model.Item.ItemID" unchecked>
+                    <label                  for="chk-item-togetback-@Model.Item.ItemID" class="btn btn-outline-primary" ><i class="bi bi-hand-thumbs-up"></i></label>
+                    <input type="checkbox"   id="chk-item-forservice-@Model.Item.ItemID" class="btn-check" data-itemid="@Model.Item.ItemID" unchecked>
+                    <label                  for="chk-item-forservice-@Model.Item.ItemID" class="btn btn-outline-danger" ><i class="bi bi-wrench-adjustable"></i></label>
+                }    
+            </div>
         </td>  
     }        
 </tr>   

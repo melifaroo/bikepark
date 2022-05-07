@@ -133,7 +133,7 @@ namespace Bikepark.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ItemExists(item.ItemID))
+                    if (!ItemExists((int)item.ItemID))
                     {
                         return NotFound();
                     }

@@ -12,15 +12,15 @@ namespace Bikepark.Models
         public int? ItemCategoryID {get; set;}
         [Display(Name = "Категория")]
         public virtual ItemCategory? ItemCategory {get; set;}
-        [Display(Name = "Пол")]
+        [Display(Name = "Возраст")]
         public ItemAge? ItemAge { get; set; }
         [Display(Name = "Пол")]
         public ItemGender? ItemGender { get; set; }
-        [Display(Name = "Размер/ростовка")]
+        [Display(Name = "Ростовка")]
         public ItemSize? ItemSize { get; set; }
         [Display(Name = "Размер колеса")]
         public string? ItemWheelSize { get; set; }
-        [Display(Name = "Размер колеса")]
+        [Display(Name = "Цвет")]
         public string? ItemColor { get; set; }
         [Display(Name = "Описание")]
         public string? ItemDescription { get; set; }
