@@ -30,6 +30,10 @@ namespace Bikepark.Models
             ShortRuName = shortRuName;
         }
 
+        public static DayOfWeekRu Today() {
+            return Map.GetValueOrDefault(DateTime.Today.DayOfWeek);
+        }
+
         public override string ToString()
         {
             return ShortRuName;

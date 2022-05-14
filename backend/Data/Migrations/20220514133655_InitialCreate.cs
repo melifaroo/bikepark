@@ -78,6 +78,19 @@ namespace backend.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PricingCategory",
+                columns: table => new
+                {
+                    PricingCategoryID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    PricingCategoryName = table.Column<string>(type: "nvarchar(255)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PricingCategory", x => x.PricingCategoryID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -215,6 +228,7 @@ namespace backend.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     ItemTypeName = table.Column<string>(type: "TEXT", nullable: false),
                     ItemCategoryID = table.Column<int>(type: "INTEGER", nullable: true),
+                    PricingCategoryID = table.Column<int>(type: "INTEGER", nullable: true),
                     ItemAge = table.Column<int>(type: "INTEGER", nullable: true),
                     ItemGender = table.Column<int>(type: "INTEGER", nullable: true),
                     ItemSize = table.Column<int>(type: "INTEGER", nullable: true),
@@ -232,6 +246,11 @@ namespace backend.Data.Migrations
                         column: x => x.ItemCategoryID,
                         principalTable: "ItemCategory",
                         principalColumn: "ItemCategoryID");
+                    table.ForeignKey(
+                        name: "FK_ItemType_PricingCategory_PricingCategoryID",
+                        column: x => x.PricingCategoryID,
+                        principalTable: "PricingCategory",
+                        principalColumn: "PricingCategoryID");
                 });
 
             migrationBuilder.CreateTable(
@@ -241,21 +260,23 @@ namespace backend.Data.Migrations
                     RentalPricingID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     RentalPricingName = table.Column<string>(type: "TEXT", nullable: true),
-                    ItemCategoryID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PricingCategoryID = table.Column<int>(type: "INTEGER", nullable: false),
                     RentalType = table.Column<int>(type: "INTEGER", nullable: false),
                     DaysOfWeek = table.Column<string>(type: "TEXT", nullable: false),
                     IsHoliday = table.Column<bool>(type: "INTEGER", nullable: false),
                     IsReduced = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Price = table.Column<double>(type: "REAL", nullable: false)
+                    MinDuration = table.Column<int>(type: "INTEGER", nullable: false),
+                    Price = table.Column<double>(type: "REAL", nullable: false),
+                    ExtraPrice = table.Column<double>(type: "REAL", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RentalPricing", x => x.RentalPricingID);
                     table.ForeignKey(
-                        name: "FK_RentalPricing_ItemCategory_ItemCategoryID",
-                        column: x => x.ItemCategoryID,
-                        principalTable: "ItemCategory",
-                        principalColumn: "ItemCategoryID",
+                        name: "FK_RentalPricing_PricingCategory_PricingCategoryID",
+                        column: x => x.PricingCategoryID,
+                        principalTable: "PricingCategory",
+                        principalColumn: "PricingCategoryID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -401,12 +422,12 @@ namespace backend.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Customer",
                 columns: new[] { "CustomerID", "CustomerContactNumber", "CustomerEMail", "CustomerFullName", "CustomerPassport" },
-                values: new object[] { 1, "+79781234567", "vasily.pupkin@maily.su", "Василий Пупкин", "00 000000" });
+                values: new object[] { 1, "+79781234567", "vasily.pupkin@maily.su", "Василий Пупкин", "00 000001" });
 
             migrationBuilder.InsertData(
                 table: "Customer",
                 columns: new[] { "CustomerID", "CustomerContactNumber", "CustomerEMail", "CustomerFullName", "CustomerPassport" },
-                values: new object[] { 2, "+79780123456", "ivan.petrov@maily.su", "Иван Петров", "11 000000" });
+                values: new object[] { 2, "+79780123456", "ivan.petrov@maily.su", "Иван Петров", "00 000002" });
 
             migrationBuilder.InsertData(
                 table: "ItemCategory",
@@ -439,184 +460,214 @@ namespace backend.Data.Migrations
                 values: new object[] { 6, "Аксессуар" });
 
             migrationBuilder.InsertData(
+                table: "PricingCategory",
+                columns: new[] { "PricingCategoryID", "PricingCategoryName" },
+                values: new object[] { 1, "Горный" });
+
+            migrationBuilder.InsertData(
+                table: "PricingCategory",
+                columns: new[] { "PricingCategoryID", "PricingCategoryName" },
+                values: new object[] { 2, "Подросток" });
+
+            migrationBuilder.InsertData(
+                table: "PricingCategory",
+                columns: new[] { "PricingCategoryID", "PricingCategoryName" },
+                values: new object[] { 3, "BMX" });
+
+            migrationBuilder.InsertData(
+                table: "PricingCategory",
+                columns: new[] { "PricingCategoryID", "PricingCategoryName" },
+                values: new object[] { 4, "Детский" });
+
+            migrationBuilder.InsertData(
+                table: "PricingCategory",
+                columns: new[] { "PricingCategoryID", "PricingCategoryName" },
+                values: new object[] { 5, "Электро" });
+
+            migrationBuilder.InsertData(
+                table: "PricingCategory",
+                columns: new[] { "PricingCategoryID", "PricingCategoryName" },
+                values: new object[] { 6, "Аксессуар" });
+
+            migrationBuilder.InsertData(
                 table: "RentalLog",
                 columns: new[] { "RentalRecordID", "CustomInformation", "CustomerID", "End", "EndActual", "RentalStatus", "RentalType", "Start" },
                 values: new object[] { 6, null, null, null, null, null, 0, null });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 1, null, 1, "black", "Горный велосипед", "https://trial-sport.ru/goods/51516/1490897.html", null, null, 2, "GT AVALANCHE 27 SPORT", "27''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 1, null, 1, "black", "Горный велосипед", "https://trial-sport.ru/goods/51516/1490897.html", null, null, 3, "GT AVALANCHE 27 SPORT", "27''", 1 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 2, null, 1, "aqua", "Горный велосипед", "https://trial-sport.ru/goods/51516/1490897.html", null, null, 2, "GT AVALANCHE 27 SPORT", "27''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 2, null, 1, "aqua", "Горный велосипед", "https://trial-sport.ru/goods/51516/1490897.html", null, null, 3, "GT AVALANCHE 27 SPORT", "27''", 1 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 3, null, 1, "black", "Горный велосипед", "https://trial-sport.ru/goods/51516/1490897.html", null, null, 1, "GT AVALANCHE 27 SPORT", "27''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 3, null, 1, "black", "Горный велосипед", "https://trial-sport.ru/goods/51516/1490897.html", null, null, 2, "GT AVALANCHE 27 SPORT", "27''", 1 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 4, null, 1, "aqua", "Горный велосипед", "https://trial-sport.ru/goods/51516/1490897.html", null, null, 1, "GT AVALANCHE 27 SPORT", "27''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 4, null, 1, "aqua", "Горный велосипед", "https://trial-sport.ru/goods/51516/1490897.html", null, null, 2, "GT AVALANCHE 27 SPORT", "27''", 1 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 5, null, 1, "black", "Горный велосипед", "https://trial-sport.ru/goods/51516/2541638.html", null, null, 3, "GT AVALANCHE 29 SPORT", "29''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 5, null, 1, "black", "Горный велосипед", "https://trial-sport.ru/goods/51516/2541638.html", null, null, 4, "GT AVALANCHE 29 SPORT", "29''", 1 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 6, null, 1, "aqua", "Горный велосипед", "https://trial-sport.ru/goods/51516/2541638.html", null, null, 3, "GT AVALANCHE 29 SPORT", "29''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 6, null, 1, "aqua", "Горный велосипед", "https://trial-sport.ru/goods/51516/2541638.html", null, null, 4, "GT AVALANCHE 29 SPORT", "29''", 1 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 7, null, 1, "navy", "Горный велосипед женский", "https://trial-sport.ru/goods/51516/1496760.html", 2, null, 0, "Mongoose SWITCHBACK SPORT W", "27.5''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 7, null, 1, "navy", "Горный велосипед женский", "https://trial-sport.ru/goods/51516/1496760.html", 2, null, 1, "Mongoose SWITCHBACK SPORT W", "27.5''", 1 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 8, null, 1, "navy", "Горный велосипед женский", "https://trial-sport.ru/goods/51516/1496760.html", 2, null, 1, "Mongoose SWITCHBACK SPORT W", "27.5''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 8, null, 1, "navy", "Горный велосипед женский", "https://trial-sport.ru/goods/51516/1496760.html", 2, null, 2, "Mongoose SWITCHBACK SPORT W", "27.5''", 1 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 9, 1, 2, "red", "Горный велосипед подростковый", "https://trial-sport.ru/goods/51516/1493214.html", null, null, 1, "Mongoose ROCKADILE 20", "20''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 9, 1, 2, "red", "Горный велосипед подростковый", "https://trial-sport.ru/goods/51516/1493214.html", null, null, 2, "Mongoose ROCKADILE 20", "20''", 2 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 10, 1, 2, "purple", "Горный велосипед подростковый", "https://trial-sport.ru/goods/51516/1496770.html", 2, null, 1, "Mongoose ROCKADILE 20 W", "20''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 10, 1, 2, "purple", "Горный велосипед подростковый", "https://trial-sport.ru/goods/51516/1496770.html", 2, null, 2, "Mongoose ROCKADILE 20 W", "20''", 2 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 11, null, 3, "black", "BMX", "https://trial-sport.ru/goods/51516/2033001.html", null, null, null, "Radio SAIKO 20", "20''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 11, null, 3, "black", "BMX", "https://trial-sport.ru/goods/51516/2033001.html", null, null, null, "Radio SAIKO 20", "20''", 3 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 12, null, 3, "metallic purple", "BMX", "https://trial-sport.ru/goods/51516/2033001.html", null, null, null, "Radio SAIKO 20", "20''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 12, null, 3, "metallic purple", "BMX", "https://trial-sport.ru/goods/51516/2033001.html", null, null, null, "Radio SAIKO 20", "20''", 3 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 13, null, 3, "matt black", "BMX", "https://trial-sport.ru/goods/51516/2033004.html", null, null, null, "Radio DARKO", "20''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 13, null, 3, "matt black", "BMX", "https://trial-sport.ru/goods/51516/2033004.html", null, null, null, "Radio DARKO", "20''", 3 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 14, null, 3, "matt black", "BMX", "https://trial-sport.ru/goods/51516/2032941.html", null, null, null, "WeThePeople ARCADE", "20''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 14, null, 3, "matt black", "BMX", "https://trial-sport.ru/goods/51516/2032941.html", null, null, null, "WeThePeople ARCADE", "20''", 3 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 15, 2, 4, "yellow", "Беговел", "https://trial-sport.ru/goods/51516/1493326.html", null, null, null, "Outleap ROCKET", "12''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 15, 2, 4, "yellow", "Беговел", "https://trial-sport.ru/goods/51516/1493326.html", null, null, null, "Outleap ROCKET", "12''", 4 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 16, 2, 4, "black", "Беговел", "https://trial-sport.ru/goods/51516/1493326.html", null, null, null, "Outleap ROCKET", "12''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 16, 2, 4, "black", "Беговел", "https://trial-sport.ru/goods/51516/1493326.html", null, null, null, "Outleap ROCKET", "12''", 4 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 17, 2, 4, "orange", "Беговел", "https://trial-sport.ru/goods/51516/1411943.html", null, null, null, "Outleap ROCKET", "12''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 17, 2, 4, "orange", "Беговел", "https://trial-sport.ru/goods/51516/1411943.html", null, null, null, "Outleap ROCKET", "12''", 4 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 18, 2, 4, "blue", "Беговел", "https://trial-sport.ru/goods/51516/1411943.html", null, null, null, "Outleap ROCKET", "12''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 18, 2, 4, "blue", "Беговел", "https://trial-sport.ru/goods/51516/1411943.html", null, null, null, "Outleap ROCKET", "12''", 4 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 19, null, 5, null, "Электровелосипед", "", null, null, null, "Himo C26", "26''" });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 19, null, 5, null, "Электровелосипед", "", null, null, null, "Himo C26", "26''", 5 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 20, null, 6, null, "Шлем", "", null, null, 2, "Шлем", null });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 20, null, 6, null, "Шлем", "", null, null, 3, "Шлем", null, 6 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 21, null, 6, null, "Шлем", "", null, null, 1, "Шлем", null });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 21, null, 6, null, "Шлем", "", null, null, 2, "Шлем", null, 6 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 22, null, 6, null, "Шлем", "", null, null, 0, "Шлем", null });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 22, null, 6, null, "Шлем", "", null, null, 1, "Шлем", null, 6 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 23, 2, 6, null, "Шлем детский", "", null, null, null, "Шлем", null });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 23, 2, 6, null, "Шлем детский", "", null, null, null, "Шлем", null, 6 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 24, null, 6, null, "Наколенники", "", null, null, 2, "Наколенники", null });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 24, null, 6, null, "Наколенники", "", null, null, 3, "Наколенники", null, 6 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 25, null, 6, null, "Наколенники", "", null, null, 1, "Наколенники", null });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 25, null, 6, null, "Наколенники", "", null, null, 2, "Наколенники", null, 6 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 26, null, 6, null, "Наколенники", "", null, null, 0, "Наколенники", null });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 26, null, 6, null, "Наколенники", "", null, null, 1, "Наколенники", null, 6 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 27, 2, 6, null, "Наколенники детские", "", null, null, null, "Наколенники", null });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 27, 2, 6, null, "Наколенники детские", "", null, null, null, "Наколенники", null, 6 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 28, null, 6, null, "Налокотники", "", null, null, 2, "Налокотники", null });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 28, null, 6, null, "Налокотники", "", null, null, 3, "Налокотники", null, 6 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 29, null, 6, null, "Налокотники", "", null, null, 1, "Налокотники", null });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 29, null, 6, null, "Налокотники", "", null, null, 2, "Налокотники", null, 6 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 30, null, 6, null, "Налокотники", "", null, null, 0, "Налокотники", null });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 30, null, 6, null, "Налокотники", "", null, null, 1, "Налокотники", null, 6 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 31, 2, 6, null, "Налокотники детские", "", null, null, null, "Налокотники", null });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 31, 2, 6, null, "Налокотники детские", "", null, null, null, "Налокотники", null, 6 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 32, null, 6, null, "Перчатки", "", null, null, 2, "Перчатки", null });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 32, null, 6, null, "Перчатки", "", null, null, 3, "Перчатки", null, 6 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 33, null, 6, null, "Перчатки", "", null, null, 1, "Перчатки", null });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 33, null, 6, null, "Перчатки", "", null, null, 2, "Перчатки", null, 6 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 34, null, 6, null, "Перчатки", "", null, null, 0, "Перчатки", null });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 34, null, 6, null, "Перчатки", "", null, null, 1, "Перчатки", null, 6 });
 
             migrationBuilder.InsertData(
                 table: "ItemType",
-                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize" },
-                values: new object[] { 35, 2, 6, null, "Перчатки детские", "", null, null, null, "Перчатки", null });
+                columns: new[] { "ItemTypeID", "ItemAge", "ItemCategoryID", "ItemColor", "ItemDescription", "ItemExternalURL", "ItemGender", "ItemImageURL", "ItemSize", "ItemTypeName", "ItemWheelSize", "PricingCategoryID" },
+                values: new object[] { 35, 2, 6, null, "Перчатки детские", "", null, null, null, "Перчатки", null, 6 });
 
             migrationBuilder.InsertData(
                 table: "RentalLog",
@@ -645,138 +696,163 @@ namespace backend.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 1, "Monday,Tuesday,Wednesday,Thursday", false, false, 1, 150.0, "MTB будний час", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 1, "Monday,Tuesday,Wednesday,Thursday", 1.0, false, false, 1, 150.0, 1, "MTB будний час", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 2, "Friday", false, false, 1, 150.0, "MTB пятница час", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 2, "Friday", 1.0, false, false, 1, 150.0, 1, "MTB пятница час", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 3, "Saturday,Sunday", false, false, 1, 200.0, "MTB выходной час", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 3, "Saturday,Sunday", 1.0, false, false, 1, 200.0, 1, "MTB выходной час", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 4, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", true, false, 1, 200.0, "MTB праздник час", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 4, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", 1.0, true, false, 1, 200.0, 1, "MTB праздник час", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 5, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", false, true, 1, 100.0, "MTB льготный час", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 5, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", 1.0, false, true, 1, 100.0, 1, "MTB льготный час", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 6, "Monday,Tuesday,Wednesday,Thursday", false, false, 1, 800.0, "MTB будний день", 2 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 6, "Monday,Tuesday,Wednesday,Thursday", 1.0, false, false, 1, 800.0, 1, "MTB будний день", 2 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 7, "Friday", false, false, 1, 1000.0, "MTB пятница день", 2 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 7, "Friday", 1.0, false, false, 1, 1000.0, 1, "MTB пятница день", 2 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 8, "Saturday,Sunday", false, false, 1, 1000.0, "MTB выходной день", 2 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 8, "Saturday,Sunday", 1.0, false, false, 1, 1000.0, 1, "MTB выходной день", 2 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 9, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", true, false, 1, 1000.0, "MTB праздник день", 2 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 9, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", 1.0, true, false, 1, 1000.0, 1, "MTB праздник день", 2 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 10, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", false, true, 1, 400.0, "MTB льготный день", 2 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 10, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", 1.0, false, true, 1, 400.0, 1, "MTB льготный день", 2 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 11, "Monday,Tuesday,Wednesday,Thursday", false, false, 2, 100.0, "MTB подросток будний час", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 11, "Monday,Tuesday,Wednesday,Thursday", 1.0, false, false, 1, 100.0, 2, "MTB подросток будний час", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 12, "Friday", false, false, 2, 100.0, "MTB подросток пятница час", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 12, "Friday", 1.0, false, false, 1, 100.0, 2, "MTB подросток пятница час", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 13, "Saturday,Sunday", false, false, 2, 150.0, "MTB подросток выходной час", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 13, "Saturday,Sunday", 1.0, false, false, 1, 150.0, 2, "MTB подросток выходной час", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 14, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", true, false, 2, 150.0, "MTB подросток праздник час", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 14, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", 1.0, true, false, 1, 150.0, 2, "MTB подросток праздник час", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 15, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", false, true, 2, 50.0, "MTB подросток льготный час", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 15, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", 1.0, false, true, 1, 50.0, 2, "MTB подросток льготный час", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 16, "Monday,Tuesday,Wednesday,Thursday", false, false, 2, 500.0, "MTB подросток будний день", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 16, "Monday,Tuesday,Wednesday,Thursday", 1.0, false, false, 1, 500.0, 2, "MTB подросток будний день", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 17, "Friday", false, false, 2, 600.0, "MTB подросток пятница день", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 17, "Friday", 1.0, false, false, 1, 600.0, 2, "MTB подросток пятница день", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 18, "Saturday,Sunday", false, false, 2, 700.0, "MTB подросток выходной день", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 18, "Saturday,Sunday", 1.0, false, false, 1, 700.0, 2, "MTB подросток выходной день", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 19, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", true, false, 2, 700.0, "MTB подросток праздник день", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 19, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", 1.0, true, false, 1, 700.0, 2, "MTB подросток праздник день", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 20, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", false, true, 2, 300.0, "MTB подросток льготный день", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 20, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", 1.0, false, true, 1, 300.0, 2, "MTB подросток льготный день", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 21, "Monday,Tuesday,Wednesday,Thursday", false, false, 3, 100.0, "BMX будний час", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 21, "Monday,Tuesday,Wednesday,Thursday", 1.0, false, false, 1, 100.0, 3, "BMX будний час", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 22, "Friday,Saturday,Sunday", false, false, 3, 150.0, "BMX пт-сб-вс час", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 22, "Friday,Saturday,Sunday", 1.0, false, false, 1, 150.0, 3, "BMX пт-сб-вс час", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 23, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", true, false, 3, 150.0, "BMX праздник час", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 23, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", 1.0, true, false, 1, 150.0, 3, "BMX праздник час", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 24, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", false, false, 4, 100.0, "Беговел час", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 24, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", 1.0, false, false, 1, 100.0, 4, "Беговел час", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 25, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", false, false, 5, 300.0, "Электро час", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 25, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", 1.0, false, false, 1, 300.0, 5, "Электро час", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 26, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", false, false, 6, 50.0, "Аксессуар час", 1 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 26, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", 1.0, false, false, 1, 50.0, 6, "Аксессуар час", 1 });
 
             migrationBuilder.InsertData(
                 table: "RentalPricing",
-                columns: new[] { "RentalPricingID", "DaysOfWeek", "IsHoliday", "IsReduced", "ItemCategoryID", "Price", "RentalPricingName", "RentalType" },
-                values: new object[] { 27, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", false, false, 6, 300.0, "Аксессуар день", 2 });
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 27, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", 1.0, false, false, 1, 300.0, 6, "Аксессуар день", 2 });
+
+            migrationBuilder.InsertData(
+                table: "RentalPricing",
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 28, "Monday,Tuesday,Wednesday,Thursday", 150.0, false, false, 2, 125.0, 1, "MTB будний 2 часа", 1 });
+
+            migrationBuilder.InsertData(
+                table: "RentalPricing",
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 29, "Friday", 150.0, false, false, 2, 125.0, 1, "MTB пятница 2 часа", 1 });
+
+            migrationBuilder.InsertData(
+                table: "RentalPricing",
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 30, "Saturday,Sunday", 200.0, false, false, 2, 150.0, 1, "MTB выходной 2 часа", 1 });
+
+            migrationBuilder.InsertData(
+                table: "RentalPricing",
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 31, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", 200.0, true, false, 2, 150.0, 1, "MTB праздник 2 часа", 1 });
+
+            migrationBuilder.InsertData(
+                table: "RentalPricing",
+                columns: new[] { "RentalPricingID", "DaysOfWeek", "ExtraPrice", "IsHoliday", "IsReduced", "MinDuration", "Price", "PricingCategoryID", "RentalPricingName", "RentalType" },
+                values: new object[] { 32, "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday", 100.0, false, true, 2, 75.0, 1, "MTB льготный 2 часа", 1 });
 
             migrationBuilder.InsertData(
                 table: "Storage",
@@ -1146,6 +1222,11 @@ namespace backend.Data.Migrations
                 column: "ItemCategoryID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ItemType_PricingCategoryID",
+                table: "ItemType",
+                column: "PricingCategoryID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PaymentRecord_RentalRecordID",
                 table: "PaymentRecord",
                 column: "RentalRecordID");
@@ -1176,9 +1257,9 @@ namespace backend.Data.Migrations
                 column: "CustomerID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RentalPricing_ItemCategoryID",
+                name: "IX_RentalPricing_PricingCategoryID",
                 table: "RentalPricing",
-                column: "ItemCategoryID");
+                column: "PricingCategoryID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceFee_ItemCategoryID",
@@ -1264,6 +1345,9 @@ namespace backend.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "ItemCategory");
+
+            migrationBuilder.DropTable(
+                name: "PricingCategory");
         }
     }
 }

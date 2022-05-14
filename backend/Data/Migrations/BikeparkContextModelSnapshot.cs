@@ -46,7 +46,7 @@ namespace backend.Data.Migrations
                             CustomerContactNumber = "+79781234567",
                             CustomerEMail = "vasily.pupkin@maily.su",
                             CustomerFullName = "Василий Пупкин",
-                            CustomerPassport = "00 000000"
+                            CustomerPassport = "00 000001"
                         },
                         new
                         {
@@ -54,7 +54,7 @@ namespace backend.Data.Migrations
                             CustomerContactNumber = "+79780123456",
                             CustomerEMail = "ivan.petrov@maily.su",
                             CustomerFullName = "Иван Петров",
-                            CustomerPassport = "11 000000"
+                            CustomerPassport = "00 000002"
                         });
                 });
 
@@ -569,9 +569,14 @@ namespace backend.Data.Migrations
                     b.Property<string>("ItemWheelSize")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("PricingCategoryID")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("ItemTypeID");
 
                     b.HasIndex("ItemCategoryID");
+
+                    b.HasIndex("PricingCategoryID");
 
                     b.ToTable("ItemType");
 
@@ -583,9 +588,10 @@ namespace backend.Data.Migrations
                             ItemColor = "black",
                             ItemDescription = "Горный велосипед",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/1490897.html",
-                            ItemSize = 2,
+                            ItemSize = 3,
                             ItemTypeName = "GT AVALANCHE 27 SPORT",
-                            ItemWheelSize = "27''"
+                            ItemWheelSize = "27''",
+                            PricingCategoryID = 1
                         },
                         new
                         {
@@ -594,9 +600,10 @@ namespace backend.Data.Migrations
                             ItemColor = "aqua",
                             ItemDescription = "Горный велосипед",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/1490897.html",
-                            ItemSize = 2,
+                            ItemSize = 3,
                             ItemTypeName = "GT AVALANCHE 27 SPORT",
-                            ItemWheelSize = "27''"
+                            ItemWheelSize = "27''",
+                            PricingCategoryID = 1
                         },
                         new
                         {
@@ -605,9 +612,10 @@ namespace backend.Data.Migrations
                             ItemColor = "black",
                             ItemDescription = "Горный велосипед",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/1490897.html",
-                            ItemSize = 1,
+                            ItemSize = 2,
                             ItemTypeName = "GT AVALANCHE 27 SPORT",
-                            ItemWheelSize = "27''"
+                            ItemWheelSize = "27''",
+                            PricingCategoryID = 1
                         },
                         new
                         {
@@ -616,9 +624,10 @@ namespace backend.Data.Migrations
                             ItemColor = "aqua",
                             ItemDescription = "Горный велосипед",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/1490897.html",
-                            ItemSize = 1,
+                            ItemSize = 2,
                             ItemTypeName = "GT AVALANCHE 27 SPORT",
-                            ItemWheelSize = "27''"
+                            ItemWheelSize = "27''",
+                            PricingCategoryID = 1
                         },
                         new
                         {
@@ -627,9 +636,10 @@ namespace backend.Data.Migrations
                             ItemColor = "black",
                             ItemDescription = "Горный велосипед",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/2541638.html",
-                            ItemSize = 3,
+                            ItemSize = 4,
                             ItemTypeName = "GT AVALANCHE 29 SPORT",
-                            ItemWheelSize = "29''"
+                            ItemWheelSize = "29''",
+                            PricingCategoryID = 1
                         },
                         new
                         {
@@ -638,9 +648,10 @@ namespace backend.Data.Migrations
                             ItemColor = "aqua",
                             ItemDescription = "Горный велосипед",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/2541638.html",
-                            ItemSize = 3,
+                            ItemSize = 4,
                             ItemTypeName = "GT AVALANCHE 29 SPORT",
-                            ItemWheelSize = "29''"
+                            ItemWheelSize = "29''",
+                            PricingCategoryID = 1
                         },
                         new
                         {
@@ -650,9 +661,10 @@ namespace backend.Data.Migrations
                             ItemDescription = "Горный велосипед женский",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/1496760.html",
                             ItemGender = 2,
-                            ItemSize = 0,
+                            ItemSize = 1,
                             ItemTypeName = "Mongoose SWITCHBACK SPORT W",
-                            ItemWheelSize = "27.5''"
+                            ItemWheelSize = "27.5''",
+                            PricingCategoryID = 1
                         },
                         new
                         {
@@ -662,9 +674,10 @@ namespace backend.Data.Migrations
                             ItemDescription = "Горный велосипед женский",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/1496760.html",
                             ItemGender = 2,
-                            ItemSize = 1,
+                            ItemSize = 2,
                             ItemTypeName = "Mongoose SWITCHBACK SPORT W",
-                            ItemWheelSize = "27.5''"
+                            ItemWheelSize = "27.5''",
+                            PricingCategoryID = 1
                         },
                         new
                         {
@@ -674,9 +687,10 @@ namespace backend.Data.Migrations
                             ItemColor = "red",
                             ItemDescription = "Горный велосипед подростковый",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/1493214.html",
-                            ItemSize = 1,
+                            ItemSize = 2,
                             ItemTypeName = "Mongoose ROCKADILE 20",
-                            ItemWheelSize = "20''"
+                            ItemWheelSize = "20''",
+                            PricingCategoryID = 2
                         },
                         new
                         {
@@ -687,9 +701,10 @@ namespace backend.Data.Migrations
                             ItemDescription = "Горный велосипед подростковый",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/1496770.html",
                             ItemGender = 2,
-                            ItemSize = 1,
+                            ItemSize = 2,
                             ItemTypeName = "Mongoose ROCKADILE 20 W",
-                            ItemWheelSize = "20''"
+                            ItemWheelSize = "20''",
+                            PricingCategoryID = 2
                         },
                         new
                         {
@@ -699,7 +714,8 @@ namespace backend.Data.Migrations
                             ItemDescription = "BMX",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/2033001.html",
                             ItemTypeName = "Radio SAIKO 20",
-                            ItemWheelSize = "20''"
+                            ItemWheelSize = "20''",
+                            PricingCategoryID = 3
                         },
                         new
                         {
@@ -709,7 +725,8 @@ namespace backend.Data.Migrations
                             ItemDescription = "BMX",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/2033001.html",
                             ItemTypeName = "Radio SAIKO 20",
-                            ItemWheelSize = "20''"
+                            ItemWheelSize = "20''",
+                            PricingCategoryID = 3
                         },
                         new
                         {
@@ -719,7 +736,8 @@ namespace backend.Data.Migrations
                             ItemDescription = "BMX",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/2033004.html",
                             ItemTypeName = "Radio DARKO",
-                            ItemWheelSize = "20''"
+                            ItemWheelSize = "20''",
+                            PricingCategoryID = 3
                         },
                         new
                         {
@@ -729,7 +747,8 @@ namespace backend.Data.Migrations
                             ItemDescription = "BMX",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/2032941.html",
                             ItemTypeName = "WeThePeople ARCADE",
-                            ItemWheelSize = "20''"
+                            ItemWheelSize = "20''",
+                            PricingCategoryID = 3
                         },
                         new
                         {
@@ -740,7 +759,8 @@ namespace backend.Data.Migrations
                             ItemDescription = "Беговел",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/1493326.html",
                             ItemTypeName = "Outleap ROCKET",
-                            ItemWheelSize = "12''"
+                            ItemWheelSize = "12''",
+                            PricingCategoryID = 4
                         },
                         new
                         {
@@ -751,7 +771,8 @@ namespace backend.Data.Migrations
                             ItemDescription = "Беговел",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/1493326.html",
                             ItemTypeName = "Outleap ROCKET",
-                            ItemWheelSize = "12''"
+                            ItemWheelSize = "12''",
+                            PricingCategoryID = 4
                         },
                         new
                         {
@@ -762,7 +783,8 @@ namespace backend.Data.Migrations
                             ItemDescription = "Беговел",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/1411943.html",
                             ItemTypeName = "Outleap ROCKET",
-                            ItemWheelSize = "12''"
+                            ItemWheelSize = "12''",
+                            PricingCategoryID = 4
                         },
                         new
                         {
@@ -773,7 +795,8 @@ namespace backend.Data.Migrations
                             ItemDescription = "Беговел",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/1411943.html",
                             ItemTypeName = "Outleap ROCKET",
-                            ItemWheelSize = "12''"
+                            ItemWheelSize = "12''",
+                            PricingCategoryID = 4
                         },
                         new
                         {
@@ -782,7 +805,8 @@ namespace backend.Data.Migrations
                             ItemDescription = "Электровелосипед",
                             ItemExternalURL = "",
                             ItemTypeName = "Himo C26",
-                            ItemWheelSize = "26''"
+                            ItemWheelSize = "26''",
+                            PricingCategoryID = 5
                         },
                         new
                         {
@@ -790,8 +814,9 @@ namespace backend.Data.Migrations
                             ItemCategoryID = 6,
                             ItemDescription = "Шлем",
                             ItemExternalURL = "",
-                            ItemSize = 2,
-                            ItemTypeName = "Шлем"
+                            ItemSize = 3,
+                            ItemTypeName = "Шлем",
+                            PricingCategoryID = 6
                         },
                         new
                         {
@@ -799,8 +824,9 @@ namespace backend.Data.Migrations
                             ItemCategoryID = 6,
                             ItemDescription = "Шлем",
                             ItemExternalURL = "",
-                            ItemSize = 1,
-                            ItemTypeName = "Шлем"
+                            ItemSize = 2,
+                            ItemTypeName = "Шлем",
+                            PricingCategoryID = 6
                         },
                         new
                         {
@@ -808,8 +834,9 @@ namespace backend.Data.Migrations
                             ItemCategoryID = 6,
                             ItemDescription = "Шлем",
                             ItemExternalURL = "",
-                            ItemSize = 0,
-                            ItemTypeName = "Шлем"
+                            ItemSize = 1,
+                            ItemTypeName = "Шлем",
+                            PricingCategoryID = 6
                         },
                         new
                         {
@@ -818,7 +845,8 @@ namespace backend.Data.Migrations
                             ItemCategoryID = 6,
                             ItemDescription = "Шлем детский",
                             ItemExternalURL = "",
-                            ItemTypeName = "Шлем"
+                            ItemTypeName = "Шлем",
+                            PricingCategoryID = 6
                         },
                         new
                         {
@@ -826,8 +854,9 @@ namespace backend.Data.Migrations
                             ItemCategoryID = 6,
                             ItemDescription = "Наколенники",
                             ItemExternalURL = "",
-                            ItemSize = 2,
-                            ItemTypeName = "Наколенники"
+                            ItemSize = 3,
+                            ItemTypeName = "Наколенники",
+                            PricingCategoryID = 6
                         },
                         new
                         {
@@ -835,8 +864,9 @@ namespace backend.Data.Migrations
                             ItemCategoryID = 6,
                             ItemDescription = "Наколенники",
                             ItemExternalURL = "",
-                            ItemSize = 1,
-                            ItemTypeName = "Наколенники"
+                            ItemSize = 2,
+                            ItemTypeName = "Наколенники",
+                            PricingCategoryID = 6
                         },
                         new
                         {
@@ -844,8 +874,9 @@ namespace backend.Data.Migrations
                             ItemCategoryID = 6,
                             ItemDescription = "Наколенники",
                             ItemExternalURL = "",
-                            ItemSize = 0,
-                            ItemTypeName = "Наколенники"
+                            ItemSize = 1,
+                            ItemTypeName = "Наколенники",
+                            PricingCategoryID = 6
                         },
                         new
                         {
@@ -854,7 +885,8 @@ namespace backend.Data.Migrations
                             ItemCategoryID = 6,
                             ItemDescription = "Наколенники детские",
                             ItemExternalURL = "",
-                            ItemTypeName = "Наколенники"
+                            ItemTypeName = "Наколенники",
+                            PricingCategoryID = 6
                         },
                         new
                         {
@@ -862,8 +894,9 @@ namespace backend.Data.Migrations
                             ItemCategoryID = 6,
                             ItemDescription = "Налокотники",
                             ItemExternalURL = "",
-                            ItemSize = 2,
-                            ItemTypeName = "Налокотники"
+                            ItemSize = 3,
+                            ItemTypeName = "Налокотники",
+                            PricingCategoryID = 6
                         },
                         new
                         {
@@ -871,8 +904,9 @@ namespace backend.Data.Migrations
                             ItemCategoryID = 6,
                             ItemDescription = "Налокотники",
                             ItemExternalURL = "",
-                            ItemSize = 1,
-                            ItemTypeName = "Налокотники"
+                            ItemSize = 2,
+                            ItemTypeName = "Налокотники",
+                            PricingCategoryID = 6
                         },
                         new
                         {
@@ -880,8 +914,9 @@ namespace backend.Data.Migrations
                             ItemCategoryID = 6,
                             ItemDescription = "Налокотники",
                             ItemExternalURL = "",
-                            ItemSize = 0,
-                            ItemTypeName = "Налокотники"
+                            ItemSize = 1,
+                            ItemTypeName = "Налокотники",
+                            PricingCategoryID = 6
                         },
                         new
                         {
@@ -890,7 +925,8 @@ namespace backend.Data.Migrations
                             ItemCategoryID = 6,
                             ItemDescription = "Налокотники детские",
                             ItemExternalURL = "",
-                            ItemTypeName = "Налокотники"
+                            ItemTypeName = "Налокотники",
+                            PricingCategoryID = 6
                         },
                         new
                         {
@@ -898,8 +934,9 @@ namespace backend.Data.Migrations
                             ItemCategoryID = 6,
                             ItemDescription = "Перчатки",
                             ItemExternalURL = "",
-                            ItemSize = 2,
-                            ItemTypeName = "Перчатки"
+                            ItemSize = 3,
+                            ItemTypeName = "Перчатки",
+                            PricingCategoryID = 6
                         },
                         new
                         {
@@ -907,8 +944,9 @@ namespace backend.Data.Migrations
                             ItemCategoryID = 6,
                             ItemDescription = "Перчатки",
                             ItemExternalURL = "",
-                            ItemSize = 1,
-                            ItemTypeName = "Перчатки"
+                            ItemSize = 2,
+                            ItemTypeName = "Перчатки",
+                            PricingCategoryID = 6
                         },
                         new
                         {
@@ -916,8 +954,9 @@ namespace backend.Data.Migrations
                             ItemCategoryID = 6,
                             ItemDescription = "Перчатки",
                             ItemExternalURL = "",
-                            ItemSize = 0,
-                            ItemTypeName = "Перчатки"
+                            ItemSize = 1,
+                            ItemTypeName = "Перчатки",
+                            PricingCategoryID = 6
                         },
                         new
                         {
@@ -926,7 +965,8 @@ namespace backend.Data.Migrations
                             ItemCategoryID = 6,
                             ItemDescription = "Перчатки детские",
                             ItemExternalURL = "",
-                            ItemTypeName = "Перчатки"
+                            ItemTypeName = "Перчатки",
+                            PricingCategoryID = 6
                         });
                 });
 
@@ -958,6 +998,53 @@ namespace backend.Data.Migrations
                     b.HasIndex("ServiceRecordID");
 
                     b.ToTable("PaymentRecord");
+                });
+
+            modelBuilder.Entity("Bikepark.Models.PricingCategory", b =>
+                {
+                    b.Property<int>("PricingCategoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PricingCategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("PricingCategoryID");
+
+                    b.ToTable("PricingCategory");
+
+                    b.HasData(
+                        new
+                        {
+                            PricingCategoryID = 1,
+                            PricingCategoryName = "Горный"
+                        },
+                        new
+                        {
+                            PricingCategoryID = 2,
+                            PricingCategoryName = "Подросток"
+                        },
+                        new
+                        {
+                            PricingCategoryID = 3,
+                            PricingCategoryName = "BMX"
+                        },
+                        new
+                        {
+                            PricingCategoryID = 4,
+                            PricingCategoryName = "Детский"
+                        },
+                        new
+                        {
+                            PricingCategoryID = 5,
+                            PricingCategoryName = "Электро"
+                        },
+                        new
+                        {
+                            PricingCategoryID = 6,
+                            PricingCategoryName = "Аксессуар"
+                        });
                 });
 
             modelBuilder.Entity("Bikepark.Models.RentalItem", b =>
@@ -1096,17 +1183,23 @@ namespace backend.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<double>("ExtraPrice")
+                        .HasColumnType("REAL");
+
                     b.Property<bool>("IsHoliday")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsReduced")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ItemCategoryID")
+                    b.Property<int>("MinDuration")
                         .HasColumnType("INTEGER");
 
                     b.Property<double>("Price")
                         .HasColumnType("REAL");
+
+                    b.Property<int>("PricingCategoryID")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("RentalPricingName")
                         .HasColumnType("TEXT");
@@ -1116,7 +1209,7 @@ namespace backend.Data.Migrations
 
                     b.HasKey("RentalPricingID");
 
-                    b.HasIndex("ItemCategoryID");
+                    b.HasIndex("PricingCategoryID");
 
                     b.ToTable("RentalPricing");
 
@@ -1125,10 +1218,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 1,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 1,
+                            MinDuration = 1,
                             Price = 150.0,
+                            PricingCategoryID = 1,
                             RentalPricingName = "MTB будний час",
                             RentalType = 1
                         },
@@ -1136,10 +1231,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 2,
                             DaysOfWeek = "Friday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 1,
+                            MinDuration = 1,
                             Price = 150.0,
+                            PricingCategoryID = 1,
                             RentalPricingName = "MTB пятница час",
                             RentalType = 1
                         },
@@ -1147,10 +1244,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 3,
                             DaysOfWeek = "Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 1,
+                            MinDuration = 1,
                             Price = 200.0,
+                            PricingCategoryID = 1,
                             RentalPricingName = "MTB выходной час",
                             RentalType = 1
                         },
@@ -1158,10 +1257,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 4,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = true,
                             IsReduced = false,
-                            ItemCategoryID = 1,
+                            MinDuration = 1,
                             Price = 200.0,
+                            PricingCategoryID = 1,
                             RentalPricingName = "MTB праздник час",
                             RentalType = 1
                         },
@@ -1169,21 +1270,90 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 5,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = true,
-                            ItemCategoryID = 1,
+                            MinDuration = 1,
                             Price = 100.0,
+                            PricingCategoryID = 1,
                             RentalPricingName = "MTB льготный час",
+                            RentalType = 1
+                        },
+                        new
+                        {
+                            RentalPricingID = 28,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
+                            ExtraPrice = 150.0,
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 2,
+                            Price = 125.0,
+                            PricingCategoryID = 1,
+                            RentalPricingName = "MTB будний 2 часа",
+                            RentalType = 1
+                        },
+                        new
+                        {
+                            RentalPricingID = 29,
+                            DaysOfWeek = "Friday",
+                            ExtraPrice = 150.0,
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 2,
+                            Price = 125.0,
+                            PricingCategoryID = 1,
+                            RentalPricingName = "MTB пятница 2 часа",
+                            RentalType = 1
+                        },
+                        new
+                        {
+                            RentalPricingID = 30,
+                            DaysOfWeek = "Saturday,Sunday",
+                            ExtraPrice = 200.0,
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 2,
+                            Price = 150.0,
+                            PricingCategoryID = 1,
+                            RentalPricingName = "MTB выходной 2 часа",
+                            RentalType = 1
+                        },
+                        new
+                        {
+                            RentalPricingID = 31,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            ExtraPrice = 200.0,
+                            IsHoliday = true,
+                            IsReduced = false,
+                            MinDuration = 2,
+                            Price = 150.0,
+                            PricingCategoryID = 1,
+                            RentalPricingName = "MTB праздник 2 часа",
+                            RentalType = 1
+                        },
+                        new
+                        {
+                            RentalPricingID = 32,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            ExtraPrice = 100.0,
+                            IsHoliday = false,
+                            IsReduced = true,
+                            MinDuration = 2,
+                            Price = 75.0,
+                            PricingCategoryID = 1,
+                            RentalPricingName = "MTB льготный 2 часа",
                             RentalType = 1
                         },
                         new
                         {
                             RentalPricingID = 6,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 1,
+                            MinDuration = 1,
                             Price = 800.0,
+                            PricingCategoryID = 1,
                             RentalPricingName = "MTB будний день",
                             RentalType = 2
                         },
@@ -1191,10 +1361,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 7,
                             DaysOfWeek = "Friday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 1,
+                            MinDuration = 1,
                             Price = 1000.0,
+                            PricingCategoryID = 1,
                             RentalPricingName = "MTB пятница день",
                             RentalType = 2
                         },
@@ -1202,10 +1374,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 8,
                             DaysOfWeek = "Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 1,
+                            MinDuration = 1,
                             Price = 1000.0,
+                            PricingCategoryID = 1,
                             RentalPricingName = "MTB выходной день",
                             RentalType = 2
                         },
@@ -1213,10 +1387,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 9,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = true,
                             IsReduced = false,
-                            ItemCategoryID = 1,
+                            MinDuration = 1,
                             Price = 1000.0,
+                            PricingCategoryID = 1,
                             RentalPricingName = "MTB праздник день",
                             RentalType = 2
                         },
@@ -1224,10 +1400,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 10,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = true,
-                            ItemCategoryID = 1,
+                            MinDuration = 1,
                             Price = 400.0,
+                            PricingCategoryID = 1,
                             RentalPricingName = "MTB льготный день",
                             RentalType = 2
                         },
@@ -1235,10 +1413,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 11,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 2,
+                            MinDuration = 1,
                             Price = 100.0,
+                            PricingCategoryID = 2,
                             RentalPricingName = "MTB подросток будний час",
                             RentalType = 1
                         },
@@ -1246,10 +1426,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 12,
                             DaysOfWeek = "Friday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 2,
+                            MinDuration = 1,
                             Price = 100.0,
+                            PricingCategoryID = 2,
                             RentalPricingName = "MTB подросток пятница час",
                             RentalType = 1
                         },
@@ -1257,10 +1439,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 13,
                             DaysOfWeek = "Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 2,
+                            MinDuration = 1,
                             Price = 150.0,
+                            PricingCategoryID = 2,
                             RentalPricingName = "MTB подросток выходной час",
                             RentalType = 1
                         },
@@ -1268,10 +1452,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 14,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = true,
                             IsReduced = false,
-                            ItemCategoryID = 2,
+                            MinDuration = 1,
                             Price = 150.0,
+                            PricingCategoryID = 2,
                             RentalPricingName = "MTB подросток праздник час",
                             RentalType = 1
                         },
@@ -1279,10 +1465,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 15,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = true,
-                            ItemCategoryID = 2,
+                            MinDuration = 1,
                             Price = 50.0,
+                            PricingCategoryID = 2,
                             RentalPricingName = "MTB подросток льготный час",
                             RentalType = 1
                         },
@@ -1290,10 +1478,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 16,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 2,
+                            MinDuration = 1,
                             Price = 500.0,
+                            PricingCategoryID = 2,
                             RentalPricingName = "MTB подросток будний день",
                             RentalType = 1
                         },
@@ -1301,10 +1491,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 17,
                             DaysOfWeek = "Friday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 2,
+                            MinDuration = 1,
                             Price = 600.0,
+                            PricingCategoryID = 2,
                             RentalPricingName = "MTB подросток пятница день",
                             RentalType = 1
                         },
@@ -1312,10 +1504,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 18,
                             DaysOfWeek = "Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 2,
+                            MinDuration = 1,
                             Price = 700.0,
+                            PricingCategoryID = 2,
                             RentalPricingName = "MTB подросток выходной день",
                             RentalType = 1
                         },
@@ -1323,10 +1517,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 19,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = true,
                             IsReduced = false,
-                            ItemCategoryID = 2,
+                            MinDuration = 1,
                             Price = 700.0,
+                            PricingCategoryID = 2,
                             RentalPricingName = "MTB подросток праздник день",
                             RentalType = 1
                         },
@@ -1334,10 +1530,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 20,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = true,
-                            ItemCategoryID = 2,
+                            MinDuration = 1,
                             Price = 300.0,
+                            PricingCategoryID = 2,
                             RentalPricingName = "MTB подросток льготный день",
                             RentalType = 1
                         },
@@ -1345,10 +1543,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 21,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 3,
+                            MinDuration = 1,
                             Price = 100.0,
+                            PricingCategoryID = 3,
                             RentalPricingName = "BMX будний час",
                             RentalType = 1
                         },
@@ -1356,10 +1556,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 22,
                             DaysOfWeek = "Friday,Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 3,
+                            MinDuration = 1,
                             Price = 150.0,
+                            PricingCategoryID = 3,
                             RentalPricingName = "BMX пт-сб-вс час",
                             RentalType = 1
                         },
@@ -1367,10 +1569,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 23,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = true,
                             IsReduced = false,
-                            ItemCategoryID = 3,
+                            MinDuration = 1,
                             Price = 150.0,
+                            PricingCategoryID = 3,
                             RentalPricingName = "BMX праздник час",
                             RentalType = 1
                         },
@@ -1378,10 +1582,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 24,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 4,
+                            MinDuration = 1,
                             Price = 100.0,
+                            PricingCategoryID = 4,
                             RentalPricingName = "Беговел час",
                             RentalType = 1
                         },
@@ -1389,10 +1595,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 25,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 5,
+                            MinDuration = 1,
                             Price = 300.0,
+                            PricingCategoryID = 5,
                             RentalPricingName = "Электро час",
                             RentalType = 1
                         },
@@ -1400,10 +1608,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 26,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 6,
+                            MinDuration = 1,
                             Price = 50.0,
+                            PricingCategoryID = 6,
                             RentalPricingName = "Аксессуар час",
                             RentalType = 1
                         },
@@ -1411,10 +1621,12 @@ namespace backend.Data.Migrations
                         {
                             RentalPricingID = 27,
                             DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            ExtraPrice = 1.0,
                             IsHoliday = false,
                             IsReduced = false,
-                            ItemCategoryID = 6,
+                            MinDuration = 1,
                             Price = 300.0,
+                            PricingCategoryID = 6,
                             RentalPricingName = "Аксессуар день",
                             RentalType = 2
                         });
@@ -1775,7 +1987,13 @@ namespace backend.Data.Migrations
                         .WithMany()
                         .HasForeignKey("ItemCategoryID");
 
+                    b.HasOne("Bikepark.Models.PricingCategory", "PricingCategory")
+                        .WithMany()
+                        .HasForeignKey("PricingCategoryID");
+
                     b.Navigation("ItemCategory");
+
+                    b.Navigation("PricingCategory");
                 });
 
             modelBuilder.Entity("Bikepark.Models.PaymentRecord", b =>
@@ -1816,13 +2034,13 @@ namespace backend.Data.Migrations
 
             modelBuilder.Entity("Bikepark.Models.RentalPricing", b =>
                 {
-                    b.HasOne("Bikepark.Models.ItemCategory", "ItemCategory")
+                    b.HasOne("Bikepark.Models.PricingCategory", "PricingCategory")
                         .WithMany()
-                        .HasForeignKey("ItemCategoryID")
+                        .HasForeignKey("PricingCategoryID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ItemCategory");
+                    b.Navigation("PricingCategory");
                 });
 
             modelBuilder.Entity("Bikepark.Models.RentalRecord", b =>

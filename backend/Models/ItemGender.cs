@@ -12,5 +12,6 @@ namespace Bikepark.Models
         [Display(Name = "Æ")]
         W,
     }
+
 }
 

@@ -3,51 +3,28 @@
 *@
 
 @model Bikepark.Models.RentalItem
+@using Bikepark.Models
 @using Microsoft.EntityFrameworkCore;
 @using HtmlHelpers.BeginCollectionItemCore
 @{
     DbSet<RentalPricing> Prices = ViewBag.Prices;
     var PricesForItem = new SelectList(Prices
-    .Where(price => price.ItemCategoryID == Model.Item.ItemType.ItemCategoryID), "RentalPricingID", "RentalPricingName");
+        .FromSqlRaw($"SELECT * FROM 'RentalPricing' WHERE DaysOfWeek LIKE '%{DateTime.Today.DayOfWeek.ToString()}%'")
+        .Where(price => price.PricingCategoryID == Model.Item.ItemType.PricingCategoryID)
+    , "RentalPricingID", "RentalPricingName");
 
     //.Select(price => new SelectListItem { Value = price.RentalPricingID.ToString(), Text = price.RentalPricingName }).ToList();
 }   
 <tr id="rental-item-row-@Model.Item.ItemID">  
     @using (Html.BeginCollectionItem("RentalItems"))
-    {                
-        <td>
-            @Html.DisplayFor(m => m.Item.ItemType.ItemTypeName)
-        </td>
-        <td>
-            @Html.DisplayFor(m => m.Item.ItemNumber)
-        </td>
-        <td>
-            @Html.DisplayFor(m => m.Start)
-        </td>
-        <td>
-            <div class="d-flex flex-row">
-                @Html.DisplayFor(m => m.End)
-                <input asp-for="End" class="form-control" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" style="display: none"/>
-                <input type="checkbox"   id="chk-item-diftime-@Model.Item.ItemID"  class="btn-check"  data-itemid="@Model.Item.ItemID" unchecked>
-                <label                  for="chk-item-diftime-@Model.Item.ItemID" class="btn btn-outline-secondary" ><i class="bi bi-clock-history"></i></label>     
-            </div>
-        </td>
-        <td>
-            @Html.DisplayFor(m => m.EndActual)
-        </td>
-        <td>
-            <select asp-for="RentalPricingID" class="form-control" asp-items="@PricesForItem"> </select>
-        </td>
-        <td>
-            @Html.DisplayFor(m => m.RentalPricing.Price)
-        </td>
-        <td>
+    {        
+        <td  style="width : 20%">
             <div class="d-flex flex-row">
                 @if (Model.RentalItemID == null || Model.RentalStatus == null || Model.RentalStatus == RentalStatus.Scheduled)
                 {
                     <input type="checkbox"   id="chk-item-togiveout-@Model.Item.ItemID" class="btn-check"  data-itemid="@Model.Item.ItemID" checked disabled>
                     <label                  for="chk-item-togiveout-@Model.Item.ItemID" class="btn btn-outline-success" ><i class="bi bi-plus"></i></label>    
-                    <button class="btm-item-delete btn btn-outline-danger"  type="button" data-itemid="@Model.Item.ItemID"><i class="bi bi-x"></i></button>
+                    <button class="btn-item-delete btn btn-outline-danger"  type="button" data-itemid="@Model.Item.ItemID"><i class="bi bi-x"></i></button>
                 } 
                 @if (Model.RentalItemID != null && Model.RentalStatus==RentalStatus.Active)
                 {
@@ -57,6 +34,32 @@
                     <label                  for="chk-item-forservice-@Model.Item.ItemID" class="btn btn-outline-danger" ><i class="bi bi-wrench-adjustable"></i></label>
                 }    
             </div>
-        </td>  
+        </td>         
+        <td  style="width : 20%">
+            @Html.DisplayFor(m => m.Item.ItemType.ItemTypeName)
+        </td>
+        <td  style="width : 10%">
+            @Html.DisplayFor(m => m.Item.ItemNumber)
+        </td>
+        <td  style="width : 20%">
+            <select asp-for="RentalPricingID" class="form-control" asp-items="@PricesForItem"> </select>
+        </td>
+        <td  style="width : 10%">
+            @Html.DisplayFor(m => m.RentalPricing.Price)
+        </td>
+        <td style="width : 20%">
+            <div class="d-flex flex-column">
+                @Html.DisplayFor(m => m.Start) 
+                @Html.DisplayFor(m => m.End)  
+            </div>
+            <input type="checkbox"   id="chk-item-diftime-@Model.Item.ItemID"  class="btn-check"  data-itemid="@Model.Item.ItemID" unchecked>
+            <label                  for="chk-item-diftime-@Model.Item.ItemID" class="btn btn-outline-secondary" ><i class="bi bi-clock-history"></i></label>   
+        </td>        
+        <td>
+            @Html.HiddenFor(m => m.RentalItemID)
+        </td> 
+        <td>
+            @Html.HiddenFor(m => m.ItemID)
+        </td>      
     }        
 </tr>   
