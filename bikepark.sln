@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32319.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "clientapp", "clientapp\clientapp.esproj", "{1F153302-A43C-49C5-83CC-F580D7B9978D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "backend", "backend\backend.csproj", "{5A3C361F-8A3B-486F-B1C2-479777A75113}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bikepark", "Bikepark\Bikepark.csproj", "{5A3C361F-8A3B-486F-B1C2-479777A75113}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1F153302-A43C-49C5-83CC-F580D7B9978D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1F153302-A43C-49C5-83CC-F580D7B9978D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1F153302-A43C-49C5-83CC-F580D7B9978D}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{1F153302-A43C-49C5-83CC-F580D7B9978D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A3C361F-8A3B-486F-B1C2-479777A75113}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5A3C361F-8A3B-486F-B1C2-479777A75113}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A3C361F-8A3B-486F-B1C2-479777A75113}.Release|Any CPU.ActiveCfg = Release|Any CPU
