@@ -8,12 +8,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bikepark.Data;
 using Bikepark.Models;
+using System.Text.RegularExpressions;
 
 namespace Bikepark.Controllers
 {
     public class RentalController : Controller
     {
         private readonly BikeparkContext _context;
+        
+        private static readonly Regex sWhitespace = new Regex(@"\s+");
+        public static string ReplaceWhitespace(string input, string replacement)
+        {
+            return sWhitespace.Replace(input, replacement);
+        }
 
         public RentalController(BikeparkContext context)
         {
@@ -52,17 +59,43 @@ namespace Bikepark.Controllers
             ViewData["Customers"] = _context.Set<Customer>();
             ViewData["Items"] = _context.Storage;
             ViewData["Prices"] = _context.Set<RentalPricing>();
-            ViewData["Types"] = _context.Set<ItemType>();
+            ViewData["Types"] = _context.Set<ItemType>().ToList();
             ViewData["Rents"] = _context.RentalLog;
             ViewData["RentedItems"] = _context.Set<RentalItem>();
             return View("RentalControl", new RentalRecord());
         }
 
-        public PartialViewResult AddRentedItem(int? ItemID)
+        public PartialViewResult AddRentedItem(int ItemID)
         {
             ViewData["Prices"] = _context.Set<RentalPricing>();
-            return PartialView("_RentalRecordItemPartial", new RentalItem { ItemID = ItemID, Item = _context.Storage.FirstOrDefault(item => item.ItemID == ItemID) });
+            return PartialView("_RentalItemRow", new RentalItem { ItemID = ItemID, Item = _context.Storage.FirstOrDefault(item => item.ItemID == ItemID) });
         }
+
+        public JsonResult Customer(int CustomerID)
+        {
+            return Json( _context.Customer.First(customer => customer.CustomerID==CustomerID) );
+        }
+
+        public async Task<IActionResult> SearchCustomerByNumber(string Request)
+        {
+            if (Request == null)
+            {
+                return NotFound();
+            }
+            var trimmedRequest = ReplaceWhitespace( Request.Trim(), "" ); 
+            var foundCustomers = await _context.Customer.Where(customer => customer.CustomerContactNumber.Contains(trimmedRequest) ).ToListAsync();
+            return PartialView("_CustomersSearchResults", foundCustomers);
+        }
+
+        //public PartialViewResult AvailableItems(RentalRecord rentalRecord)
+        //{
+        //    ViewData["Items"] = _context.Storage;
+        //    ViewData["Prices"] = _context.Set<RentalPricing>();
+        //    ViewData["Types"] = _context.Set<ItemType>();
+        //    ViewData["Rents"] = _context.RentalLog;
+        //    ViewData["RentedItems"] = _context.Set<RentalItem>();
+        //    return PartialView("_ItemsListChooser", new RentalItem { ItemID = ItemID, Item = _context.Storage.FirstOrDefault(item => item.ItemID == ItemID) });
+        //}
 
         // GET: Rental/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -92,7 +125,7 @@ namespace Bikepark.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(RentalRecord rentalRecord)//[FromForm][Bind("RentalRecordID,CustomerID,RentalStatus,RentalItems,RentalTermInHours,RentalReservedStart,RentalStart,RentalEnd")] 
+        public async Task<IActionResult> Control(RentalRecord rentalRecord)//[FromForm][Bind("RentalRecordID,CustomerID,RentalStatus,RentalItems,RentalTermInHours,RentalReservedStart,RentalStart,RentalEnd")] 
         {
             if (ModelState.IsValid)
             {

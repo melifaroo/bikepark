@@ -1,0 +1,52 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Bikepark.Models.RentalRecord
+
+@using Bikepark.Models
+@using Microsoft.EntityFrameworkCore
+@using Bikepark.Views.Helpers
+@{
+    DbSet<Item> Items = ViewBag.Items;
+    List<ItemType> Types = ViewBag.Types;
+    DbSet<RentalRecord> Rents = ViewBag.Rents;
+    DbSet<RentalItem> RentedItems = ViewBag.RentedItems;
+    RentalItem someRentalItem = new RentalItem();
+}
+
+<table id="rental-items-list">
+    <thead>
+        <tr>
+            <th style="width : 20%">
+                Управление
+            </th>
+            <th style="width : 20%">
+                @Html.DisplayNameFor(m => someRentalItem.Item.ItemType)
+            </th>
+            <th style="width : 10%">
+                @Html.DisplayNameFor(m => someRentalItem.Item.ItemNumber)
+            </th >
+            <th  style="width : 20%">
+                @Html.DisplayNameFor(m => someRentalItem.RentalPricing.RentalPricingName)
+            </th>
+            <th style="width : 10%">
+                Стоимость
+            </th>
+            <th style="width : 20%">
+                Время
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var rentedItem in Model.RentalItems)
+        {
+            <partial name="_RentalItemRow" model = "@rentedItem" />  
+        }
+    </tbody>
+</table>
+                                
+

@@ -1,0 +1,113 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Bikepark.Models.RentalRecord
+
+@using Bikepark.Models
+@using Microsoft.EntityFrameworkCore
+@using Bikepark.Views.Helpers
+
+@{
+    DbSet<Item> Items = ViewBag.Items;
+    List<ItemType> Types = ViewBag.Types;
+    DbSet<RentalRecord> Rents = ViewBag.Rents;
+    DbSet<RentalItem> RentedItems = ViewBag.RentedItems;
+    ItemType someItemType = new ItemType();
+
+    List<SelectListItem> Cats = Types.DistinctBy(x => x.ItemCategoryID).Select(x => new SelectListItem { Value = x.ItemCategory?.ItemCategoryName ?? "", Text = x.ItemCategory?.ItemCategoryName ?? "" }).ToList();
+    List<SelectListItem> Sizes = Types.DistinctBy(x => x.ItemSize).Select(x => new SelectListItem { Value = EnumHelper<ItemSize>.GetDisplayValue(x.ItemSize ?? ItemSize.NA), Text = EnumHelper<ItemSize>.GetDisplayValue(x.ItemSize ?? ItemSize.NA) }).ToList();
+    List<SelectListItem> Wheels = Types.DistinctBy(x => x.ItemWheelSize).Select(x => new SelectListItem { Value = x.ItemWheelSize?.ToString()?? "", Text = x.ItemWheelSize?.ToString()?? "" }).ToList();
+    List<SelectListItem> Colors = Types.DistinctBy(x => x.ItemColor).Select(x => new SelectListItem { Value = x.ItemColor?.ToString()?? "", Text =  x.ItemColor?.ToString()?? "" }).ToList();
+    List<SelectListItem> Ages = Types.DistinctBy(x => x.ItemAge).Select(x => new SelectListItem { Value =  EnumHelper<ItemAge>.GetDisplayValue(x.ItemAge ?? ItemAge.Adult), Text =  EnumHelper<ItemAge>.GetDisplayValue(x.ItemAge ?? ItemAge.Adult) }).ToList();
+    List<SelectListItem> Genders = Types.DistinctBy(x => x.ItemGender).Select(x => new SelectListItem { Value = EnumHelper<ItemGender>.GetDisplayValue(x.ItemGender ?? ItemGender.Unisex), Text =  EnumHelper<ItemGender>.GetDisplayValue(x.ItemGender ?? ItemGender.Unisex) }).ToList();
+
+}
+
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 10%">
+                <div class="row-cols-1">
+                    @Html.DisplayNameFor(model => someItemType.ItemCategory)
+                    <select class="chooser-filter" asp-items="@Cats" data-field="cat"><option value="All" label="Все" selected></option></select>
+                </div>
+            </th>
+            <th style="width: 10%">
+                <div class="row-cols-1">
+                    @Html.DisplayNameFor(model => someItemType.ItemSize)
+                    <select class="chooser-filter" asp-items="@Sizes" data-field="size"><option value="All" label="Все" selected></option></select>
+                </div>
+            </th>
+            <th style="width: 10%">
+                <div class="row-cols-1">
+                    @Html.DisplayNameFor(model => someItemType.ItemWheelSize)
+                    <select class="chooser-filter" asp-items="@Wheels" data-field="wheel"><option  value="All" label="Все" selected></option></select>
+                </div>
+            </th>
+            <th style="width: 10%">
+                <div class="row-cols-1">
+                    @Html.DisplayNameFor(model => someItemType.ItemColor)
+                    <select class="chooser-filter" asp-items="@Colors" data-field="color"><option  value="All" label="Все" selected></option></select>
+                </div>
+            </th>
+            <th style="width: 10%">
+                <div class="row-cols-1">
+                    @Html.DisplayNameFor(model => someItemType.ItemAge)
+                    <select class="chooser-filter" asp-items="@Ages" data-field="age"><option  value="All" label="Все" selected></option></select>
+                </div>
+            </th>
+            <th style="width: 10%">
+                <div class="row-cols-1">
+                    @Html.DisplayNameFor(model => someItemType.ItemGender)
+                    <select class="chooser-filter" asp-items="@Genders" data-field="gender"><option  value="All" label="Все" selected></option></select>
+                </div>
+            </th>
+            <th style="width: 25%">
+                <div class="row-cols-1">
+                    @Html.DisplayNameFor(model => someItemType.ItemTypeName)
+                </div>
+            </th>
+            <th style="width: 15%">
+                <div class="row-cols-1">
+                    Номера
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var type in Types) {
+            <tr>
+                <td style="width: 10%" data-field='cat'>
+                    @Html.DisplayFor(m => type.ItemCategory.ItemCategoryName)
+                </td>
+                <td style="width: 10%" data-field='size'>
+                    @Html.DisplayFor(m => type.ItemSize)
+                </td>
+                <td style="width: 10%" data-field='wheel'>
+                    @Html.DisplayFor(m => type.ItemWheelSize)
+                </td>
+                <td style="width: 10%" data-field='color'>
+                    @Html.DisplayFor(m => type.ItemColor)
+                </td> 
+                <td style="width: 10%" data-field='age'>
+                    @Html.DisplayFor(m => type.ItemAge)
+                </td>
+                <td style="width: 10%" data-field='gender'>
+                    @Html.DisplayFor(m => type.ItemGender)
+                </td>
+                <td class="" style="width: 25%">
+                    @Html.DisplayFor(m => type.ItemTypeName)
+                </td>
+                <td class="td-buttons" style="width: 15%;">
+                    <div class="flex justify-content-start btn-group" role="group"> 
+                        @foreach (var item in Items.Where(i => i.ItemTypeID==type.ItemTypeID).ToList() ){
+                            <input type="checkbox" id="chk-item-add-@item.ItemID" class="btn-check chk-item-add" data-itemid="@item.ItemID" />                                
+                            <label                for="chk-item-add-@item.ItemID" class="btn btn-sm btn-outline-success">@item.ItemNumber</label>  
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
