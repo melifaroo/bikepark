@@ -1,0 +1,5 @@
+﻿@model IEnumerable<Bikepark.Models.Item>
+
+    @foreach (var item in Model) {  
+        <partial name="_Number" model ="@item"/>
+    }

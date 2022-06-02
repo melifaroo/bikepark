@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace backend.Data.Migrations
+namespace Bikepark.Data.Migrations
 {
     [DbContext(typeof(BikeparkContext))]
     partial class BikeparkContextModelSnapshot : ModelSnapshot
@@ -15,11 +15,11 @@ namespace backend.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.4");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.5");
 
             modelBuilder.Entity("Bikepark.Models.Customer", b =>
                 {
-                    b.Property<int>("CustomerID")
+                    b.Property<int?>("CustomerID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -37,7 +37,7 @@ namespace backend.Data.Migrations
 
                     b.HasKey("CustomerID");
 
-                    b.ToTable("Customer");
+                    b.ToTable("Customers");
 
                     b.HasData(
                         new
@@ -64,14 +64,14 @@ namespace backend.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("Archival")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("ItemNumber")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("ItemStatus")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ItemTypeID")
+                    b.Property<int?>("ItemTypeID")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ItemID");
@@ -81,406 +81,406 @@ namespace backend.Data.Migrations
 
                     b.HasIndex("ItemTypeID");
 
-                    b.ToTable("Storage");
+                    b.ToTable("Items");
 
                     b.HasData(
                         new
                         {
                             ItemID = 1,
+                            Archival = false,
                             ItemNumber = "101",
-                            ItemStatus = 1,
                             ItemTypeID = 1
                         },
                         new
                         {
                             ItemID = 2,
+                            Archival = false,
                             ItemNumber = "102",
-                            ItemStatus = 1,
                             ItemTypeID = 1
                         },
                         new
                         {
                             ItemID = 3,
+                            Archival = false,
                             ItemNumber = "103",
-                            ItemStatus = 0,
                             ItemTypeID = 2
                         },
                         new
                         {
                             ItemID = 4,
+                            Archival = false,
                             ItemNumber = "104",
-                            ItemStatus = 0,
                             ItemTypeID = 2
                         },
                         new
                         {
                             ItemID = 5,
+                            Archival = false,
                             ItemNumber = "105",
-                            ItemStatus = 0,
                             ItemTypeID = 3
                         },
                         new
                         {
                             ItemID = 6,
+                            Archival = false,
                             ItemNumber = "106",
-                            ItemStatus = 0,
                             ItemTypeID = 3
                         },
                         new
                         {
                             ItemID = 7,
+                            Archival = false,
                             ItemNumber = "107",
-                            ItemStatus = 0,
                             ItemTypeID = 4
                         },
                         new
                         {
                             ItemID = 8,
+                            Archival = false,
                             ItemNumber = "108",
-                            ItemStatus = 0,
                             ItemTypeID = 4
                         },
                         new
                         {
                             ItemID = 9,
+                            Archival = false,
                             ItemNumber = "109",
-                            ItemStatus = 0,
                             ItemTypeID = 5
                         },
                         new
                         {
                             ItemID = 10,
+                            Archival = false,
                             ItemNumber = "110",
-                            ItemStatus = 0,
                             ItemTypeID = 5
                         },
                         new
                         {
                             ItemID = 11,
+                            Archival = false,
                             ItemNumber = "111",
-                            ItemStatus = 0,
                             ItemTypeID = 5
                         },
                         new
                         {
                             ItemID = 12,
+                            Archival = false,
                             ItemNumber = "112",
-                            ItemStatus = 0,
                             ItemTypeID = 6
                         },
                         new
                         {
                             ItemID = 13,
+                            Archival = false,
                             ItemNumber = "113",
-                            ItemStatus = 0,
                             ItemTypeID = 7
                         },
                         new
                         {
                             ItemID = 14,
+                            Archival = false,
                             ItemNumber = "114",
-                            ItemStatus = 0,
                             ItemTypeID = 8
                         },
                         new
                         {
                             ItemID = 15,
+                            Archival = false,
                             ItemNumber = "115",
-                            ItemStatus = 0,
                             ItemTypeID = 8
                         },
                         new
                         {
                             ItemID = 16,
+                            Archival = false,
                             ItemNumber = "116",
-                            ItemStatus = 0,
                             ItemTypeID = 9
                         },
                         new
                         {
                             ItemID = 17,
+                            Archival = false,
                             ItemNumber = "117",
-                            ItemStatus = 0,
                             ItemTypeID = 9
                         },
                         new
                         {
                             ItemID = 18,
+                            Archival = false,
                             ItemNumber = "118",
-                            ItemStatus = 0,
                             ItemTypeID = 10
                         },
                         new
                         {
                             ItemID = 19,
+                            Archival = false,
                             ItemNumber = "201",
-                            ItemStatus = 0,
                             ItemTypeID = 11
                         },
                         new
                         {
                             ItemID = 20,
+                            Archival = false,
                             ItemNumber = "202",
-                            ItemStatus = 0,
                             ItemTypeID = 12
                         },
                         new
                         {
                             ItemID = 21,
+                            Archival = false,
                             ItemNumber = "203",
-                            ItemStatus = 0,
                             ItemTypeID = 13
                         },
                         new
                         {
                             ItemID = 22,
+                            Archival = false,
                             ItemNumber = "204",
-                            ItemStatus = 0,
                             ItemTypeID = 13
                         },
                         new
                         {
                             ItemID = 23,
+                            Archival = false,
                             ItemNumber = "205",
-                            ItemStatus = 0,
                             ItemTypeID = 14
                         },
                         new
                         {
                             ItemID = 24,
+                            Archival = false,
                             ItemNumber = "206",
-                            ItemStatus = 0,
                             ItemTypeID = 14
                         },
                         new
                         {
                             ItemID = 25,
+                            Archival = false,
                             ItemNumber = "301",
-                            ItemStatus = 0,
                             ItemTypeID = 15
                         },
                         new
                         {
                             ItemID = 26,
+                            Archival = false,
                             ItemNumber = "302",
-                            ItemStatus = 0,
                             ItemTypeID = 16
                         },
                         new
                         {
                             ItemID = 27,
+                            Archival = false,
                             ItemNumber = "303",
-                            ItemStatus = 0,
                             ItemTypeID = 17
                         },
                         new
                         {
                             ItemID = 28,
+                            Archival = false,
                             ItemNumber = "304",
-                            ItemStatus = 0,
                             ItemTypeID = 18
                         },
                         new
                         {
                             ItemID = 29,
+                            Archival = false,
                             ItemNumber = "401",
-                            ItemStatus = 2,
                             ItemTypeID = 19
                         },
                         new
                         {
                             ItemID = 30,
+                            Archival = false,
                             ItemNumber = "402",
-                            ItemStatus = 0,
                             ItemTypeID = 19
                         },
                         new
                         {
                             ItemID = 31,
+                            Archival = false,
                             ItemNumber = "403",
-                            ItemStatus = 0,
                             ItemTypeID = 19
                         },
                         new
                         {
                             ItemID = 32,
+                            Archival = false,
                             ItemNumber = "404",
-                            ItemStatus = 0,
                             ItemTypeID = 19
                         },
                         new
                         {
                             ItemID = 33,
+                            Archival = false,
                             ItemNumber = "405",
-                            ItemStatus = 0,
                             ItemTypeID = 19
                         },
                         new
                         {
                             ItemID = 34,
+                            Archival = false,
                             ItemNumber = "1",
-                            ItemStatus = 1,
                             ItemTypeID = 20
                         },
                         new
                         {
                             ItemID = 35,
+                            Archival = false,
                             ItemNumber = "2",
-                            ItemStatus = 1,
                             ItemTypeID = 21
                         },
                         new
                         {
                             ItemID = 36,
+                            Archival = false,
                             ItemNumber = "3",
-                            ItemStatus = 0,
                             ItemTypeID = 21
                         },
                         new
                         {
                             ItemID = 37,
+                            Archival = false,
                             ItemNumber = "4",
-                            ItemStatus = 0,
                             ItemTypeID = 22
                         },
                         new
                         {
                             ItemID = 38,
+                            Archival = false,
                             ItemNumber = "5",
-                            ItemStatus = 0,
                             ItemTypeID = 23
                         },
                         new
                         {
                             ItemID = 39,
+                            Archival = false,
                             ItemNumber = "6",
-                            ItemStatus = 0,
                             ItemTypeID = 23
                         },
                         new
                         {
                             ItemID = 40,
+                            Archival = false,
                             ItemNumber = "7",
-                            ItemStatus = 0,
                             ItemTypeID = 24
                         },
                         new
                         {
                             ItemID = 41,
+                            Archival = false,
                             ItemNumber = "8",
-                            ItemStatus = 0,
                             ItemTypeID = 25
                         },
                         new
                         {
                             ItemID = 42,
+                            Archival = false,
                             ItemNumber = "9",
-                            ItemStatus = 0,
                             ItemTypeID = 25
                         },
                         new
                         {
                             ItemID = 43,
+                            Archival = false,
                             ItemNumber = "10",
-                            ItemStatus = 0,
                             ItemTypeID = 26
                         },
                         new
                         {
                             ItemID = 44,
+                            Archival = false,
                             ItemNumber = "11",
-                            ItemStatus = 0,
                             ItemTypeID = 27
                         },
                         new
                         {
                             ItemID = 45,
+                            Archival = false,
                             ItemNumber = "12",
-                            ItemStatus = 0,
                             ItemTypeID = 27
                         },
                         new
                         {
                             ItemID = 46,
+                            Archival = false,
                             ItemNumber = "13",
-                            ItemStatus = 0,
                             ItemTypeID = 28
                         },
                         new
                         {
                             ItemID = 47,
+                            Archival = false,
                             ItemNumber = "14",
-                            ItemStatus = 0,
                             ItemTypeID = 29
                         },
                         new
                         {
                             ItemID = 48,
+                            Archival = false,
                             ItemNumber = "15",
-                            ItemStatus = 0,
                             ItemTypeID = 29
                         },
                         new
                         {
                             ItemID = 49,
+                            Archival = false,
                             ItemNumber = "16",
-                            ItemStatus = 0,
                             ItemTypeID = 30
                         },
                         new
                         {
                             ItemID = 50,
+                            Archival = false,
                             ItemNumber = "17",
-                            ItemStatus = 0,
                             ItemTypeID = 31
                         },
                         new
                         {
                             ItemID = 51,
+                            Archival = false,
                             ItemNumber = "18",
-                            ItemStatus = 0,
                             ItemTypeID = 31
                         },
                         new
                         {
                             ItemID = 52,
+                            Archival = false,
                             ItemNumber = "19",
-                            ItemStatus = 0,
                             ItemTypeID = 32
                         },
                         new
                         {
                             ItemID = 53,
+                            Archival = false,
                             ItemNumber = "20",
-                            ItemStatus = 0,
                             ItemTypeID = 33
                         },
                         new
                         {
                             ItemID = 54,
+                            Archival = false,
                             ItemNumber = "21",
-                            ItemStatus = 0,
                             ItemTypeID = 33
                         },
                         new
                         {
                             ItemID = 55,
+                            Archival = false,
                             ItemNumber = "22",
-                            ItemStatus = 0,
                             ItemTypeID = 34
                         },
                         new
                         {
                             ItemID = 56,
+                            Archival = false,
                             ItemNumber = "23",
-                            ItemStatus = 0,
                             ItemTypeID = 35
                         },
                         new
                         {
                             ItemID = 57,
+                            Archival = false,
                             ItemNumber = "24",
-                            ItemStatus = 0,
                             ItemTypeID = 35
                         });
                 });
@@ -497,7 +497,7 @@ namespace backend.Data.Migrations
 
                     b.HasKey("ItemCategoryID");
 
-                    b.ToTable("ItemCategory");
+                    b.ToTable("ItemCategories");
 
                     b.HasData(
                         new
@@ -523,7 +523,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemCategoryID = 5,
-                            ItemCategoryName = "Электровелосипед"
+                            ItemCategoryName = "Электро"
                         },
                         new
                         {
@@ -532,10 +532,168 @@ namespace backend.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Bikepark.Models.ItemRecord", b =>
+                {
+                    b.Property<int?>("ItemRecordID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CustomInformation")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("End")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("ItemID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("PricingID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("RecordID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("Start")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserID")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ItemRecordID");
+
+                    b.HasIndex("ItemID");
+
+                    b.HasIndex("PricingID");
+
+                    b.HasIndex("RecordID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("ItemRecords");
+
+                    b.HasData(
+                        new
+                        {
+                            ItemRecordID = 1,
+                            ItemID = 1,
+                            PricingID = 1,
+                            RecordID = 1,
+                            Status = 3
+                        },
+                        new
+                        {
+                            ItemRecordID = 2,
+                            End = new DateTime(2022, 4, 19, 11, 0, 0, 0, DateTimeKind.Unspecified),
+                            ItemID = 2,
+                            PricingID = 1,
+                            RecordID = 1,
+                            Status = 3
+                        },
+                        new
+                        {
+                            ItemRecordID = 3,
+                            ItemID = 3,
+                            PricingID = 1,
+                            RecordID = 1,
+                            Start = new DateTime(2022, 4, 19, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 3
+                        },
+                        new
+                        {
+                            ItemRecordID = 4,
+                            End = new DateTime(2022, 4, 19, 11, 0, 0, 0, DateTimeKind.Unspecified),
+                            ItemID = 4,
+                            PricingID = 1,
+                            RecordID = 1,
+                            Start = new DateTime(2022, 4, 19, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 3
+                        },
+                        new
+                        {
+                            ItemRecordID = 5,
+                            ItemID = 34,
+                            PricingID = 26,
+                            RecordID = 1,
+                            Status = 3
+                        },
+                        new
+                        {
+                            ItemRecordID = 6,
+                            ItemID = 1,
+                            PricingID = 1,
+                            RecordID = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            ItemRecordID = 7,
+                            ItemID = 34,
+                            PricingID = 26,
+                            RecordID = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            ItemRecordID = 8,
+                            ItemID = 2,
+                            PricingID = 1,
+                            RecordID = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            ItemRecordID = 9,
+                            ItemID = 35,
+                            PricingID = 26,
+                            RecordID = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            ItemRecordID = 10,
+                            ItemID = 29,
+                            PricingID = 25,
+                            RecordID = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            ItemRecordID = 11,
+                            ItemID = 29,
+                            PricingID = 25,
+                            RecordID = 5,
+                            Status = 2
+                        },
+                        new
+                        {
+                            ItemRecordID = 12,
+                            End = new DateTime(2022, 5, 14, 19, 0, 0, 0, DateTimeKind.Unspecified),
+                            ItemID = 30,
+                            PricingID = 25,
+                            RecordID = 5,
+                            Status = 3
+                        },
+                        new
+                        {
+                            ItemRecordID = 13,
+                            ItemID = 31,
+                            PricingID = 25,
+                            RecordID = 5,
+                            Start = new DateTime(2022, 5, 14, 19, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2
+                        });
+                });
+
             modelBuilder.Entity("Bikepark.Models.ItemType", b =>
                 {
-                    b.Property<int>("ItemTypeID")
+                    b.Property<int?>("ItemTypeID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Archival")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("ItemAge")
@@ -578,25 +736,25 @@ namespace backend.Data.Migrations
 
                     b.HasIndex("PricingCategoryID");
 
-                    b.ToTable("ItemType");
+                    b.ToTable("ItemTypes");
 
                     b.HasData(
                         new
                         {
                             ItemTypeID = 1,
+                            Archival = false,
                             ItemCategoryID = 1,
                             ItemColor = "black",
                             ItemDescription = "Горный велосипед",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/1490897.html",
                             ItemSize = 3,
                             ItemTypeName = "GT AVALANCHE 27 SPORT",
-                            ItemWheelSize = "27''",
-                            PricingCategoryID = 1
+                            ItemWheelSize = "27''"
                         },
                         new
                         {
                             ItemTypeID = 2,
-                            ItemCategoryID = 1,
+                            Archival = false,
                             ItemColor = "aqua",
                             ItemDescription = "Горный велосипед",
                             ItemExternalURL = "https://trial-sport.ru/goods/51516/1490897.html",
@@ -608,6 +766,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 3,
+                            Archival = false,
                             ItemCategoryID = 1,
                             ItemColor = "black",
                             ItemDescription = "Горный велосипед",
@@ -620,6 +779,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 4,
+                            Archival = false,
                             ItemCategoryID = 1,
                             ItemColor = "aqua",
                             ItemDescription = "Горный велосипед",
@@ -632,6 +792,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 5,
+                            Archival = false,
                             ItemCategoryID = 1,
                             ItemColor = "black",
                             ItemDescription = "Горный велосипед",
@@ -644,6 +805,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 6,
+                            Archival = false,
                             ItemCategoryID = 1,
                             ItemColor = "aqua",
                             ItemDescription = "Горный велосипед",
@@ -656,6 +818,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 7,
+                            Archival = false,
                             ItemCategoryID = 1,
                             ItemColor = "navy",
                             ItemDescription = "Горный велосипед женский",
@@ -669,6 +832,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 8,
+                            Archival = false,
                             ItemCategoryID = 1,
                             ItemColor = "navy",
                             ItemDescription = "Горный велосипед женский",
@@ -682,6 +846,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 9,
+                            Archival = false,
                             ItemAge = 1,
                             ItemCategoryID = 2,
                             ItemColor = "red",
@@ -695,6 +860,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 10,
+                            Archival = false,
                             ItemAge = 1,
                             ItemCategoryID = 2,
                             ItemColor = "purple",
@@ -709,6 +875,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 11,
+                            Archival = false,
                             ItemCategoryID = 3,
                             ItemColor = "black",
                             ItemDescription = "BMX",
@@ -720,6 +887,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 12,
+                            Archival = false,
                             ItemCategoryID = 3,
                             ItemColor = "metallic purple",
                             ItemDescription = "BMX",
@@ -731,6 +899,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 13,
+                            Archival = false,
                             ItemCategoryID = 3,
                             ItemColor = "matt black",
                             ItemDescription = "BMX",
@@ -742,6 +911,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 14,
+                            Archival = false,
                             ItemCategoryID = 3,
                             ItemColor = "matt black",
                             ItemDescription = "BMX",
@@ -753,6 +923,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 15,
+                            Archival = false,
                             ItemAge = 2,
                             ItemCategoryID = 4,
                             ItemColor = "yellow",
@@ -765,6 +936,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 16,
+                            Archival = false,
                             ItemAge = 2,
                             ItemCategoryID = 4,
                             ItemColor = "black",
@@ -777,6 +949,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 17,
+                            Archival = false,
                             ItemAge = 2,
                             ItemCategoryID = 4,
                             ItemColor = "orange",
@@ -789,6 +962,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 18,
+                            Archival = false,
                             ItemAge = 2,
                             ItemCategoryID = 4,
                             ItemColor = "blue",
@@ -801,6 +975,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 19,
+                            Archival = false,
                             ItemCategoryID = 5,
                             ItemDescription = "Электровелосипед",
                             ItemExternalURL = "",
@@ -811,6 +986,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 20,
+                            Archival = false,
                             ItemCategoryID = 6,
                             ItemDescription = "Шлем",
                             ItemExternalURL = "",
@@ -821,6 +997,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 21,
+                            Archival = false,
                             ItemCategoryID = 6,
                             ItemDescription = "Шлем",
                             ItemExternalURL = "",
@@ -831,6 +1008,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 22,
+                            Archival = false,
                             ItemCategoryID = 6,
                             ItemDescription = "Шлем",
                             ItemExternalURL = "",
@@ -841,6 +1019,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 23,
+                            Archival = false,
                             ItemAge = 2,
                             ItemCategoryID = 6,
                             ItemDescription = "Шлем детский",
@@ -851,6 +1030,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 24,
+                            Archival = false,
                             ItemCategoryID = 6,
                             ItemDescription = "Наколенники",
                             ItemExternalURL = "",
@@ -861,6 +1041,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 25,
+                            Archival = false,
                             ItemCategoryID = 6,
                             ItemDescription = "Наколенники",
                             ItemExternalURL = "",
@@ -871,6 +1052,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 26,
+                            Archival = false,
                             ItemCategoryID = 6,
                             ItemDescription = "Наколенники",
                             ItemExternalURL = "",
@@ -881,6 +1063,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 27,
+                            Archival = false,
                             ItemAge = 2,
                             ItemCategoryID = 6,
                             ItemDescription = "Наколенники детские",
@@ -891,6 +1074,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 28,
+                            Archival = false,
                             ItemCategoryID = 6,
                             ItemDescription = "Налокотники",
                             ItemExternalURL = "",
@@ -901,6 +1085,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 29,
+                            Archival = false,
                             ItemCategoryID = 6,
                             ItemDescription = "Налокотники",
                             ItemExternalURL = "",
@@ -911,6 +1096,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 30,
+                            Archival = false,
                             ItemCategoryID = 6,
                             ItemDescription = "Налокотники",
                             ItemExternalURL = "",
@@ -921,6 +1107,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 31,
+                            Archival = false,
                             ItemAge = 2,
                             ItemCategoryID = 6,
                             ItemDescription = "Налокотники детские",
@@ -931,6 +1118,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 32,
+                            Archival = false,
                             ItemCategoryID = 6,
                             ItemDescription = "Перчатки",
                             ItemExternalURL = "",
@@ -941,6 +1129,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 33,
+                            Archival = false,
                             ItemCategoryID = 6,
                             ItemDescription = "Перчатки",
                             ItemExternalURL = "",
@@ -951,6 +1140,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 34,
+                            Archival = false,
                             ItemCategoryID = 6,
                             ItemDescription = "Перчатки",
                             ItemExternalURL = "",
@@ -961,6 +1151,7 @@ namespace backend.Data.Migrations
                         new
                         {
                             ItemTypeID = 35,
+                            Archival = false,
                             ItemAge = 2,
                             ItemCategoryID = 6,
                             ItemDescription = "Перчатки детские",
@@ -970,34 +1161,498 @@ namespace backend.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Bikepark.Models.PaymentRecord", b =>
+            modelBuilder.Entity("Bikepark.Models.Pricing", b =>
                 {
-                    b.Property<int>("PaymentRecordID")
+                    b.Property<int?>("PricingID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("DateTime")
+                    b.Property<bool>("Archival")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("DaysOfWeek")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("Executed")
+                    b.Property<bool>("IsHoliday")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("RentalRecordID")
+                    b.Property<bool>("IsReduced")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ServiceRecordID")
+                    b.Property<int>("MinDuration")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double?>("Value")
+                    b.Property<double>("Price")
                         .HasColumnType("REAL");
 
-                    b.HasKey("PaymentRecordID");
+                    b.Property<int?>("PricingCategoryID")
+                        .HasColumnType("INTEGER");
 
-                    b.HasIndex("RentalRecordID");
+                    b.Property<string>("PricingName")
+                        .HasColumnType("TEXT");
 
-                    b.HasIndex("ServiceRecordID");
+                    b.Property<int>("PricingType")
+                        .HasColumnType("INTEGER");
 
-                    b.ToTable("PaymentRecord");
+                    b.HasKey("PricingID");
+
+                    b.HasIndex("PricingCategoryID");
+
+                    b.ToTable("Pricings");
+
+                    b.HasData(
+                        new
+                        {
+                            PricingID = 1,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 150.0,
+                            PricingCategoryID = 1,
+                            PricingName = "MTB будний час",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 2,
+                            Archival = false,
+                            DaysOfWeek = "Friday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 150.0,
+                            PricingCategoryID = 1,
+                            PricingName = "MTB пятница час",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 3,
+                            Archival = false,
+                            DaysOfWeek = "Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 200.0,
+                            PricingCategoryID = 1,
+                            PricingName = "MTB выходной час",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 4,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = true,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 200.0,
+                            PricingCategoryID = 1,
+                            PricingName = "MTB праздник час",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 5,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = true,
+                            MinDuration = 1,
+                            Price = 100.0,
+                            PricingName = "MTB льготный час",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 28,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 2,
+                            Price = 125.0,
+                            PricingCategoryID = 1,
+                            PricingName = "MTB будний 2 часа",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 29,
+                            Archival = false,
+                            DaysOfWeek = "Friday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 2,
+                            Price = 125.0,
+                            PricingCategoryID = 1,
+                            PricingName = "MTB пятница 2 часа",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 30,
+                            Archival = false,
+                            DaysOfWeek = "Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 2,
+                            Price = 150.0,
+                            PricingCategoryID = 1,
+                            PricingName = "MTB выходной 2 часа",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 31,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = true,
+                            IsReduced = false,
+                            MinDuration = 2,
+                            Price = 150.0,
+                            PricingCategoryID = 1,
+                            PricingName = "MTB праздник 2 часа",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 32,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = true,
+                            MinDuration = 2,
+                            Price = 75.0,
+                            PricingCategoryID = 1,
+                            PricingName = "MTB льготный 2 часа",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 6,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 800.0,
+                            PricingCategoryID = 1,
+                            PricingName = "MTB будний день",
+                            PricingType = 0
+                        },
+                        new
+                        {
+                            PricingID = 7,
+                            Archival = false,
+                            DaysOfWeek = "Friday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 1000.0,
+                            PricingCategoryID = 1,
+                            PricingName = "MTB пятница день",
+                            PricingType = 0
+                        },
+                        new
+                        {
+                            PricingID = 8,
+                            Archival = false,
+                            DaysOfWeek = "Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 1000.0,
+                            PricingCategoryID = 1,
+                            PricingName = "MTB выходной день",
+                            PricingType = 0
+                        },
+                        new
+                        {
+                            PricingID = 9,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = true,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 1000.0,
+                            PricingCategoryID = 1,
+                            PricingName = "MTB праздник день",
+                            PricingType = 0
+                        },
+                        new
+                        {
+                            PricingID = 10,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = true,
+                            MinDuration = 1,
+                            Price = 400.0,
+                            PricingCategoryID = 1,
+                            PricingName = "MTB льготный день",
+                            PricingType = 0
+                        },
+                        new
+                        {
+                            PricingID = 11,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 100.0,
+                            PricingCategoryID = 2,
+                            PricingName = "MTB подросток будний час",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 12,
+                            Archival = false,
+                            DaysOfWeek = "Friday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 100.0,
+                            PricingCategoryID = 2,
+                            PricingName = "MTB подросток пятница час",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 13,
+                            Archival = false,
+                            DaysOfWeek = "Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 150.0,
+                            PricingCategoryID = 2,
+                            PricingName = "MTB подросток выходной час",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 14,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = true,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 150.0,
+                            PricingCategoryID = 2,
+                            PricingName = "MTB подросток праздник час",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 15,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = true,
+                            MinDuration = 1,
+                            Price = 50.0,
+                            PricingCategoryID = 2,
+                            PricingName = "MTB подросток льготный час",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 16,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 500.0,
+                            PricingCategoryID = 2,
+                            PricingName = "MTB подросток будний день",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 17,
+                            Archival = false,
+                            DaysOfWeek = "Friday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 600.0,
+                            PricingCategoryID = 2,
+                            PricingName = "MTB подросток пятница день",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 18,
+                            Archival = false,
+                            DaysOfWeek = "Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 700.0,
+                            PricingCategoryID = 2,
+                            PricingName = "MTB подросток выходной день",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 19,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = true,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 700.0,
+                            PricingCategoryID = 2,
+                            PricingName = "MTB подросток праздник день",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 20,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = true,
+                            MinDuration = 1,
+                            Price = 300.0,
+                            PricingCategoryID = 2,
+                            PricingName = "MTB подросток льготный день",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 21,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 100.0,
+                            PricingCategoryID = 3,
+                            PricingName = "BMX будний час",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 22,
+                            Archival = false,
+                            DaysOfWeek = "Friday,Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 150.0,
+                            PricingCategoryID = 3,
+                            PricingName = "BMX пт-сб-вс час",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 23,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = true,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 150.0,
+                            PricingCategoryID = 3,
+                            PricingName = "BMX праздник час",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 24,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 100.0,
+                            PricingCategoryID = 4,
+                            PricingName = "Беговел час",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 25,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 300.0,
+                            PricingCategoryID = 5,
+                            PricingName = "Электро час",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 26,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 50.0,
+                            PricingCategoryID = 6,
+                            PricingName = "Аксессуар час",
+                            PricingType = 1
+                        },
+                        new
+                        {
+                            PricingID = 27,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 300.0,
+                            PricingCategoryID = 6,
+                            PricingName = "Аксессуар день",
+                            PricingType = 0
+                        },
+                        new
+                        {
+                            PricingID = 33,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 2000.0,
+                            PricingName = "Ремонт колеса",
+                            PricingType = 2
+                        },
+                        new
+                        {
+                            PricingID = 34,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 2000.0,
+                            PricingName = "Ремонт цепи",
+                            PricingType = 2
+                        },
+                        new
+                        {
+                            PricingID = 35,
+                            Archival = false,
+                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
+                            IsHoliday = false,
+                            IsReduced = false,
+                            MinDuration = 1,
+                            Price = 1000.0,
+                            PricingName = "Ремонт тормоза",
+                            PricingType = 2
+                        });
                 });
 
             modelBuilder.Entity("Bikepark.Models.PricingCategory", b =>
@@ -1012,7 +1667,7 @@ namespace backend.Data.Migrations
 
                     b.HasKey("PricingCategoryID");
 
-                    b.ToTable("PricingCategory");
+                    b.ToTable("PricingCategories");
 
                     b.HasData(
                         new
@@ -1047,594 +1702,9 @@ namespace backend.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Bikepark.Models.RentalItem", b =>
+            modelBuilder.Entity("Bikepark.Models.Record", b =>
                 {
-                    b.Property<int?>("RentalItemID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("End")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("EndActual")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsPaid")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("ItemID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("RentalPricingID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("RentalRecordID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("RentalStatus")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("RentalType")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("Start")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("RentalItemID");
-
-                    b.HasIndex("ItemID");
-
-                    b.HasIndex("RentalPricingID");
-
-                    b.HasIndex("RentalRecordID");
-
-                    b.ToTable("RentalItem");
-
-                    b.HasData(
-                        new
-                        {
-                            RentalItemID = 1,
-                            IsPaid = false,
-                            ItemID = 1,
-                            RentalPricingID = 1,
-                            RentalRecordID = 1,
-                            RentalStatus = 2,
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalItemID = 2,
-                            IsPaid = false,
-                            ItemID = 34,
-                            RentalPricingID = 18,
-                            RentalRecordID = 1,
-                            RentalStatus = 2,
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalItemID = 3,
-                            IsPaid = false,
-                            ItemID = 1,
-                            RentalPricingID = 1,
-                            RentalRecordID = 2,
-                            RentalStatus = 0,
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalItemID = 4,
-                            IsPaid = false,
-                            ItemID = 34,
-                            RentalPricingID = 18,
-                            RentalRecordID = 2,
-                            RentalStatus = 0,
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalItemID = 5,
-                            IsPaid = false,
-                            ItemID = 2,
-                            RentalPricingID = 1,
-                            RentalRecordID = 3,
-                            RentalStatus = 0,
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalItemID = 6,
-                            IsPaid = false,
-                            ItemID = 35,
-                            RentalPricingID = 18,
-                            RentalRecordID = 3,
-                            RentalStatus = 0,
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalItemID = 7,
-                            IsPaid = false,
-                            ItemID = 29,
-                            RentalPricingID = 17,
-                            RentalRecordID = 4,
-                            RentalStatus = 0,
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalItemID = 8,
-                            IsPaid = false,
-                            ItemID = 29,
-                            RentalPricingID = 17,
-                            RentalRecordID = 5,
-                            RentalStatus = 1,
-                            RentalType = 1
-                        });
-                });
-
-            modelBuilder.Entity("Bikepark.Models.RentalPricing", b =>
-                {
-                    b.Property<int?>("RentalPricingID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("DaysOfWeek")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<double>("ExtraPrice")
-                        .HasColumnType("REAL");
-
-                    b.Property<bool>("IsHoliday")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsReduced")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MinDuration")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("PricingCategoryID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("RentalPricingName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("RentalType")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("RentalPricingID");
-
-                    b.HasIndex("PricingCategoryID");
-
-                    b.ToTable("RentalPricing");
-
-                    b.HasData(
-                        new
-                        {
-                            RentalPricingID = 1,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 150.0,
-                            PricingCategoryID = 1,
-                            RentalPricingName = "MTB будний час",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 2,
-                            DaysOfWeek = "Friday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 150.0,
-                            PricingCategoryID = 1,
-                            RentalPricingName = "MTB пятница час",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 3,
-                            DaysOfWeek = "Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 200.0,
-                            PricingCategoryID = 1,
-                            RentalPricingName = "MTB выходной час",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 4,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = true,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 200.0,
-                            PricingCategoryID = 1,
-                            RentalPricingName = "MTB праздник час",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 5,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = true,
-                            MinDuration = 1,
-                            Price = 100.0,
-                            PricingCategoryID = 1,
-                            RentalPricingName = "MTB льготный час",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 28,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
-                            ExtraPrice = 150.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 2,
-                            Price = 125.0,
-                            PricingCategoryID = 1,
-                            RentalPricingName = "MTB будний 2 часа",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 29,
-                            DaysOfWeek = "Friday",
-                            ExtraPrice = 150.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 2,
-                            Price = 125.0,
-                            PricingCategoryID = 1,
-                            RentalPricingName = "MTB пятница 2 часа",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 30,
-                            DaysOfWeek = "Saturday,Sunday",
-                            ExtraPrice = 200.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 2,
-                            Price = 150.0,
-                            PricingCategoryID = 1,
-                            RentalPricingName = "MTB выходной 2 часа",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 31,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-                            ExtraPrice = 200.0,
-                            IsHoliday = true,
-                            IsReduced = false,
-                            MinDuration = 2,
-                            Price = 150.0,
-                            PricingCategoryID = 1,
-                            RentalPricingName = "MTB праздник 2 часа",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 32,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-                            ExtraPrice = 100.0,
-                            IsHoliday = false,
-                            IsReduced = true,
-                            MinDuration = 2,
-                            Price = 75.0,
-                            PricingCategoryID = 1,
-                            RentalPricingName = "MTB льготный 2 часа",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 6,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 800.0,
-                            PricingCategoryID = 1,
-                            RentalPricingName = "MTB будний день",
-                            RentalType = 2
-                        },
-                        new
-                        {
-                            RentalPricingID = 7,
-                            DaysOfWeek = "Friday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 1000.0,
-                            PricingCategoryID = 1,
-                            RentalPricingName = "MTB пятница день",
-                            RentalType = 2
-                        },
-                        new
-                        {
-                            RentalPricingID = 8,
-                            DaysOfWeek = "Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 1000.0,
-                            PricingCategoryID = 1,
-                            RentalPricingName = "MTB выходной день",
-                            RentalType = 2
-                        },
-                        new
-                        {
-                            RentalPricingID = 9,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = true,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 1000.0,
-                            PricingCategoryID = 1,
-                            RentalPricingName = "MTB праздник день",
-                            RentalType = 2
-                        },
-                        new
-                        {
-                            RentalPricingID = 10,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = true,
-                            MinDuration = 1,
-                            Price = 400.0,
-                            PricingCategoryID = 1,
-                            RentalPricingName = "MTB льготный день",
-                            RentalType = 2
-                        },
-                        new
-                        {
-                            RentalPricingID = 11,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 100.0,
-                            PricingCategoryID = 2,
-                            RentalPricingName = "MTB подросток будний час",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 12,
-                            DaysOfWeek = "Friday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 100.0,
-                            PricingCategoryID = 2,
-                            RentalPricingName = "MTB подросток пятница час",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 13,
-                            DaysOfWeek = "Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 150.0,
-                            PricingCategoryID = 2,
-                            RentalPricingName = "MTB подросток выходной час",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 14,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = true,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 150.0,
-                            PricingCategoryID = 2,
-                            RentalPricingName = "MTB подросток праздник час",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 15,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = true,
-                            MinDuration = 1,
-                            Price = 50.0,
-                            PricingCategoryID = 2,
-                            RentalPricingName = "MTB подросток льготный час",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 16,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 500.0,
-                            PricingCategoryID = 2,
-                            RentalPricingName = "MTB подросток будний день",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 17,
-                            DaysOfWeek = "Friday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 600.0,
-                            PricingCategoryID = 2,
-                            RentalPricingName = "MTB подросток пятница день",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 18,
-                            DaysOfWeek = "Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 700.0,
-                            PricingCategoryID = 2,
-                            RentalPricingName = "MTB подросток выходной день",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 19,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = true,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 700.0,
-                            PricingCategoryID = 2,
-                            RentalPricingName = "MTB подросток праздник день",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 20,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = true,
-                            MinDuration = 1,
-                            Price = 300.0,
-                            PricingCategoryID = 2,
-                            RentalPricingName = "MTB подросток льготный день",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 21,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 100.0,
-                            PricingCategoryID = 3,
-                            RentalPricingName = "BMX будний час",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 22,
-                            DaysOfWeek = "Friday,Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 150.0,
-                            PricingCategoryID = 3,
-                            RentalPricingName = "BMX пт-сб-вс час",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 23,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = true,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 150.0,
-                            PricingCategoryID = 3,
-                            RentalPricingName = "BMX праздник час",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 24,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 100.0,
-                            PricingCategoryID = 4,
-                            RentalPricingName = "Беговел час",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 25,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 300.0,
-                            PricingCategoryID = 5,
-                            RentalPricingName = "Электро час",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 26,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 50.0,
-                            PricingCategoryID = 6,
-                            RentalPricingName = "Аксессуар час",
-                            RentalType = 1
-                        },
-                        new
-                        {
-                            RentalPricingID = 27,
-                            DaysOfWeek = "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday",
-                            ExtraPrice = 1.0,
-                            IsHoliday = false,
-                            IsReduced = false,
-                            MinDuration = 1,
-                            Price = 300.0,
-                            PricingCategoryID = 6,
-                            RentalPricingName = "Аксессуар день",
-                            RentalType = 2
-                        });
-                });
-
-            modelBuilder.Entity("Bikepark.Models.RentalRecord", b =>
-                {
-                    b.Property<int?>("RentalRecordID")
+                    b.Property<int?>("RecordID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -1647,135 +1717,64 @@ namespace backend.Data.Migrations
                     b.Property<DateTime?>("End")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("EndActual")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("RentalStatus")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("RentalType")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateTime?>("Start")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("RentalRecordID");
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserID")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("RecordID");
 
                     b.HasIndex("CustomerID");
 
-                    b.ToTable("RentalLog");
+                    b.HasIndex("UserID");
+
+                    b.ToTable("Records");
 
                     b.HasData(
                         new
                         {
-                            RentalRecordID = 1,
+                            RecordID = 1,
                             CustomerID = 1,
                             End = new DateTime(2022, 4, 19, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            RentalStatus = 2,
-                            RentalType = 1,
-                            Start = new DateTime(2022, 4, 19, 9, 0, 0, 0, DateTimeKind.Unspecified)
+                            Start = new DateTime(2022, 4, 19, 9, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 3
                         },
                         new
                         {
-                            RentalRecordID = 2,
+                            RecordID = 2,
                             CustomerID = 2,
-                            End = new DateTime(2022, 4, 30, 19, 0, 0, 0, DateTimeKind.Unspecified),
-                            RentalStatus = 0,
-                            RentalType = 1,
-                            Start = new DateTime(2022, 4, 30, 16, 0, 0, 0, DateTimeKind.Unspecified)
+                            End = new DateTime(2022, 5, 15, 19, 0, 0, 0, DateTimeKind.Unspecified),
+                            Start = new DateTime(2022, 5, 15, 16, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 1
                         },
                         new
                         {
-                            RentalRecordID = 3,
+                            RecordID = 3,
                             CustomerID = 1,
-                            End = new DateTime(2022, 4, 30, 19, 0, 0, 0, DateTimeKind.Unspecified),
-                            RentalStatus = 0,
-                            RentalType = 1,
-                            Start = new DateTime(2022, 4, 30, 16, 0, 0, 0, DateTimeKind.Unspecified)
+                            End = new DateTime(2022, 5, 15, 19, 0, 0, 0, DateTimeKind.Unspecified),
+                            Start = new DateTime(2022, 5, 15, 16, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 1
                         },
                         new
                         {
-                            RentalRecordID = 4,
+                            RecordID = 4,
                             CustomerID = 1,
-                            End = new DateTime(2022, 5, 1, 14, 0, 0, 0, DateTimeKind.Unspecified),
-                            RentalStatus = 0,
-                            RentalType = 1,
-                            Start = new DateTime(2022, 5, 1, 10, 0, 0, 0, DateTimeKind.Unspecified)
+                            End = new DateTime(2022, 5, 16, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            Start = new DateTime(2022, 5, 16, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 1
                         },
                         new
                         {
-                            RentalRecordID = 5,
+                            RecordID = 5,
                             CustomerID = 2,
-                            End = new DateTime(2022, 5, 1, 8, 0, 0, 0, DateTimeKind.Unspecified),
-                            RentalStatus = 1,
-                            RentalType = 2,
-                            Start = new DateTime(2022, 4, 30, 8, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            RentalRecordID = 6,
-                            RentalType = 0
+                            End = new DateTime(2022, 5, 14, 23, 0, 0, 0, DateTimeKind.Unspecified),
+                            Start = new DateTime(2022, 5, 14, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2
                         });
-                });
-
-            modelBuilder.Entity("Bikepark.Models.ServiceFee", b =>
-                {
-                    b.Property<int>("ServiceFeeID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double>("Fee")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("ItemCategoryID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ServiceFeeName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("ServiceRecordID")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ServiceFeeID");
-
-                    b.HasIndex("ItemCategoryID");
-
-                    b.HasIndex("ServiceRecordID");
-
-                    b.ToTable("ServiceFee");
-                });
-
-            modelBuilder.Entity("Bikepark.Models.ServiceRecord", b =>
-                {
-                    b.Property<int>("ServiceRecordID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("ItemID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("Maintenance")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("RentalRecordID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("ServiceEndTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("ServiceStartTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ServiceStatus")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ServiceRecordID");
-
-                    b.HasIndex("ItemID");
-
-                    b.HasIndex("RentalRecordID");
-
-                    b.ToTable("ServiceLog");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -1974,11 +1973,36 @@ namespace backend.Data.Migrations
                 {
                     b.HasOne("Bikepark.Models.ItemType", "ItemType")
                         .WithMany()
-                        .HasForeignKey("ItemTypeID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ItemTypeID");
 
                     b.Navigation("ItemType");
+                });
+
+            modelBuilder.Entity("Bikepark.Models.ItemRecord", b =>
+                {
+                    b.HasOne("Bikepark.Models.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemID");
+
+                    b.HasOne("Bikepark.Models.Pricing", "Pricing")
+                        .WithMany()
+                        .HasForeignKey("PricingID");
+
+                    b.HasOne("Bikepark.Models.Record", "Record")
+                        .WithMany("ItemRecords")
+                        .HasForeignKey("RecordID");
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID");
+
+                    b.Navigation("Item");
+
+                    b.Navigation("Pricing");
+
+                    b.Navigation("Record");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Bikepark.Models.ItemType", b =>
@@ -1996,90 +2020,28 @@ namespace backend.Data.Migrations
                     b.Navigation("PricingCategory");
                 });
 
-            modelBuilder.Entity("Bikepark.Models.PaymentRecord", b =>
-                {
-                    b.HasOne("Bikepark.Models.RentalRecord", "RentalRecord")
-                        .WithMany("PaymentsAndRefunds")
-                        .HasForeignKey("RentalRecordID");
-
-                    b.HasOne("Bikepark.Models.ServiceRecord", "ServiceRecord")
-                        .WithMany("Payments")
-                        .HasForeignKey("ServiceRecordID");
-
-                    b.Navigation("RentalRecord");
-
-                    b.Navigation("ServiceRecord");
-                });
-
-            modelBuilder.Entity("Bikepark.Models.RentalItem", b =>
-                {
-                    b.HasOne("Bikepark.Models.Item", "Item")
-                        .WithMany()
-                        .HasForeignKey("ItemID");
-
-                    b.HasOne("Bikepark.Models.RentalPricing", "RentalPricing")
-                        .WithMany()
-                        .HasForeignKey("RentalPricingID");
-
-                    b.HasOne("Bikepark.Models.RentalRecord", "RentalRecord")
-                        .WithMany("RentalItems")
-                        .HasForeignKey("RentalRecordID");
-
-                    b.Navigation("Item");
-
-                    b.Navigation("RentalPricing");
-
-                    b.Navigation("RentalRecord");
-                });
-
-            modelBuilder.Entity("Bikepark.Models.RentalPricing", b =>
+            modelBuilder.Entity("Bikepark.Models.Pricing", b =>
                 {
                     b.HasOne("Bikepark.Models.PricingCategory", "PricingCategory")
                         .WithMany()
-                        .HasForeignKey("PricingCategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PricingCategoryID");
 
                     b.Navigation("PricingCategory");
                 });
 
-            modelBuilder.Entity("Bikepark.Models.RentalRecord", b =>
+            modelBuilder.Entity("Bikepark.Models.Record", b =>
                 {
                     b.HasOne("Bikepark.Models.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerID");
 
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID");
+
                     b.Navigation("Customer");
-                });
 
-            modelBuilder.Entity("Bikepark.Models.ServiceFee", b =>
-                {
-                    b.HasOne("Bikepark.Models.ItemCategory", "ItemCategory")
-                        .WithMany()
-                        .HasForeignKey("ItemCategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Bikepark.Models.ServiceRecord", null)
-                        .WithMany("ServiceFees")
-                        .HasForeignKey("ServiceRecordID");
-
-                    b.Navigation("ItemCategory");
-                });
-
-            modelBuilder.Entity("Bikepark.Models.ServiceRecord", b =>
-                {
-                    b.HasOne("Bikepark.Models.Item", "Item")
-                        .WithMany()
-                        .HasForeignKey("ItemID");
-
-                    b.HasOne("Bikepark.Models.RentalRecord", "RentalRecord")
-                        .WithMany()
-                        .HasForeignKey("RentalRecordID");
-
-                    b.Navigation("Item");
-
-                    b.Navigation("RentalRecord");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -2133,18 +2095,9 @@ namespace backend.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Bikepark.Models.RentalRecord", b =>
+            modelBuilder.Entity("Bikepark.Models.Record", b =>
                 {
-                    b.Navigation("PaymentsAndRefunds");
-
-                    b.Navigation("RentalItems");
-                });
-
-            modelBuilder.Entity("Bikepark.Models.ServiceRecord", b =>
-                {
-                    b.Navigation("Payments");
-
-                    b.Navigation("ServiceFees");
+                    b.Navigation("ItemRecords");
                 });
 #pragma warning restore 612, 618
         }

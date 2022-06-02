@@ -1,0 +1,83 @@
+﻿@model Bikepark.Models.Item
+
+@{
+    ViewData["Title"] = "Редактирование номера";
+    ViewData["menu"] = "items";
+    Layout = "_MainLayout";    
+    var Error = ViewBag.Error;
+    var hasRecords = ViewBag.HasRecords;
+    string archival = Model.Archival ? "(Архив)" : "";
+}
+@if (Model.ItemID != null)
+{
+    <h1>Редактировать</h1>
+    <h3>Номер #@Model.ItemID @archival</h3>
+}
+else
+{
+    <h1>Добавить</h1>
+    <h3>Номер</h3>    
+}
+<hr />
+<div class="container-sm">  
+    <form id="item-form" asp-controller="Items" >
+        <div class="row">
+            <div class="col-md-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ItemID" />
+                <input type="hidden" asp-for="Archival" />
+                <div class="form-group">
+                    <label asp-for="ItemTypeID" class="control-label"></label>
+                    <select asp-for="ItemTypeID" class="form-control" asp-items="ViewBag.ItemTypeID" required></select>
+                    <span asp-validation-for="ItemTypeID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ItemNumber" class="control-label"></label>
+                    <input asp-for="ItemNumber" class="form-control" required/>
+                    <span asp-validation-for="ItemNumber" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-row justify-content-start">
+            <div class="row row-cols-4 col-md-8 ">
+                <div class="form-group col-md-2 ">  
+                    <a asp-action="Index" class="btn btn-secondary col-md-12">Отмена</a>
+                </div>
+                @if (Model.ItemTypeID != null)
+                {
+                    <div class="form-group col-md-2 ">
+                        <button type="submit" asp-action="Edit" class="btn btn-dark col-md-12">Исправить</button>
+                    </div>
+                    @if (hasRecords)
+                    {
+                        <div class="form-group col-md-2 ">
+                            <button type="submit"  asp-action="Replace" class="btn btn-primary col-md-12"  title="Заменить, старый номер будет заархивирован">Заменить</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-2 ">
+                        </div>                        
+                    }
+                }
+                else
+                {
+                    <div class="form-group col-md-2 ">
+                        <button type="submit"  asp-action="Create" class="btn btn-primary col-md-12">Создать</button>
+                    </div>
+                    <div class="col-md-2 ">
+                    </div>
+                }
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {          
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/items.js"></script> 
+    <script>
+        var error = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Error));  
+    </script>
+}

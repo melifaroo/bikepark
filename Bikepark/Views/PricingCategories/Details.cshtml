@@ -1,0 +1,26 @@
+﻿@model Bikepark.Models.PricingCategory
+
+@{
+    ViewData["Title"] = "Категория тарификации";
+    ViewData["menu"] = "pricing-categories";
+    Layout = "_MainLayout";
+}
+
+<h1>Просмотр</h1>
+
+<div>
+    <h4>Категория тарификации</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PricingCategoryName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PricingCategoryName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.PricingCategoryID">Изменить</a> |
+    <a asp-action="Index">К списку</a>
+</div>

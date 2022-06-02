@@ -5,13 +5,15 @@ namespace Bikepark.Models
 {
     public class ItemType 
     {
-        public int ItemTypeID { get; set; }
+        public int? ItemTypeID { get; set; }
         [Required]
-        [Display(Name = "Название")]
+        [Display(Name = "Наименование")]
         public string? ItemTypeName { get; set; }
+        [Display(Name = "Категория")]
         public int? ItemCategoryID { get; set; }
-        [Display(Name = "Тип")]
+        [Display(Name = "Категория")]
         public virtual ItemCategory? ItemCategory { get; set; }
+        [Display(Name = "Категория тарифа")]
         public int? PricingCategoryID { get; set; }
         [Display(Name = "Категория тарифа")]
         public virtual PricingCategory? PricingCategory { get; set; }
@@ -31,6 +33,8 @@ namespace Bikepark.Models
         public string? ItemExternalURL { get; set; }
         [Display(Name = "Фото")]
         public string? ItemImageURL { get; set; }
+
+        public bool Archival { get; set; } = false;
 
     }
 

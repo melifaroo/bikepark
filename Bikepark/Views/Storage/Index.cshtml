@@ -1,0 +1,142 @@
+﻿@model IEnumerable<Bikepark.Models.ItemType>
+
+@using Bikepark.Models
+@using Microsoft.EntityFrameworkCore
+@using Bikepark.Views.Helpers
+
+@{
+    ViewData["Title"] = "Велопарк";
+    ViewData["menu"] = "storage";
+    ViewData["Route"] = "Storage";
+    Layout = "_MainLayout";
+
+    ItemType someItemType = new ItemType();
+    DbSet<Item> Items = ViewBag.Items;
+
+    List<SelectListItem> Cats = Model.DistinctBy(x => x.ItemCategoryID).Select(x => new SelectListItem { Value = x.ItemCategory?.ItemCategoryName ?? "", Text = x.ItemCategory?.ItemCategoryName ?? "" }).ToList();
+    List<SelectListItem> PriceCats = Model.DistinctBy(x => x.PricingCategoryID).Select(x => new SelectListItem { Value = x.PricingCategory?.PricingCategoryName ?? "", Text = x.PricingCategory?.PricingCategoryName ?? "" }).ToList();
+    List<SelectListItem> Sizes = Model.DistinctBy(x => x.ItemSize).Select(x => new SelectListItem { Value = EnumHelper<ItemSize>.GetDisplayValue(x.ItemSize ?? ItemSize.NA), Text = EnumHelper<ItemSize>.GetDisplayValue(x.ItemSize ?? ItemSize.NA) }).ToList();
+    List<SelectListItem> Wheels = Model.DistinctBy(x => x.ItemWheelSize).Select(x => new SelectListItem { Value = x.ItemWheelSize?.ToString()?? "", Text = x.ItemWheelSize?.ToString()?? "" }).ToList();
+    List<SelectListItem> Colors = Model.DistinctBy(x => x.ItemColor).Select(x => new SelectListItem { Value = x.ItemColor?.ToString()?? "", Text =  x.ItemColor?.ToString()?? "" }).ToList();
+    List<SelectListItem> Ages = Model.DistinctBy(x => x.ItemAge).Select(x => new SelectListItem { Value =  EnumHelper<ItemAge>.GetDisplayValue(x.ItemAge ?? ItemAge.Adult), Text =  EnumHelper<ItemAge>.GetDisplayValue(x.ItemAge ?? ItemAge.Adult) }).ToList();
+    List<SelectListItem> Genders = Model.DistinctBy(x => x.ItemGender).Select(x => new SelectListItem { Value = EnumHelper<ItemGender>.GetDisplayValue(x.ItemGender ?? ItemGender.Unisex), Text =  EnumHelper<ItemGender>.GetDisplayValue(x.ItemGender ?? ItemGender.Unisex) }).ToList();
+}
+<div id="storage-title">
+<h1>Велопарк</h1>
+<p>
+    <a asp-action="Create">Добавить</a> | 
+    <a asp-action="Index" asp-controller="ItemCategories">Категории</a>  | 
+    <a asp-action="Index" asp-controller="PricingCategories">Категории тарифов</a> | 
+    <a asp-action="Main">Управление</a>   
+</p>
+</div>
+
+<table id="storage" class="tablealign scroll-table">
+    <thead>
+        <tr>
+            <th style="width: 5%">
+                <div class="row-cols-1">
+                    @Html.DisplayNameFor(model => someItemType.ItemCategory)
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Cats" data-field="cat"><option value="All" label="Все" selected></option></select>
+                </div>
+            </th>
+            <th style="width: 5%">
+                <div class="row-cols-1">
+                    Кат.Тарифа
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@PriceCats" data-field="pricingcat"><option value="All" label="Все" selected></option></select>
+                </div>
+            </th>
+            <th style="width: 5%">
+                <div class="row-cols-1">
+                    @Html.DisplayNameFor(model => someItemType.ItemSize)
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Sizes" data-field="size"><option value="All" label="Все" selected></option></select>
+                </div>
+            </th>
+            <th style="width: 5%">
+                <div class="row-cols-1">
+                    @Html.DisplayNameFor(model => someItemType.ItemWheelSize)
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Wheels" data-field="wheel"><option  value="All" label="Все" selected></option></select>
+                </div>
+            </th>
+            <th style="width: 10%">
+                <div class="row-cols-1">
+                    @Html.DisplayNameFor(model => someItemType.ItemColor)
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Colors" data-field="color"><option  value="All" label="Все" selected></option></select>
+                </div>
+            </th>
+            <th style="width: 10%">
+                <div class="row-cols-1">
+                    @Html.DisplayNameFor(model => someItemType.ItemAge)
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Ages" data-field="age"><option  value="All" label="Все" selected></option></select>
+                </div>
+            </th>
+            <th style="width: 5%">
+                <div class="row-cols-1">
+                    @Html.DisplayNameFor(model => someItemType.ItemGender)
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Genders" data-field="gender"><option  value="All" label="Все" selected></option></select>
+                </div>
+            </th>
+            <th style="width: 20%; vertical-align: text-top">
+                <div>
+                    @Html.DisplayNameFor(model => someItemType.ItemTypeName)
+                </div>
+            </th>
+            <th style="width: 15%; vertical-align: text-top">
+                <div class="row-cols-1">
+                    Номера
+                </div>
+            </th>
+            <th style="width: 20%; vertical-align: text-top">
+            </th>
+        </tr>
+    </thead>
+    <tbody> 
+        @foreach (var type in Model) {
+            <tr>
+                <td style="width: 5%" data-field='cat'>
+                    @Html.DisplayFor(m => type.ItemCategory.ItemCategoryName)
+                </td>
+                <td style="width: 5%" data-field='pricingcat'>
+                    @Html.DisplayFor(m => type.PricingCategory.PricingCategoryName)
+                </td>
+                <td style="width: 5%" data-field='size'>
+                    @Html.DisplayFor(m => type.ItemSize)
+                </td>
+                <td style="width: 5%" data-field='wheel'>
+                    @Html.DisplayFor(m => type.ItemWheelSize)
+                </td>
+                <td style="width: 10%" data-field='color'>
+                    @Html.DisplayFor(m => type.ItemColor)
+                </td> 
+                <td style="width: 10%" data-field='age'>
+                    @Html.DisplayFor(m => type.ItemAge)
+                </td>
+                <td style="width: 5%" data-field='gender'>
+                    @Html.DisplayFor(m => type.ItemGender)
+                </td>
+                <td class="" style="width: 20%">
+                    @Html.DisplayFor(m => type.ItemTypeName)
+                </td>
+                <td class="td-buttons" style="width: 15%;">
+                    <div class="flex justify-content-start btn-group" role="group"> 
+                        @foreach (var item in await Items.Where(i => i.ItemTypeID==type.ItemTypeID).ToListAsync() ){                      
+                            <a type="button" id="btn-item-@item.ItemID"  class="btn btn-sm btn-success" data-itemid="@item.ItemID" target="_blank" rel="noopener noreferrer" href="/Items/Details?id=@item.ItemID">@item.ItemNumber</a>                          
+                        }
+                    </div>
+                </td>
+                <td style="width: 20%;">
+                    <a asp-action="Edit" asp-route-id="@type.ItemTypeID">Изменить</a> |
+                    <a asp-action="Details" asp-route-id="@type.ItemTypeID">Просмотр</a> |
+                    <a asp-action="Delete" asp-route-id="@type.ItemTypeID">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {          
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/storage-main.js"></script> 
+    <script>
+    </script>
+}

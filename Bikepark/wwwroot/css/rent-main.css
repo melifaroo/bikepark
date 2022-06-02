@@ -1,0 +1,62 @@
+.item-record.unavailable {
+    background-color: lightpink;
+}
+.item-record.unavailable.active {
+    background-color: lightpink;
+}
+.item-record.unavailable.reserved{
+    background-color : khaki;
+}
+
+button {
+    white-space: nowrap;
+}
+
+
+.chk-giveout .bi-question {
+    display: none;
+}
+.chk-giveout .bi-plus {
+    display: inline;
+}
+.chk-giveout.unavailable .bi-question {
+    display: inline;
+}
+.chk-giveout.unavailable .bi-plus {
+    display: none;
+}
+
+
+.check-with-label:checked + .label-for-check {
+    font-weight: bold;
+}
+
+
+dt {
+    text-align: right;
+}
+
+.half-row{
+    font-size: 10px;
+}
+@media(max-width:576px) {
+    .half-row {
+        font-size: 8px;
+    }
+}
+@media(max-width:768px) {
+    .half-row {
+        font-size: 10px;
+    }
+}
+
+
+select.form-control {
+    -webkit-appearance: menulist;
+}
+
+.error {
+    color: red;
+}
+
+

@@ -4,9 +4,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore.Proxies;
 using Bikepark.Data;
-using Bikepark.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Configuration
+            .SetBasePath(Environment.CurrentDirectory)
+            .AddJsonFile("bikepark.json", optional: true, reloadOnChange: true);
+
 
 var connectionString = builder.Configuration.GetConnectionString("SQLiteConnection");
 builder.Services.AddDbContext<BikeparkContext>(options => options
@@ -14,9 +19,16 @@ builder.Services.AddDbContext<BikeparkContext>(options => options
                                                 .UseSqlite(connectionString)); 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<IdentityUser>(options => {
+    options.SignIn.RequireConfirmedAccount = false;
+    options.SignIn.RequireConfirmedEmail = false;
+    })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<BikeparkContext>();
+
+builder.Services.AddOptions();
+builder.Services.Configure<Bikepark.BikeparkConfig>(builder.Configuration.GetSection("Bikepark"));
+
 
 builder.Services.AddControllersWithViews(config =>
 {
@@ -25,13 +37,14 @@ builder.Services.AddControllersWithViews(config =>
                      .Build();
     config.Filters.Add(new AuthorizeFilter(policy));
 });
-    
+
 builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .Build();
 });
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -40,11 +53,11 @@ builder.Services.AddSwaggerGen();
 // builder.Services.AddScoped<IAuthorizationHandler,
 //                       ContactIsOwnerAuthorizationHandler>();
 
-builder.Services.AddSingleton<IAuthorizationHandler,
-                      BikeparkAdministratorsAuthorizationHandler>();
+//builder.Services.AddSingleton<IAuthorizationHandler,
+//                      BikeparkAdministratorsAuthorizationHandler>();
 
-builder.Services.AddSingleton<IAuthorizationHandler,
-                      BikeparkManagerAuthorizationHandler>();
+//builder.Services.AddSingleton<IAuthorizationHandler,
+//                      BikeparkManagerAuthorizationHandler>();
 
 
 var supportedCultures = new[] { "ru-RU", "ru" };

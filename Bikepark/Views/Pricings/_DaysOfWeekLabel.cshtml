@@ -1,0 +1,11 @@
+﻿@model IEnumerable<DayOfWeek>
+@{}
+
+<div class="btn-group">
+    @foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>())
+    {
+        var val = DayOfWeekRu.ForDay(day);
+        var style = Model.Contains(day)?"alert-success":"alert-light";
+        <label class ="btn btn-sm @style" > @val </label>
+    }
+</div>

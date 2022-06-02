@@ -1,0 +1,71 @@
+﻿@model Bikepark.Models.Item
+
+@using Bikepark.Models
+@using Microsoft.EntityFrameworkCore
+@using Bikepark.Views.Helpers
+
+@{
+    Layout = "_MainLayout";
+    ViewData["Title"] = "Данные об инвентаре";
+    IEnumerable<Bikepark.Models.ItemRecord> ItemRecs = ViewBag.ItemRecs;
+
+    string archival = Model.Archival ? "(Архив)" : "";
+}
+
+
+
+
+    <h1>Просмотр</h1>
+    <h3>Номер #@Model.ItemID @archival</h3>
+
+<hr />
+
+<div  class="row-cols-1">
+    <dl class="row">
+        <dt class = "col-sm-4" >
+            @Html.DisplayNameFor(model => model.ItemType.ItemTypeName)
+        </dt>
+        <dd class = "col-sm-8">
+            @Html.DisplayFor(model => model.ItemType.ItemCategory.ItemCategoryName)
+            @Html.DisplayFor(model => model.ItemType.ItemTypeName)
+        </dd>
+        <dt class = "col-sm-4">
+            @Html.DisplayNameFor(model => model.ItemNumber)
+        </dt>
+        <dd class = "col-sm-8">
+            @Html.DisplayFor(model => model.ItemNumber)
+        </dd>
+        <dt class = "col-sm-4">
+            @Html.DisplayNameFor(model => model.ItemType.PricingCategory)
+        </dt>
+        <dd class = "col-sm-8">
+            @Html.DisplayFor(model => model.ItemType.PricingCategory.PricingCategoryName)
+        </dd>
+    </dl>
+    
+    <dl class="row" style="display: none">
+        <dt class = "col-sm-4" >
+            @Html.DisplayNameFor(model => model.ItemType.ItemSize)
+        </dt>
+        <dd class = "col-sm-8">
+            @Html.DisplayFor(model => model.ItemType.ItemSize)
+        </dd>
+        <dt class = "col-sm-4">
+            @Html.DisplayNameFor(model => model.ItemType.ItemAge)
+        </dt>
+        <dd class = "col-sm-8">
+            @Html.DisplayFor(model => model.ItemType.ItemAge)
+        </dd>
+        <dt class = "col-sm-4">
+            @Html.DisplayNameFor(model => model.ItemType.ItemGender)
+        </dt>
+        <dd class = "col-sm-8">
+            @Html.DisplayFor(model => model.ItemType.ItemGender)
+        </dd>
+    </dl>
+
+</div>
+
+<div class="row-cols-1" id="item-rents">
+    <partial name="_ItemSchedule" model="@ItemRecs" />  
+</div> 

@@ -1,0 +1,81 @@
+﻿@model Bikepark.Models.Pricing
+
+@{
+    ViewData["Title"] = "Тариф";
+    ViewData["menu"] = "pricing";
+    Layout = "_MainLayout";
+
+
+    string archival = Model.Archival ? "(Архив)" : "";
+}
+
+
+    <h1>Просмотр</h1>
+    <h3>Тариф #@Model.PricingID @archival</h3>
+
+
+
+
+
+
+<hr />
+<div class="container-sm">  
+    <div class="row">
+        <div class="col-md-4">
+            <dl>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.PricingName)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.PricingName)
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.PricingCategory)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.PricingCategory.PricingCategoryName)
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.PricingType)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.PricingType)
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.DaysOfWeek)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    <partial name="_DaysOfWeekLabel" model="@Model.DaysOfWeek" />
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.IsHoliday)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.IsHoliday)
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.IsReduced)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.IsReduced)
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.MinDuration)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.MinDuration)
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.Price)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.Price)
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <div>
+        <a asp-action="Index" class="btn btn-secondary" >К списку</a>
+        <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model?.PricingID">Редактировать</a>
+    </div>
+</div>

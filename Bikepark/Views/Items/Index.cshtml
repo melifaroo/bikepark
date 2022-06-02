@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Bikepark.Models.Item>
+
+@{
+    ViewData["Title"] = "Единицы";
+    ViewData["menu"] = "items";
+    ViewData["Route"] = "";
+    Layout = "_MainLayout";
+}
+
+<h1>Велосипеды и амуниция</h1>
+
+<p>
+    <a asp-action="Create">Добавить</a> | <a asp-controller="Storage" asp-action="Index">Склад</a>
+</p>    
+  
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ItemType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ItemNumber)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ItemType.ItemTypeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ItemNumber)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ItemID">Изменить</a> |
+                <a asp-action="Details" asp-route-id="@item.ItemID">Просмотр</a> |
+                <a asp-action="Delete" asp-route-id="@item.ItemID">Удалить</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
