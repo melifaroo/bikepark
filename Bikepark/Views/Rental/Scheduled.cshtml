@@ -1,0 +1,18 @@
+﻿@model IEnumerable<Bikepark.Models.Record>
+
+@{
+    Layout = "_MainLayout";
+    ViewData["Title"] = "Брони";
+    ViewData["menu"] = "log-scheduled";
+    ViewData["Status"] = "Sheduled";
+}
+
+
+<h1>Брони</h1>
+
+<p>
+    <a asp-action="Create">Новый прокат</a>
+</p>
+
+
+<partial name="_Log"  /> 

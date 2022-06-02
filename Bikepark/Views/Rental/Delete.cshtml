@@ -1,15 +1,14 @@
-﻿@model Bikepark.Models.RentalRecord
+﻿@model Bikepark.Models.Record
 
 @{
-    Layout = "_RentalLayout";
+    Layout = "_MainLayout";
     ViewData["Title"] = "Прокат";
 }
 
-<h1>Delete</h1>
-
-<h3>Are you sure you want to delete this?</h3>
+<h1>Удалить</h1>
+<h3>Вы уверены?</h3>
 <div>
-    <h4>RentalRecord</h4>
+    <h4>Запись #@Model.RecordID</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -19,10 +18,10 @@
             @Html.DisplayFor(model => model.Customer.CustomerID)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RentalStatus)
+            @Html.DisplayNameFor(model => model.Status)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RentalStatus)
+            @Html.DisplayFor(model => model.Status)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Start)
@@ -36,17 +35,11 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.End)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndActual)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndActual)
-        </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="RentalRecordID" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="hidden" asp-for="RecordID" />
+        <a asp-action="Index" class="btn btn-secondary" >Отмена</a> |
+        <input type="submit" value="Удалить" class="btn btn-danger" /> 
     </form>
 </div>

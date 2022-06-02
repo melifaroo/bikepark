@@ -1,0 +1,79 @@
+﻿@model Bikepark.Models.Pricing
+
+@{
+    ViewData["Title"] = "Удалить тариф";
+    ViewData["menu"] = "pricing";
+    Layout = "_MainLayout";
+    var hasRecords = ViewBag.HasRecords;
+    var action = hasRecords ? "АРХИВИРОВАТЬ" : "УДАЛИТЬ";
+
+
+}
+
+    <h1>Удалить</h1>
+    <h3>Вы действительно хотите удалить тариф #@Model.PricingID?</h3>
+    @if (hasRecords)
+    { 
+        <h5 style="display:inline">В журнале есть записи выданные с этим тарифом</h5>  
+        <p><a target="_blank" rel="noopener noreferrer" href="/Rental/WithPricing/?id=@Model.PricingID">Просмотреть в новой вкладке?</a></p>
+        <p>Поэтому тариф будет заархивирован</p>
+    }   
+<hr />
+ <div class="container-sm"> 
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PricingName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PricingName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PricingCategory)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PricingCategory.PricingCategoryName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PricingType)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PricingType)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DaysOfWeek)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DaysOfWeek)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsHoliday)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IsHoliday)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsReduced)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IsReduced)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MinDuration)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MinDuration)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="PricingID" />
+        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+        <input type="submit" value="@action" class="btn btn-danger" />
+    </form>
+</div>

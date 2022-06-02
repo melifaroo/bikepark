@@ -1,0 +1,45 @@
+﻿@model Bikepark.Models.Item
+
+@{
+    ViewData["Title"] = "Прокатная единица";
+    ViewData["menu"] = "items";
+    Layout = "_MainLayout";
+    string archival = Model.Archival ? "(Архив)" : "";
+}
+
+
+
+
+    <h1>Просмотр</h1>
+    <h3>Номер #@Model.ItemID @archival</h3>
+
+
+
+
+
+
+<hr />
+<div class="container-sm">  
+    <div class="row">
+        <div class="col-md-3">
+            <dl class="row">
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.ItemType)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.ItemType.ItemTypeName)
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.ItemNumber)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.ItemNumber)
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <div>
+        <a asp-action="Index"  class="btn btn-secondary">К списку</a>
+        <a asp-action="Edit"  class="btn btn-primary" asp-route-id="@Model?.ItemID">Редактировать</a>
+    </div>
+</div>

@@ -1,7 +1,7 @@
-﻿@model Bikepark.Models.RentalRecord
+﻿@model Bikepark.Models.Record
 
 @{
-    Layout = "_RentalLayout";
+    Layout = "_MainLayout";
     ViewData["Title"] = "Прокат";
 }
 }
@@ -19,10 +19,10 @@
             @Html.DisplayFor(model => model.Customer.CustomerID)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RentalStatus)
+            @Html.DisplayNameFor(model => model.Status)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RentalStatus)
+            @Html.DisplayFor(model => model.Status)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Start)
@@ -36,15 +36,9 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.End)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndActual)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndActual)
-        </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.RentalRecordID">Edit</a> |
+    <a asp-action="Control" asp-route-id="@Model?.RecordID">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

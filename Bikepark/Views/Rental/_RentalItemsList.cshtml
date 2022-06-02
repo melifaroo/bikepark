@@ -1,7 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@model Bikepark.Models.RentalRecord
+@model Bikepark.Models.Record
 
 @using Bikepark.Models
 @using Microsoft.EntityFrameworkCore
@@ -9,43 +9,50 @@
 @{
     DbSet<Item> Items = ViewBag.Items;
     List<ItemType> Types = ViewBag.Types;
-    DbSet<RentalRecord> Rents = ViewBag.Rents;
-    DbSet<RentalItem> RentedItems = ViewBag.RentedItems;
-    RentalItem someRentalItem = new RentalItem();
+    DbSet<Record> Rents = ViewBag.Rents;
+    DbSet<ItemRecord> RentedItems = ViewBag.RentedItems;
+    ItemRecord someItemRecord = new ItemRecord();
 }
 
-<table id="rental-items-list">
+<table class="tablealign">
     <thead>
         <tr>
             <th style="width : 20%">
-                Управление
+                <div class="row-sm">Управление</div>
             </th>
             <th style="width : 20%">
-                @Html.DisplayNameFor(m => someRentalItem.Item.ItemType)
+                <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.Item.ItemType)</div>
             </th>
             <th style="width : 10%">
-                @Html.DisplayNameFor(m => someRentalItem.Item.ItemNumber)
+                <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.Item.ItemNumber)</div>
             </th >
             <th  style="width : 20%">
-                @Html.DisplayNameFor(m => someRentalItem.RentalPricing.RentalPricingName)
+                <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.Pricing.PricingName)</div>
             </th>
             <th style="width : 10%">
-                Стоимость
+                <div class="row-sm">Сумма</div>
             </th>
             <th style="width : 20%">
-                Время
-            </th>
-            <th>
-            </th>
-            <th>
+                <div class="row-sm">Время</div>
             </th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var rentedItem in Model.RentalItems)
+    <tbody id="rental-items-list">
+        @foreach (var itemRecord in Model.ItemRecords)
         {
-            <partial name="_RentalItemRow" model = "@rentedItem" />  
+            <partial name="_ItemRecordRow" model = "@itemRecord" />  
         }
+    </tbody>
+    <tbody>
+        <tr>
+            <td>    
+                <div class="d-flex flex-row">
+                    <button type="button" class="btn btn-success" id="btn-show-items-chooser">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>                 
+                </div>  
+            </td>
+        </tr>
     </tbody>
 </table>
                                 

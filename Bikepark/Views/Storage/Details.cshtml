@@ -1,0 +1,144 @@
+﻿@model Bikepark.Models.ItemType
+
+@{
+    ViewData["Title"] = "Просмотр модели";
+    ViewData["menu"] = "storage";
+    Layout = "_MainLayout";
+    string archival = Model.Archival ? "(Архив)" : "";
+}
+
+
+
+
+    <h1>Просмотр</h1>
+    <h3>Модель #@Model.ItemTypeID @archival</h3>
+
+
+
+
+
+
+<hr />
+<div class="container-sm">  
+    <div class="row">
+        <div class="col-md-3">
+            <input type="hidden" id="typeid" value="@Model.ItemTypeID" />
+             <dl>        
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.ItemTypeName)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.ItemTypeName)
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.ItemCategory)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.ItemCategory.ItemCategoryName)
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.PricingCategory)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.PricingCategory.PricingCategoryName)
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.ItemDescription)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.ItemDescription)
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.ItemExternalURL)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.ItemExternalURL)
+                </dd>
+            </dl>
+        </div>
+    
+        <div class="col-md-3">
+            <dl>
+        
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.ItemSize)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.ItemSize)
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.ItemWheelSize)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.ItemWheelSize)
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.ItemAge)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.ItemAge)
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.ItemGender)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.ItemGender)
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.ItemColor)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.ItemColor)
+                </dd>
+            </dl>
+        </div>
+
+    
+        <div class="col-md-6">
+            <row >
+                    Номера | 
+                    <a asp-action="Numbers" asp-route-id="@Model?.ItemTypeID">Изменить</a> 
+                    @*| 
+                    <button type="button" class="btn btn-link" id="btn-item-numbers-view" data-typeid="@Model?.ItemTypeID">Показать</button>*@
+                
+            </row>
+            <div id = "item-numbers-preview">
+
+            </div>
+        </div>
+    </div>
+    <div>
+        <a asp-action="Index"  class="btn btn-secondary">К списку</a>
+        <a asp-action="Edit"  class="btn btn-primary" asp-route-id="@Model?.ItemTypeID">Редактировать</a>
+     </div>   
+</div>
+
+<style>
+
+    dd {
+        height : 2em;
+    }
+
+    dd {
+    text-align: left;
+    overflow: hidden;
+    vertical-align: text-top;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    }
+
+    dd:hover {
+        text-overflow: clip;
+        white-space: initial;
+    }
+
+
+</style>
+
+             
+@section Scripts {          
+    <script src="~/js/storage-details.js"></script> 
+    <script>
+        var url_itemtype_numbers = "@Url.Action("ItemTypeNumbers", "storage")";   
+    </script>
+}

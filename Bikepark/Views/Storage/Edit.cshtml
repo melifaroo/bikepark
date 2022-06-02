@@ -1,0 +1,152 @@
+﻿@model Bikepark.Models.ItemType
+
+@{
+    ViewData["Title"] = "Редактирование модели";
+    ViewData["menu"] = "storage";
+    Layout = "_MainLayout";
+    int itemsCount = ViewBag.ItemsCount;
+    var hasRecords = ViewBag.HasRecords;
+    string archival = Model.Archival ? "(Архив)" : "";
+}
+@if (Model.ItemTypeID != null)
+{
+    <h1>Редактировать</h1>
+    <h3>Модель #@Model.ItemTypeID @archival</h3>
+}
+else
+{
+    <h1>Добавить</h1>
+    <h3>Модель</h3>    
+}
+<hr />
+ <div class="container-sm">  
+    <form asp-controller="Storage">
+        <div class="row">
+            <div class="col-md-3">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" id="typeid" name="ItemTypeID" value="@Model.ItemTypeID" />
+                <input type="hidden" asp-for="Archival" />
+                <div class="form-group">
+                    <label asp-for="ItemTypeName" class="control-label"></label>
+                    <input asp-for="ItemTypeName" class="form-control" required/>
+                    <span asp-validation-for="ItemTypeName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ItemCategoryID" class="control-label"></label>
+                    <select asp-for="ItemCategoryID" class="form-control" asp-items="ViewBag.ItemCategoryID">
+                        <option value="">Не указана</option>
+                    </select>
+                    <span asp-validation-for="ItemCategoryID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PricingCategoryID" class="control-label"></label>
+                    <select asp-for="PricingCategoryID" class="form-control" asp-items="ViewBag.PricingCategoryID" required>
+                        <option value="">Не указана</option>
+                    </select>
+                    <span asp-validation-for="PricingCategoryID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ItemDescription" class="control-label"></label>
+                    <input asp-for="ItemDescription" class="form-control" />
+                    <span asp-validation-for="ItemDescription" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ItemExternalURL" class="control-label"></label>
+                    <input asp-for="ItemExternalURL" class="form-control" />
+                    <span asp-validation-for="ItemExternalURL" class="text-danger"></span>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label asp-for="ItemSize" class="control-label"></label>
+                    @*<input asp-for="ItemSize" class="form-control" />*@
+                    <select asp-for="ItemSize" asp-items="Html.GetEnumSelectList<ItemSize>()" class="form-control"></select>
+                  
+                    <span asp-validation-for="ItemSize" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ItemWheelSize" class="control-label"></label>
+                    <input asp-for="ItemWheelSize" class="form-control" />
+                    <span asp-validation-for="ItemWheelSize" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ItemAge" class="control-label"></label>
+                    @*<input asp-for="ItemAge" class="form-control" />*@
+                    <select asp-for="ItemAge" asp-items="Html.GetEnumSelectList<ItemAge>()" class="form-control"></select>
+                    <span asp-validation-for="ItemAge" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ItemGender" class="control-label"></label>
+                    @*<input asp-for="ItemGender" class="form-control" />*@
+                    <select asp-for="ItemGender" asp-items="Html.GetEnumSelectList<ItemGender>()" class="form-control"></select>
+                    <span asp-validation-for="ItemGender" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ItemColor" class="control-label"></label>
+                    <input asp-for="ItemColor" class="form-control" />
+                    <span asp-validation-for="ItemColor" class="text-danger"></span>
+                </div>
+            </div>
+        
+
+            <div class="col-md-6">
+                <row >
+                        Номера (@itemsCount) |  
+                        <a asp-action="Numbers" asp-route-id="@Model?.ItemTypeID">Изменить</a>
+                        @*| 
+                        <button type="button" class="btn btn-link" id="btn-item-numbers-view" data-typeid="@Model?.ItemTypeID">Показать</button>   *@             
+                </row>
+                <div id = "item-numbers-preview">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-row justify-content-start">
+            <div class="row row-cols-4 col-md-9 mt-3">
+                <div class="form-group col-md-2 ">  
+                    <a asp-action="Index" class="btn btn-secondary col-md-12">Отмена</a>
+                </div>
+                @if (Model.ItemTypeID != null)
+                {
+                    <div class="form-group col-md-2 ">
+                        <button type="submit" asp-action="Edit" class="btn btn-dark col-md-12" >Исправить</button>
+                    </div>
+                    @if (hasRecords)
+                    {
+                        <div class="form-group col-md-2 ">
+                            <button type="submit"  asp-action="Replace" class="btn btn-primary col-md-12"  title="Заменить старую модель у всех номеров, предыдущая модель и номера будут заархивированы">Заменить</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-2 ">
+                        </div>                        
+                    }
+                    <div class="form-group col-md-2 ">
+                        <button type="submit"  asp-action="Create" class="btn btn-info col-md-12" title="Скопировать описание и создать новую модель без присвоенных номеров">Копировать</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group col-md-2 ">
+                        <button type="submit"  asp-action="Create" class="btn btn-primary col-md-12" >Создать</button>
+                    </div>
+                    <div class="col-md-2 ">
+                    </div>
+                    <div class="col-md-2 ">
+                    </div>
+                }
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {          
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/storage-details.js"></script> 
+    <script>
+        var url_itemtype_numbers = "@Url.Action("ItemTypeNumbers", "storage")";   
+    </script>
+}

@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model IEnumerable<UserRole>
+
+@{
+    ViewData["Title"] = "Единицы";
+    ViewData["menu"] = "items";
+    Layout = "_MainLayout";
+}
+
+<h1>Учетные записи администраторов велопарка</h1>
+  
+<p>
+    <a asp-action="Main" asp-controller="Storage">Управление</a>   
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Пользователь
+            </th>
+            <th>
+                Роль
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.NormalizedUserName)
+            </td>
+            <td>
+                @if (  item.IsAdmin ){   
+                    <i>Администратор</i>
+                }
+            </td>
+            <td>
+                <a asp-action="Delete" asp-route-id="@item.User.Id">Удалить</a> |
+                @if ( item.IsAdmin ){  
+                        <a asp-action="WithdrawAdminRole" asp-route-id="@item.User.Id">Снять</a>                       
+                    }
+                    else
+                    {                  
+                        <a asp-action="AssignAdminRole" asp-route-id="@item.User.Id">Назначить администратором</a>    
+                    }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

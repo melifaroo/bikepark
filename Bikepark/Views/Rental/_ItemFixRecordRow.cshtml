@@ -1,0 +1,59 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model Bikepark.Models.ItemRecord
+@using Bikepark.Models
+@using Microsoft.EntityFrameworkCore;
+@using HtmlHelpers.BeginCollectionItemCore
+@{    
+    DbSet<Pricing> prices = ViewBag.Prices;
+    IEnumerable<Pricing> serviceprices = await PricingFilter.ServicePricing(prices, Model.Item.ItemType.PricingCategoryID );
+
+}   
+<tr class="item-fixing-record" data-itemid="@Model.ItemID" data-id="@Model.GetHashCode()">  
+    <input type="hidden" name="ItemRecords.index" autocomplete="off" value="@Model.GetHashCode()" />
+        <td  style="width : 15%">
+            <div class="d-flex flex-row">
+                <select name="ItemRecords[@Model.GetHashCode()].Status" asp-items="Html.GetEnumSelectList<Status>().Where(sli => int.Parse(sli.Value)>3)">
+                   
+                </select>
+                  
+                <input name="ItemRecords[@Model.GetHashCode()].ItemRecordID"    value="@Model.ItemRecordID" class="itemrecordid" type="hidden"/> 
+                <input name="ItemRecords[@Model.GetHashCode()].RecordID"        value="@Model.RecordID"     class="recordid" type="hidden"/> 
+                <input name="ItemRecords[@Model.GetHashCode()].ItemID"          value="@Model.ItemID"       class="itemid" type="hidden"/> 
+                <div class="col-sm">
+                    <p class="half-row my-0">rec#   @Html.DisplayFor(m => Model.RecordID)</p>
+                    <p class="half-row my-0">reci#  @Html.DisplayFor(m => Model.ItemRecordID)</p>
+                </div>
+                <div class="col-sm">
+                    <p class="half-row my-0">item   @Html.DisplayFor(m => Model.ItemID)</p>
+                    <p class="half-row my-0">price  @Html.DisplayFor(m => Model.PricingID)</p>
+                </div>       
+            </div>
+        </td>         
+        <td  style="width : 15%">
+            @Html.DisplayFor(m => Model.Item.ItemType.ItemTypeName)
+        </td>
+        <td  style="width : 10%; font-weight: bold">
+            <a target="_blank" rel="noopener noreferrer" href="/Rental/ItemDetails?id=@Model.ItemID">
+                #@Html.DisplayFor(m => Model.Item.ItemNumber)
+            </a>
+        </td>
+        <td style="width : 15%">
+            <input name="ItemRecords[@Model.GetHashCode()].Start"   value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"  class="start" type="datetime-local"/> 
+        </td>        
+        <td style="width : 15%">
+            <input name="ItemRecords[@Model.GetHashCode()].End"     value=""                                             class="end"   type="datetime-local"/>
+        </td> 
+        <td  style="width : 20%">
+            <select name="ItemRecords[@Model.GetHashCode()].PricingID" class="form-control form-control-sm pricing" title="">                 
+                <partial name="_ItemRecordPricingOptions" model="@serviceprices"/>  
+            </select>
+        </td>
+        <td  style="width : 10%">
+            @Html.DisplayFor(m => Model.Pricing.Price)
+            -
+            @Html.DisplayFor(m => Model.Pricing.PricingType)
+        </td>   
+</tr>   

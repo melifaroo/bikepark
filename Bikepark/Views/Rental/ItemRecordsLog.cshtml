@@ -1,0 +1,11 @@
+﻿@model IEnumerable<Bikepark.Models.ItemRecord>
+
+@{
+    Layout = "_MainLayout";
+    ViewData["Title"] = "Журнал проката";
+    ViewData["menu"] = "log";
+}
+
+<h1>Журнал выдачи номеров</h1>
+
+<partial name="_ItemRecordsLog"  /> 

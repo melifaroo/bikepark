@@ -1,0 +1,26 @@
+﻿@model Bikepark.Models.ItemCategory
+
+@{
+    ViewData["Title"] = "Категория прокатных единиц";
+    ViewData["menu"] = "storage";
+    Layout = "_MainLayout";
+}
+
+<h1>Просмотр</h1>
+
+<div>
+    <h4>Категория прокатных единиц</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ItemCategoryName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ItemCategoryName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.ItemCategoryID">Изменить</a> |
+    <a asp-action="Index">К списку</a>
+</div>

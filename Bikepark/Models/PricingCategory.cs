@@ -10,5 +10,6 @@ namespace Bikepark.Models
         [Column(TypeName = "nvarchar(255)")]
         [Display(Name = "Категория тарификации")]
         public string? PricingCategoryName { get; set; }
+
     }
 }

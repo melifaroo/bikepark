@@ -1,0 +1,99 @@
+﻿@model IEnumerable<Bikepark.Models.ItemRecord>
+
+@{
+
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Start)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.End)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Record)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Item.ItemType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Item)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pricing)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {            
+            var alert = "";
+            if (item.Status == Status.Scheduled)
+            {
+                if (item.Start < DateTime.Now.AddMinutes(60))
+                    alert = "alert alert-warning";
+                if (item.Start < DateTime.Now)
+                    alert = "alert alert-danger";
+            }else 
+            if (item.Status == Status.Active)
+            {
+                if (item.End < DateTime.Now.AddMinutes(30))
+                    alert = "alert alert-warning";
+                if (item.End < DateTime.Now)
+                    alert = "alert alert-danger";                
+            }else 
+            if (item.Status >= Status.Service)
+            {
+                if (item.End < DateTime.Now.AddDays(1))
+                    alert = "alert alert-warning";
+                if (item.Status == Status.Service)
+                    alert = "alert alert-danger";                
+            }
+            <tr class="@alert">
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Start)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.End)
+            </td>
+            <td>
+                #@Html.DisplayFor(modelItem => item.RecordID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Item.ItemType.ItemTypeName)
+            </td>
+            <td>
+                #@Html.DisplayFor(modelItem => item.Item.ItemNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Pricing.PricingName)
+                :
+                @Html.DisplayFor(modelItem => item.Pricing.Price)
+                -
+                @Html.DisplayFor(modelItem => item.Pricing.PricingType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.NormalizedUserName)
+            </td>
+            <td>
+                @if ( User.Identity.IsAuthenticated ){
+                    if ( User.IsInRole(BikeparkConfig.ManagersRole) ){  
+                        <a asp-action="DeleteItemRecord" asp-route-id="@item.ItemRecordID">Удалить</a> 
+                    }
+                }                
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

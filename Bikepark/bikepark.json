@@ -1,0 +1,7 @@
+{
+  "Bikepark": {
+    "WorkingHoursStart": "00:00",
+    "WorkingHoursEnd": "23:59",
+    "MinServiceDelayBetweenRents": 0.5
+  }
+}

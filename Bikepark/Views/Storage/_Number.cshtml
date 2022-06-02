@@ -1,0 +1,25 @@
+﻿@model Bikepark.Models.Item
+@{
+    
+    var link = Model.ItemID == null? "" :"/Items/Details?id="+Model.ItemID;
+
+}
+<div class="btn-group item-number" id="item-@Model.GetHashCode()" data-itemnumber="@Model.ItemNumber" > 
+    <input type="hidden" name="ItemsList.index" autocomplete="off" value="@Model.GetHashCode()" />
+    
+    <div class="input-group mx-1">
+        @{
+            if (Model.ItemID == null){
+                <a id="btn-item-@Model.ItemNumber" class="btn btn-sm btn-outline-success btn-number" data-itemnumber="@Model.ItemNumber">@Model.ItemNumber</a>         
+            }else{
+                <a id="btn-item-@Model.ItemNumber" class="btn btn-sm btn-success btn-number" data-itemnumber="@Model.ItemNumber" target="_blank" rel="noopener noreferrer" href="@link">@Model.ItemNumber</a>  
+            }
+        }
+        <input type="checkbox" id="chk-item-remove-@Model.ItemNumber"  class="btn-check btn-remove" data-itemnumber="@Model.ItemNumber" />
+        <label for="chk-item-remove-@Model.ItemNumber" class="btn btn-sm btn-outline-danger btn-remove-label" > <i class="bi bi-x"></i> </label>
+    </div>
+    <input type="hidden" name="ItemsList[@Model.GetHashCode()].ItemID" value = "@Model.ItemID"/>
+    <input type="hidden" name="ItemsList[@Model.GetHashCode()].ItemTypeID" value = "@Model.ItemTypeID"/>
+    <input type="hidden" name="ItemsList[@Model.GetHashCode()].ItemNumber" value = "@Model.ItemNumber" />
+</div>
+

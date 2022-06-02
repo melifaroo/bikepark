@@ -1,8 +1,9 @@
-﻿@model IEnumerable<Bikepark.Models.RentalRecord>
+﻿@model IEnumerable<Bikepark.Models.Record>
 
 @{
-    Layout = "_RentalLayout";
+    Layout = "_MainLayout";
     ViewData["Title"] = "Журнал проката";
+    ViewData["menu"] = "log";
 }
 
 
@@ -11,60 +12,6 @@
 <p>
     <a asp-action="Create">Новый прокат</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.RentalStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Start)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.End)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndActual)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Customer)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.RentalStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Start)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.End)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndActual)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Customer.CustomerFullName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.RentalRecordID">Изменить</a> |
-                <a asp-action="Details" asp-route-id="@item.RentalRecordID">Просмотр</a> 
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-@section Scripts {      
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script>        
-        
-        $(document).ready(function(){
-           $(".navbar-nav #link-rental-log").addClass("active");
-        });
-    
-    </script>
-}
+
+
+<partial name="_Log"  /> 

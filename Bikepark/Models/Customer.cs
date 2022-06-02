@@ -5,7 +5,7 @@ namespace Bikepark.Models
 {
     public class Customer
     {
-        public int CustomerID { get; set; }
+        public int? CustomerID { get; set; }
         [Display(Name = "Контактный телефон")]
         public string? CustomerContactNumber { get; set; }
         [Display(Name = "Имя/Фамилия")]

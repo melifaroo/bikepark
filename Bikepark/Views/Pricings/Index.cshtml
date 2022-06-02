@@ -1,0 +1,80 @@
+﻿@model IEnumerable<Bikepark.Models.Pricing>
+
+@{
+    ViewData["Title"] = "Index";
+    ViewData["menu"] = "pricing";
+    Layout = "_MainLayout";
+}
+
+<h1>Тарифы</h1>
+
+<p>
+    <a asp-action="Create">Создать тариф</a> |
+    <a asp-action="Index" asp-controller="PricingCategories" >Категории тарифов</a>     | 
+    <a asp-action="Main" asp-controller="Storage">Управление</a>   
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PricingName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PricingCategory)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PricingType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DaysOfWeek)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsHoliday)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsReduced)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MinDuration)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PricingName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PricingCategory.PricingCategoryName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PricingType)
+            </td>
+            <td>                
+                <partial name="_DaysOfWeekLabel" model="@item.DaysOfWeek" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsHoliday)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsReduced)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MinDuration)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.PricingID">Изменить</a> |
+                <a asp-action="Delete" asp-route-id="@item.PricingID">Удалить</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

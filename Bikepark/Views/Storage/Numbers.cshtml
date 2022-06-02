@@ -1,0 +1,188 @@
+﻿@model NumbersOfType
+
+@{
+    ViewData["Title"] = "Просмотр модели";
+    ViewData["menu"] = "storage";
+    Layout = "_MainLayout";
+    var Error = ViewBag.Error;
+    ItemType ItemType = ViewBag.ItemType;
+    var SuggestedNumder = 0;
+    @foreach (var item in Model.ItemsList)
+    {
+        if (int.TryParse( item.ItemNumber, out int num)) {
+            SuggestedNumder = Math.Max(SuggestedNumder, num + 1);
+        }
+    }
+    var SuggestedStartNumder = SuggestedNumder;
+    var SuggestedEndNumder = SuggestedNumder+1;
+}
+
+<h1>Номера единиц</h1>
+
+<h4>Модель</h4>
+<hr />
+
+<form asp-controller="Storage" id="numbers-form" class="container-sm">
+<div class="row">
+    <div class="col-md-3">
+        <input type="hidden" id="typeid" name="ItemTypeID" value="@Model.ItemTypeID" />
+         <dl>        
+            <dt class = "row justify-content-start ms-1">
+                @Html.DisplayNameFor(model => ItemType.ItemTypeName)
+            </dt>
+            <dd class = "row justify-content-start ms-3">
+                @Html.DisplayFor(model => ItemType.ItemTypeName)
+            </dd>
+            <dt class = "row justify-content-start ms-1">
+                @Html.DisplayNameFor(model => ItemType.ItemCategory)
+            </dt>
+            <dd class = "row justify-content-start ms-3">
+                @Html.DisplayFor(model => ItemType.ItemCategory.ItemCategoryName)
+            </dd>
+            <dt class = "row justify-content-start ms-1">
+                @Html.DisplayNameFor(model => ItemType.PricingCategory)
+            </dt>
+            <dd class = "row justify-content-start ms-3">
+                @Html.DisplayFor(model => ItemType.PricingCategory.PricingCategoryName)
+            </dd>
+            <dt class = "row justify-content-start ms-1">
+                @Html.DisplayNameFor(model => ItemType.ItemDescription)
+            </dt>
+            <dd class = "row justify-content-start ms-3">
+                @Html.DisplayFor(model => ItemType.ItemDescription)
+            </dd>
+            <dt class = "row justify-content-start ms-1">
+                @Html.DisplayNameFor(model => ItemType.ItemExternalURL)
+            </dt>
+            <dd class = "row justify-content-start ms-3">
+                @Html.DisplayFor(model => ItemType.ItemExternalURL)
+            </dd>
+        </dl>
+    </div>
+    
+    <div class="col-md-3">
+        <dl>
+        
+            <dt class = "row justify-content-start ms-1">
+                @Html.DisplayNameFor(model => ItemType.ItemSize)
+            </dt>
+            <dd class = "row justify-content-start ms-3">
+                @Html.DisplayFor(model => ItemType.ItemSize)
+            </dd>
+            <dt class = "row justify-content-start ms-1">
+                @Html.DisplayNameFor(model => ItemType.ItemWheelSize)
+            </dt>
+            <dd class = "row justify-content-start ms-3">
+                @Html.DisplayFor(model => ItemType.ItemWheelSize)
+            </dd>
+            <dt class = "row justify-content-start ms-1">
+                @Html.DisplayNameFor(model => ItemType.ItemAge)
+            </dt>
+            <dd class = "row justify-content-start ms-3">
+                @Html.DisplayFor(model => ItemType.ItemAge)
+            </dd>
+            <dt class = "row justify-content-start ms-1">
+                @Html.DisplayNameFor(model => ItemType.ItemGender)
+            </dt>
+            <dd class = "row justify-content-start ms-3">
+                @Html.DisplayFor(model => ItemType.ItemGender)
+            </dd>
+            <dt class = "row justify-content-start ms-1">
+                @Html.DisplayNameFor(model => ItemType.ItemColor)
+            </dt>
+            <dd class = "row justify-content-start ms-3">
+                @Html.DisplayFor(model => ItemType.ItemColor)
+            </dd>
+        </dl>
+    </div>
+
+    
+    <div class="col-md-6">
+                    
+        <div class = "row justify-content-start">
+            <div class="row row-cols-2 flex-md-nowrap justify-content-start">
+                <span>Номера модели ( @Model.ItemsList.Count ) | </span>
+                <a asp-action="Edit" asp-route-id="@Model.ItemTypeID">Модель</a>   
+            </div>
+        </div>
+        <hr />
+        
+        <div class="row row-cols-3 mt-1">
+            <div class="form-group col-md-3">
+                <label for="new-item-number" class="control-label text-truncate">Добавить номер</label>
+            
+                <div class="input-group">
+                    <input id="new-item-number" name="new-item-number" class="form-control" type="text" inputmode="numeric"  placeholder="@SuggestedNumder" />
+                    <input type="button" id="add-new-item-number" data-typeid="@Model.ItemTypeID" class="btn btn-outline-success" value="+"/>
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="new-item-number" class="control-label text-truncate">Добавить диапазон номеров </label>
+            
+                <div class="input-group">
+                    <input id="new-items-start-number" name="new-items-range" class="form-control" type="text" inputmode="numeric" placeholder="@SuggestedStartNumder"  />
+                    <input id="new-items-end-number" class="form-control" type="text" inputmode="numeric" placeholder="@SuggestedEndNumder"   />
+                    <input type="button" id="add-new-items-number-range" class="btn btn-outline-success"  data-typeid="@Model.ItemTypeID" value="+"/>
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="remove-selected-item-numbers" class="control-label text-truncate">Отметьте для удаления </label>
+                <input type="button" id="remove-selected-item-numbers" class="btn btn-outline-danger col-md-12" value="Удалить" disabled/>
+            </div>
+        </div>
+
+        <div id = "item-numbers" class="flex justify-content-start btn-group mt-3" style="flex-wrap: wrap;" role="group">
+            <partial name="_NumbersList" model ="@Model.ItemsList" />
+        </div>
+        
+
+    </div>
+</div>
+
+<div class="row  row-cols-3  flex-md-nowrap ">
+    <div class="col-md-4">              
+            <a asp-action="Index">К списку</a> 
+    </div>
+    <div class="col-md-4">   
+    </div>
+    <div class="col-md-4">            
+        <button type="submit" asp-action="UpdateNumbers" name="error" class="btn btn-primary col-md-12">Сохранить номера</button>
+    </div>
+</div>
+
+</form>
+
+<style>
+
+    dd {
+        height : 2em;
+    }
+
+    dd {
+    text-align: left;
+    overflow: hidden;
+    vertical-align: text-top;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    }
+
+    dd:hover {
+        text-overflow: clip;
+        white-space: initial;
+    }
+
+
+</style>
+
+             
+@section Scripts {          
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/storage-numbers.js"></script> 
+    <script src="~/js/storage-numbers-validator.js"></script> 
+    <script>
+        var error = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Error));  
+        var url_itemtype_numbers = "@Url.Action("ItemTypeNumbers", "storage")";   
+        var url_add_new_item_number = "@Url.Action("AddNumber", "storage")";
+        var url_add_new_items_number_range =  "@Url.Action("AddNumberRange", "storage")";
+    </script>
+}

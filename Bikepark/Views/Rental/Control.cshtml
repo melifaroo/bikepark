@@ -1,0 +1,321 @@
+﻿
+@model Bikepark.Models.Record
+
+@using Bikepark.Models
+@using Microsoft.EntityFrameworkCore
+@using Bikepark.Views.Helpers
+@using Newtonsoft.Json
+
+@{
+    Layout = "_MainLayout";
+    ViewData["Title"] = "Запись проката";
+    ViewData["menu"] = "";
+    Dictionary<int, List<RecordInfo>> Availability = ViewBag.Availability;
+    var WorkingHoursStart = ViewBag.WorkingHoursStart;
+    var WorkingHoursEnd = ViewBag.WorkingHoursEnd;
+    var MinServiceDelayBetweenRents = ViewBag.MinServiceDelayBetweenRents;
+}
+       @* data-val="true"
+             data-val-email="The Email Address field is not a valid email address."
+             data-val-required="The Email Address field is required."*@
+
+    <form  id="rental-control" asp-controller="Rental" style="display : none " class="container-sm">
+        <div class="container-fluid" id="rental-control-title"> 
+            <div class="row justify-content-center mx-0" >  
+                <div class="col-12 align-self-baseline"> 
+                    <div class="row"> 
+                        <h4 class="col-2">Заказ: </h4> 
+                        <h4 class="col-10">#                  
+                        <span>@Html.DisplayFor(m => m.RecordID) - @Html.DisplayFor(m => m.Status) ( 
+                            @if (Model.Status == Status.Active) 
+                            {
+                                @Model.ItemRecords.Where(irec => irec.Status==Status.Active).Count()
+                                         <span> / </span>
+                            }
+                            @Model.ItemRecords.Count )</span>
+                        <input name="RecordID"    value="@Model.RecordID" type="hidden"/> 
+                            <input name="Status"      value="@Model.Status"   type="hidden" id="status"/> 
+                            <input name="PreviousStatus"      value="@Model.Status"   type="hidden" id="previous-status"/> 
+                        </h4>  
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        
+        <div class="container-fluid" id="rental-control-controls" >   
+            <div class="row row-cols-4 mx-0" >                  
+                <div class="d-flex justify-content-start col-3">
+                    <button type="submit" asp-action="UpdateOrCreate" id="btn-update" class="btn btn-primary  col-12 mx-0 text-truncate" style="display: inline;" >        
+                        <i class="bi bi-save"></i>                          
+                        Применить
+                    </button>    
+                </div>
+                <div class="d-flex  align-self-baseline col-5">  
+                    <label id="btn-getback" class="mx-0 text-truncate" style="display: inline;"> 
+                        <i class="bi bi-hand-thumbs-up"></i> Принять (<i id="getback-count">0</i>)
+                    </label>      
+                    <label id="btn-service" class="mx-0 text-truncate" style="display: inline;" > 
+                        <i class="bi bi-wrench-adjustable"></i> Ремонт (<i id="service-count">0</i>)
+                    </label>
+                    <label id="btn-giveout" class="mx-0 text-truncate" style="display: inline;">
+                        <i class="bi bi-bicycle"></i> Выдать (<i id="giveout-count">0</i>)                  
+                    </label> 
+                    <label id="btn-pass" class="mx-0 text-truncate" style="display: inline;">
+                        </><i class="bi bi-ticket"></i> Пропуск                   
+                    </label> 
+                    <label id="btn-schedule" class="mx-0 text-truncate" style="display: inline;">
+                        <i class="bi bi-calendar-plus"></i> Бронь (<i id="schedule-count">0</i>)
+                    </label>
+                    <label id="btn-repeal" class="mx-0 text-truncate" style="display: inline;">
+                        <i class="bi bi-calendar-minus"></i> Отмена (<i id="repeal-count">0</i>)
+                    </label>
+                    <label id="btn-price" class="mx-0 text-truncate" style="display: inline;">
+                        <i class="bi bi-cash-coin"></i> Изменить тариф
+                    </label>
+                    <label id="btn-extend" class="mx-0 text-truncate" style="display: inline;">
+                        <i class="bi bi-clock-history"></i> Продлить (<i id="extend-time">0</i>)
+                    </label>
+                    <label id="btn-reduce" class="mx-0 text-truncate" style="display: inline;">
+                        <i class="bi bi-clock-history"></i> Сократить (<i id="reduce-time">0</i>)
+                    </label>
+                    <label id="btn-schedule-time" class="mx-0 text-truncate" style="display: inline;">
+                        <i class="bi bi-clock-history"></i> Изменить время
+                    </label>
+                </div>
+                <div class="d-flex justify-content-end col-2">
+                    <button type="submit" asp-action="Cancel" id="btn-cancel" class="btn btn-warning col-12 mx-0 text-truncate" formnovalidate="formnovalidate" style="display: inline;">
+                        <i class="bi bi-calendar-minus"></i> Снять бронь (<i id="scheduled-count">0</i>)
+                    </button>
+                    <button type="button" id="btn-getbackall" class="btn btn-primary col-12 mx-0 text-truncate" style="display: inline;">
+                        <i class="bi bi-hand-thumbs-up-fill"></i> Принять все (<i id="givenout-count">0</i>)
+                    </button>
+                </div>
+                <div class="d-flex justify-content-end col-2">
+                    <button type="submit" asp-action="UpdateOrCreate" class="btn btn-secondary col-12 " id="btn-draft" formnovalidate="formnovalidate" >
+                        <i class="bi bi-save"></i>
+                    </button>
+                    <button type="submit" asp-action="Index" class="btn btn-secondary col-12 " id="btn-discard" formnovalidate="formnovalidate" >
+                        <i class="bi bi-arrow-return-left"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <hr />
+                        
+        <div class="container-fluid" id="customer-details-title"> 
+            <div class="row row-cols-3 mx-0" >  
+                <h4 class="col-2 align-self-baseline">Клиент: </h4> 
+                <div class="col-6 align-self-baseline">       
+                @{
+                    if (Model.Status > Status.Draft) {
+                        @Html.DisplayFor(m => Model.Customer.CustomerFullName);
+                        @Html.DisplayFor(m => Model.Customer.CustomerContactNumber);
+                    }
+                }
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-light col-4" id="btn-customer">
+                            <i class="bi bi-chevron-expand"></i>
+                    </button>
+                </div>          
+            </div>               
+        </div>
+
+        <div class="container-fluid" id="customer-details" > 
+            <input name="CustomerID"          value="@Model.CustomerID"                            type="hidden"/> 
+            <input name="Customer.CustomerID" value="@Model.Customer?.CustomerID"  id="customer-id" type="hidden"/> 
+            <div class="row row-cols-sm-3 mx-0" id="customer-main-detail" >                    
+                <div>                    
+                    <div>  
+                        <label for="customer-num" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerContactNumber)</label>
+                        <input  id="customer-num" class="form-control customer-input" name="Customer.CustomerContactNumber" value="@Model.Customer?.CustomerContactNumber" type="tel" placeholder="Номер телефона" />
+                    </div> 
+                    <div class="customer-more-detail" style="display: none">
+                        <label for="customer-email" class="control-label">@Html.DisplayNameFor(x => Model.Customer.CustomerEMail)</label>
+                        <input  id="customer-email" class="form-control customer-input" name="Customer.CustomerEMail" value="@Model.Customer?.CustomerEMail"  type="email" />
+                    </div>                  
+                </div>
+                <div>
+                    <div >
+                        <label for="customer-name" class="control-label  text-truncate ">@Html.DisplayNameFor(x => Model.Customer.CustomerFullName)</label>
+                        <input  id="customer-name" class="form-control customer-input" name="Customer.CustomerFullName" value="@Model.Customer?.CustomerFullName"  />
+                    </div> 
+                    <div  class=" customer-more-detail" style="display: none">
+                        <label for="customer-doc" class="control-label">@Html.DisplayNameFor(x => Model.Customer.CustomerPassport)</label>
+                        <input  id="customer-doc" class="form-control customer-input" name="Customer.CustomerPassport" value="@Model.Customer?.CustomerPassport"  />
+                    </div>
+                </div>                           
+                <div class="row row-cols-4 mx-0 mt-4 align-content-start">
+                    <div class="col-2 row-cols-1 px-0" tabindex="0" title="Новый клиент">
+                        <input  id="chk-new-customer"   class="btn-check" type="checkbox" name="CustomerForceCreate" checked disabled>
+                        <label  for="chk-new-customer"  class="btn btn-check-label btn-outline-primary">
+                            <i class="bi bi-person-plus"></i>                           
+                        </label>                                    
+                    </div>
+                    <div class="col-2 row-cols-1 px-0" tabindex="0" title="Обновить данные клиента">
+                        <input   id="chk-upd-customer"  class="btn-check"  type="checkbox"  name="CustomerForceUpdate"  disabled>
+                        <label  for="chk-upd-customer"  class="btn btn-check-label btn-outline-success">
+                            <i class="bi bi-person-check"></i>                           
+                        </label>
+                    </div>
+                    <button type="button"  id="btn-search-customer" class="btn col-4 btn-outline-secondary text-truncate" title="Найти по номеру телефона">
+                        <i class="bi bi-search"></i><i class="bi bi-people"></i>
+                    </button> 
+                    <button type="button"  id="btn-more-customer-detail" class="btn col-4 btn-outline-secondary" title="Показать доп. данные">
+                        <i class="bi bi-person-lines-fill"> </i>
+                    </button> 
+                </div> 
+            </div>  
+
+
+            <div id="сustomer-search-results" style="display: none">
+                <!--partial name="_CustomersSearchResults"/-->   
+            </div>    
+        </div>
+        <hr />
+                    
+        <div class="container-fluid" id="rental-info-title" > 
+            <div class="row row-cols-3 mx-0" >  
+                <h4 class="col-2 align-self-baseline">Время: </h4> 
+                <div class="col-6 align-self-baseline text-truncate">            
+                    <span>@Html.DisplayFor(m => Model.Status)</span>
+                    @if (Model.Start != null) 
+                    {
+                        <span>c @Html.DisplayFor(m => Model.Start)</span>
+                    }
+                    @if (Model.End != null) 
+                    {
+                        <span>по @Html.DisplayFor(m => Model.End)</span>
+                    }
+                </div>
+                <div class="col-4 d-flex justify-content-end">    
+                    <button type="button" class="btn btn-light col-4" id="btn-rental-info">
+                        <i class="bi bi-chevron-expand"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+            
+        <div class="container-fluid" id="rental-info">   
+            <div class="row row-cols-sm-3 mx-0"> 
+                <div><div class="row row-cols-3 mx-0 mt-5" id="status-action">
+                    <input type="radio" class="btn-check chk-action" name="StatusAction" value="@Status.Active" id="chk-giveout" autocomplete="off" checked>
+                    <label class="btn btn-check-label col-4 btn-outline-success" for="chk-giveout">Выдача</label>
+                    <input type="radio" class="btn-check chk-action" name="StatusAction" value="@Status.Scheduled" id="chk-schedule" autocomplete="off">
+                    <label class="btn btn-check-label col-4 btn-outline-warning" for="chk-schedule" >Бронь</label>
+                    <input type="radio" class="btn-check chk-action" name="StatusAction" value="@Status.Draft" id="chk-draft" autocomplete="off">
+                    <label class="btn btn-check-label col-4 btn-outline-secondary" for="chk-draft" >Черновик</label>
+                </div></div> 
+                <div class="row row-cols-1 mx-0 mt-4">            
+                </div>                                  
+                <div>
+                    <label  class="control-label" id="price-label">Сумма</label>
+                    <div class="row row-cols-3 mx-1">
+                        <div class="form-group col-4 px-0">
+                            <label  for="price-total" class="control-label" id="price-label">всего</label>
+                            <input  id="price-total" class="form-control"  name="PriceCurrent" type="text" inputmode="numeric" readonly/>
+                        </div>
+                        <div class="form-group col-4 px-0">
+                            <label  for="price-account" class="control-label" id="price-label">учтенная</label>
+                            <input  id="price-account" class="form-control"  name="Price" value="@Model.Price" type="text" inputmode="numeric" readonly/>
+                        </div>
+                        <div class="form-group col-4 px-0">
+                            <label  for="price-change" class="control-label" id="price-label">плюс</label>
+                            <input  id="price-change" class="form-control"  name="PriceChange"type="text" inputmode="numeric" readonly/>   
+                        </div>         
+                    </div> 
+                </div> 
+            </div>
+                
+            <div class="row row-cols-sm-3 mx-0" > 
+                <div class="form-group">
+                    <label for="time-start" class="control-label" id="time-start-label"></label>
+                    <div class="input-group">
+                        <div class="input-group-append order-2" id="time-start-now-option">
+                            <input  id="time-start-now" class="btn-check order-2" type="checkbox" checked />
+                            <label for="time-start-now" class="btn btn-check-label btn-outline-secondary text-truncate "><i class="bi bi-clock"></i> </label>
+                        </div>
+                        <input  id="time-start"  class="form-control  order-1"  name="Start" type="datetime-local" value="" readonly/>
+                    </div>
+                </div>   
+                <div class="form-group">
+                    <label  for="time-end" class="control-label" id="time-end-label"></label>
+                    <input  id="time-end"  class="form-control"  name="End" type="datetime-local" value=""/>
+                </div>   
+                <div>
+                    <label  for="duration" class="control-label" id="duration-label"></label>
+                    <input  id="duration"  class="form-control"  name="Duration" type="number" value="" min="1"/>
+                </div>   
+            </div>
+                
+            <div class="row row-cols-sm-3 mx-0" id="rental-info-active"> 
+                <div class="form-group">
+                    <div id="time-action-info">
+                    <label  for="time-action" class="control-label" id="time-action-label"></label>
+                    <div class="input-group">
+                        <input  id="time-action"  class="form-control"  name="TimeAction"  type="datetime-local" value="" readonly/>
+                        <div class="input-group-append" id="time-action-now-option">
+                            <input  id="time-action-now" class="btn-check" type="checkbox" checked />
+                            <label for="time-action-now" class="btn btn-check-label btn-outline-secondary text-truncate "><i class="bi bi-clock"></i> </label>
+                        </div>
+                    </div>
+                    </div>
+                </div>   
+                <div class="form-group" >
+                    <label  for="time-current" class="control-label" id="time-current-label"></label>
+                    <input  id="time-current"  class="form-control"  name="Current" type="datetime-local" value="" disabled/>
+                </div>  
+                <div>
+                    <label  for="DurationCurrent" class="control-label"  id="duration-current-label"></label>
+                    <input name="DurationCurrent" class="form-control"   id="duration-current" type="text" value="" disabled/>
+                </div>  
+            </div>
+        </div>  
+        <hr />
+            
+        <div class="container-fluid" id="rental-items-title"> 
+            <div class="row row-cols-3 mx-0" >  
+                <h4 class="col-2 align-self-baseline">Состав: </h4> 
+                <div class="col-6 align-self-baseline" id="payment-value"></div>
+                <div class="col-4 d-flex justify-content-end">  
+                    <button type="button" class="btn btn-light col-4" id="btn-rental-items">
+                        <i class="bi bi-chevron-expand"></i>
+                    </button>                     
+                </div>  
+            </div>
+        </div>
+      
+        <div class="container-fluid" id="rental-items"> 
+            <div class="row-cols-1">  
+                <partial name="_RentalItemsList"  /> 
+            </div>
+
+            <div class="row-cols-1" id="rental-items-chooser" style="display: none">
+                <partial name="_RentalItemsChooser"  />  
+            </div>                
+        </div>
+    </form>     
+             
+@section Scripts {          
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/rent-main.js"></script> 
+    <script src="~/js/rent-validator.js"></script>      
+    <script src="~/js/rent-time.js"></script>   
+    <script src="~/js/rent-pricing.js"></script>    
+    <script src="~/js/rent-customer.js"></script>    
+    <link href="~/css/rent-main.css" rel="stylesheet" asp-append-version="true" /> 
+    <script>   
+        var record = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model, new JsonSerializerSettings{ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
+        var prices = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject( ViewBag.Prices ));
+        var arcprices = (@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject( ViewBag.ArchivalPrices ))).Result;
+        var availability = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Availability));
+        var workingHoursStart = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(WorkingHoursStart));
+        var workingHoursEnd = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(WorkingHoursEnd));
+        var url_rental_customer = "@Url.Action("Customer", "rental")";
+        var url_rental_additem = "@Url.Action("addRentedItem", "rental")";
+        var url_rental_searchcustomer = "@Url.Action("searchCustomerByNumber", "rental")";
+        var url_rental_pricingchooser = "@Url.Action("RentalPricingChooser", "rental")";
+        var pricingTypes = [ "сутки",  "час",  "разовая", "ремонт" ]; 
+    </script>
+}

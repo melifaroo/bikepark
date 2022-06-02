@@ -1,0 +1,47 @@
+﻿@model Bikepark.Models.Item
+
+@{
+    ViewData["Title"] = "Удалить единицу";
+    ViewData["menu"] = "items";
+    Layout = "_MainLayout";
+    var hasRecords = ViewBag.HasRecords;
+    var action = hasRecords ? "АРХИВИРОВАТЬ" : "УДАЛИТЬ";
+
+
+}
+
+    <h1>Удалить</h1>
+    <h3>Вы действительно хотите освободить номер #@Model.ItemNumber?</h3>
+    @if (hasRecords)
+    { 
+        <h5 style="display:inline">В журнале есть записи о выдаче этого номера</h5>  
+        <p><a target="_blank" rel="noopener noreferrer" href="/Rental/OfItem/?id=@Model.ItemID">Просмотреть в новой вкладке?</a></p>
+        <p>Поэтому номер будет заархивирован (для журнала), при этом он освободится для присвоения </p>
+    } 
+<hr />
+<div class="container-sm">  
+    <div class="row">
+        <div class="col-md-3">
+            <dl class="row">
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.ItemType)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.ItemType.ItemTypeName)
+                </dd>
+                <dt class = "row justify-content-start ms-1">
+                    @Html.DisplayNameFor(model => model.ItemNumber)
+                </dt>
+                <dd class = "row justify-content-start ms-3">
+                    @Html.DisplayFor(model => model.ItemNumber)
+                </dd>
+            </dl>
+        /div>
+    </div>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ItemID" />
+        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+        <input type="submit" value="@action" class="btn btn-danger" />
+    </form>
+</div>
