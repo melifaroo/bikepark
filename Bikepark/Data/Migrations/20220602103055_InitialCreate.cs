@@ -65,6 +65,19 @@ namespace Bikepark.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Holidays",
+                columns: table => new
+                {
+                    HolidayID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Date = table.Column<DateOnly>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Holidays", x => x.HolidayID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ItemCategories",
                 columns: table => new
                 {
@@ -203,6 +216,7 @@ namespace Bikepark.Data.Migrations
                     RecordID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     CustomerID = table.Column<int>(type: "INTEGER", nullable: true),
+                    Price = table.Column<double>(type: "REAL", nullable: true),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
                     Start = table.Column<DateTime>(type: "TEXT", nullable: true),
                     End = table.Column<DateTime>(type: "TEXT", nullable: true),
@@ -766,28 +780,28 @@ namespace Bikepark.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Records",
-                columns: new[] { "RecordID", "CustomInformation", "CustomerID", "End", "Start", "Status", "UserID" },
-                values: new object[] { 1, null, 1, new DateTime(2022, 4, 19, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2022, 4, 19, 9, 0, 0, 0, DateTimeKind.Unspecified), 3, null });
+                columns: new[] { "RecordID", "CustomInformation", "CustomerID", "End", "Price", "Start", "Status", "UserID" },
+                values: new object[] { 1, null, 1, new DateTime(2022, 4, 19, 12, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2022, 4, 19, 9, 0, 0, 0, DateTimeKind.Unspecified), 3, null });
 
             migrationBuilder.InsertData(
                 table: "Records",
-                columns: new[] { "RecordID", "CustomInformation", "CustomerID", "End", "Start", "Status", "UserID" },
-                values: new object[] { 2, null, 2, new DateTime(2022, 5, 15, 19, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2022, 5, 15, 16, 0, 0, 0, DateTimeKind.Unspecified), 1, null });
+                columns: new[] { "RecordID", "CustomInformation", "CustomerID", "End", "Price", "Start", "Status", "UserID" },
+                values: new object[] { 2, null, 2, new DateTime(2022, 5, 15, 19, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2022, 5, 15, 16, 0, 0, 0, DateTimeKind.Unspecified), 1, null });
 
             migrationBuilder.InsertData(
                 table: "Records",
-                columns: new[] { "RecordID", "CustomInformation", "CustomerID", "End", "Start", "Status", "UserID" },
-                values: new object[] { 3, null, 1, new DateTime(2022, 5, 15, 19, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2022, 5, 15, 16, 0, 0, 0, DateTimeKind.Unspecified), 1, null });
+                columns: new[] { "RecordID", "CustomInformation", "CustomerID", "End", "Price", "Start", "Status", "UserID" },
+                values: new object[] { 3, null, 1, new DateTime(2022, 5, 15, 19, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2022, 5, 15, 16, 0, 0, 0, DateTimeKind.Unspecified), 1, null });
 
             migrationBuilder.InsertData(
                 table: "Records",
-                columns: new[] { "RecordID", "CustomInformation", "CustomerID", "End", "Start", "Status", "UserID" },
-                values: new object[] { 4, null, 1, new DateTime(2022, 5, 16, 14, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2022, 5, 16, 10, 0, 0, 0, DateTimeKind.Unspecified), 1, null });
+                columns: new[] { "RecordID", "CustomInformation", "CustomerID", "End", "Price", "Start", "Status", "UserID" },
+                values: new object[] { 4, null, 1, new DateTime(2022, 5, 16, 14, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2022, 5, 16, 10, 0, 0, 0, DateTimeKind.Unspecified), 1, null });
 
             migrationBuilder.InsertData(
                 table: "Records",
-                columns: new[] { "RecordID", "CustomInformation", "CustomerID", "End", "Start", "Status", "UserID" },
-                values: new object[] { 5, null, 2, new DateTime(2022, 5, 14, 23, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2022, 5, 14, 18, 0, 0, 0, DateTimeKind.Unspecified), 2, null });
+                columns: new[] { "RecordID", "CustomInformation", "CustomerID", "End", "Price", "Start", "Status", "UserID" },
+                values: new object[] { 5, null, 2, new DateTime(2022, 5, 14, 23, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2022, 5, 14, 18, 0, 0, 0, DateTimeKind.Unspecified), 2, null });
 
             migrationBuilder.InsertData(
                 table: "Items",
@@ -1249,6 +1263,9 @@ namespace Bikepark.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Holidays");
 
             migrationBuilder.DropTable(
                 name: "ItemRecords");

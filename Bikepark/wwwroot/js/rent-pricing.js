@@ -37,7 +37,6 @@ function updateprices(row) {
     }
 }
 
-
 function priceChanged() {
     var changed = false;
     var BreakException = {};
@@ -57,31 +56,21 @@ function calculatePrice() {
     var s1 = new Date($("#time-start").val());
     var a1 = new Date($("#time-action").val());
     var e1 = new Date($("#time-end").val());
-    var s0 = new Date(record.Start);
-    var e0 = new Date(record.End);
 
-    var duration0 = durationHours(s0, e0);
-
-    var price_account = 0
-    var price_total = 0
-    $("#rental-items-list tr").each(function () {
-        var s = new Date($(this).find(".start").val());
-        var e = new Date($(this).find(".end").val());
-        var duration = durationHours(s, e);
-
-        var pricingID = $(this).find(".pricing").val();
-        if (pricingID) {
-            var pricing = arcprices.filter(p => p.PricingID == pricingID)[0];
-            price_total = price_total + pricing.Price * (pricing.PricingType == 0 ? duration:1);
-        }
-
-        var pricingID0 = $(this).find(".pricing0").val();
-        if (pricingID0) {
-            var pricing0 = arcprices.filter(p => p.PricingID == pricingID0)[0];
-            price_account = price_account + pricing0.Price * (pricing.PricingType==0?duration0:1);
-        }
-
-    });
+    var price_account = $("#price-account").val();
+    var price_total = record.Status > 2 ? price_account : 0;
+    if (record.Status <= 2)
+        $("#rental-items-list tr").each(function () {
+            var s = (record.Status == 2) ? (($(this).find(".status").val() == "Draft") ? a1 : new Date($(this).find(".start").val())) : s1;
+            var e = (record.Status == 2) ? (($(this).find(".status").val() == "Closed") ? new Date($(this).find(".end").val()) :e1) : e1;;
+            var duration = durationHours(s, e);
+            console.log(duration);
+            var pricingID = $(this).find(".pricing").val();
+            if (pricingID) {
+                var pricing = arcprices.filter(p => p.PricingID == pricingID)[0];
+                price_total += pricing.Price * (pricing.PricingType == 1 ? duration:1);
+            }
+        });
     var price_change = price_total - price_account;
 
     return [price_total, price_account, price_change];
