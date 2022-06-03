@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bikepark.Data.Migrations
 {
     [DbContext(typeof(BikeparkContext))]
-    [Migration("20220601223354_InitialCreate")]
+    [Migration("20220602103055_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,6 +58,20 @@ namespace Bikepark.Data.Migrations
                             CustomerFullName = "Иван Петров",
                             CustomerPassport = "00 000002"
                         });
+                });
+
+            modelBuilder.Entity("Bikepark.Models.Holiday", b =>
+                {
+                    b.Property<int>("HolidayID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("HolidayID");
+
+                    b.ToTable("Holidays");
                 });
 
             modelBuilder.Entity("Bikepark.Models.Item", b =>
@@ -1718,6 +1732,9 @@ namespace Bikepark.Data.Migrations
 
                     b.Property<DateTime?>("End")
                         .HasColumnType("TEXT");
+
+                    b.Property<double?>("Price")
+                        .HasColumnType("REAL");
 
                     b.Property<DateTime?>("Start")
                         .HasColumnType("TEXT");

@@ -289,6 +289,7 @@ namespace Bikepark.Controllers
                             rentalItem.Record = rentalRecord;
                             rentalItem.Status = rentalRecord.Status;
                         }
+                        rentalRecord.Price = await ComputePrice(rentalRecord);
                         _context.Add(rentalRecord);
                         await _context.SaveChangesAsync();
                     }
@@ -357,6 +358,7 @@ namespace Bikepark.Controllers
                                 rentalRecord.End = CloseTime;
                             }
 
+                            rentalRecord.Price = await ComputePrice(rentalRecord);
 
 
                             if (toFix.Count > 0)
@@ -393,6 +395,16 @@ namespace Bikepark.Controllers
                 return RedirectToAction(nameof(Control), new { id = rentalRecord.RecordID });
             }
 
+        }
+
+        private async Task<double> ComputePrice(Record rentalRecord)
+        {
+            double price = 0;
+            foreach (ItemRecord irec in rentalRecord.ItemRecords) {
+                var Pricing = await _context.Pricings.FindAsync(irec.PricingID);
+                price += Pricing.Price * (Pricing.PricingType == PricingType.Hourly ? (irec.End - irec.Start).GetValueOrDefault().Hours : 1);
+            }
+            return price;
         }
 
         [HttpPost]
