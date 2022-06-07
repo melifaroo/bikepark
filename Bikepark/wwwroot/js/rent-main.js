@@ -43,11 +43,11 @@ function checkAvailability() {
     s = (record.Status < 2) ? new Date($("#time-start").val()) : new Date($("#time-action").val());
     e = new Date($("#time-end").val());
     var selfitems = [];
-    $("#rental-items-list .item-record:not([status=Closed])").each(function (i, tr) {
+    $("#itemrecords-list .item-record:not([status=Closed])").each(function (i, tr) {
         key = $(tr).data("itemid");
-        selfitems.push(String(key));
+        selfitems.push(key);
     });
-    $("#rental-items-list .item-record[status=Draft],[status=Scheduled]").each(function (i, tr) {
+    $("#itemrecords-list .item-record[status=Draft],[status=Scheduled]").each(function (i, tr) {
         key = $(tr).data("itemid");
         var o = { overlap: false, status: -1 };
         if (key in availability) {
@@ -58,37 +58,37 @@ function checkAvailability() {
             .toggleClass("active", o.overlap && (o.status == 2 || o.status == 5))
             .toggleClass("reserved", o.overlap && (o.status == 1 ));
     });
-    Object.keys(availability).forEach(key => {    
-        const o = overlap(availability[key], s, e);
-        $("label[for='chk-add-" + key + "']")
-            .toggleClass("btn-outline-success", !o.overlap)
-            .toggleClass("btn-outline-danger", o.overlap && (o.status == 2 || o.status == 5))
-            .toggleClass("btn-outline-warning", o.overlap && (o.status == 1 ));
-    });
-    prepared.forEach(key => {
-        var o = false;
-        if (key in availability)
-            o = overlap(availability[key], s, e).overlap;
-        $("#chk-add-" + key).parent().toggleClass("order-first", !o);
-        if (!o) {
-            $("label[for='chk-add-" + key + "']").css({ 'font-weight': "bold" });
-            $("label[for='chk-add-" + key + "']").append("<i class='bi bi-key'></i>");
+    $("#items-chooser .number").each(function (i, number) {
+        key = $(number).data("itemid");
+        var ovlap = false;
+        var statu = 0;
+        if (key in availability) {
+            const o = overlap(availability[key], s, e);
+            ovlap = o.overlap;
+            statu = o.status;
         }
+        $(number)
+            .toggleClass("btn-outline-success", !ovlap)
+            .toggleClass("btn-outline-danger", ovlap && (statu == 2 || statu == 5))
+            .toggleClass("btn-outline-warning", ovlap && (statu == 1))
+            .toggleClass("order-first",  prepared.includes(key) && !ovlap)
+            .toggleClass("prepared", prepared.includes(key) && !ovlap);
     });
-    selfitems.forEach( key => {
-        $("#chk-add-" + key).prop('checked', true);
+    $("#items-chooser .number-check").each(function (i, number) {
+        key = $(number).data("itemid");
+        $(number).prop("checked", selfitems.includes(key));
     });
 }
 
 $(document).on("change", ".chooser-filter", function () {
     var filter = {};
-    $("#rental-items-chooser table thead .chooser-filter").each(function () {
+    $("#items-chooser table thead .chooser-filter").each(function () {
         var field = $(this).data("field");
         var value = $(this).val();
         if (value!="All")
             filter[field] = value;
     });
-    $("#rental-items-chooser table tbody tr").each(function () {
+    $("#items-chooser table tbody tr").each(function () {
         var filtered = true;
         for (var field in filter) {
             filtered = filtered && ($(this).children("td[data-field='" + field + "']").text().trim() == filter[field].trim());
@@ -101,9 +101,9 @@ async function add_item(id) {
     var recid = -1;
     try {
         const result = await $.get(url_rental_additem, { ItemID: id });        
-        $("#rental-items-list").append(result);
+        $("#itemrecords-list").append(result);
         recid = $(result).attr("data-id");
-        updateprices($("#rental-items-list tr.item-record[data-id='"+recid+"']"));
+        updateprices($("#itemrecords-list tr.item-record[data-id='"+recid+"']"));
     } catch (err) {
         console.log(err);
     }
@@ -111,11 +111,11 @@ async function add_item(id) {
 
 
 function delete_item(id) {
-    $("#rental-items-list tr.item-record[data-itemid=" + id + "][status='Draft'],[data-itemid=" + id + "][status='Scheduled']").remove();
-    $("#chk-add-" + id).prop("checked", false);
+    $("#itemrecords-list tr.item-record[data-itemid=" + id + "][status='Draft'],[data-itemid=" + id + "][status='Scheduled']").remove();
+    $("#number-check-" + id).prop("checked", false);
 }
 
-$(document).on("change", "#rental-items-chooser .chk-add", async function () {
+$(document).on("change", "#items-chooser .number-check", async function () {
     var itemid = $(this).data("itemid");
     if ($(this).is(":checked")) {
         await add_item(itemid);
@@ -125,7 +125,7 @@ $(document).on("change", "#rental-items-chooser .chk-add", async function () {
     change_action();  
 });
 
-$(document).on("click", "#rental-items-list .btn-item-delete", function () {
+$(document).on("click", "#itemrecords-list .btn-item-delete", function () {
     var itemid = $(this).data("itemid");
     delete_item(itemid);
     change_action();
@@ -134,16 +134,16 @@ $(document).on("click", "#rental-items-list .btn-item-delete", function () {
 
 $(document).on("click", "#btn-getbackall", function () {
     var action = "Closed";
-    $("#rental-items-list tr[status=Active] .chk-givenout:checked").prop("checked", false);
-    $("#rental-items-list tr[status=Active] .chk-getback").prop("checked", true);
-    $("#rental-items-list tr[status=Active] .status").val(action);
+    $("#itemrecords-list tr[status=Active] .chk-givenout:checked").prop("checked", false);
+    $("#itemrecords-list tr[status=Active] .chk-getback").prop("checked", true);
+    $("#itemrecords-list tr[status=Active] .status").val(action);
     change_action();
 });
 
-$(document).on("click", "#rental-items-list .chk-item-action", function () {
+$(document).on("click", "#itemrecords-list .chk-item-action", function () {
     var irecid = $(this).data("irecid").toString();
     var action = $(this).val();
-    $("#rental-items-list .item-record[data-id=" + irecid + "] .status").val(action);
+    $("#itemrecords-list .item-record[data-id=" + irecid + "] .status").val(action);
     change_action();
 });
 
@@ -163,7 +163,7 @@ $(document).on("click", ".chk-action", function () {
 });
 
 $("#btn-show-items-chooser").on("click", function () {
-    $("#rental-items-chooser").toggle(300);
+    $("#items-chooser").toggle(300);
 });
 
 $("#btn-toggle-filters").on("click", function () {
@@ -171,29 +171,29 @@ $("#btn-toggle-filters").on("click", function () {
 });
 
 function itemsCount() {
-    return $("#rental-items-list tr").length;
+    return $("#itemrecords-list tr").length;
 }
 
 function scheduledCount() {
-    return $("#rental-items-list tr[status=Scheduled]").length;
+    return $("#itemrecords-list tr[status=Scheduled]").length;
 }
 function givenoutCount() {
-    return $("#rental-items-list tr[status=Active]").length;
+    return $("#itemrecords-list tr[status=Active]").length;
 }
 
 function giveoutCount() {
-    return $("#rental-items-list tr:not([status=Active]):not([status=Closed]):not([status=Service]):not([status=OnService]):not([status=Fixed])").length;
+    return $("#itemrecords-list tr:not([status=Active]):not([status=Closed]):not([status=Service]):not([status=OnService]):not([status=Fixed])").length;
 }
 
 function servicedCount() {
-    return $("#rental-items-list tr[status=Service],[status=OnService],[status=Fixed]").length;
+    return $("#itemrecords-list tr[status=Service],[status=OnService],[status=Fixed]").length;
 }
 
 function serviceCount() {
-    return $("#rental-items-list tr[status=Active] .chk-service:checked").length;
+    return $("#itemrecords-list tr[status=Active] .chk-service:checked").length;
 }
 function getbackCount() {
-    return $("#rental-items-list tr[status=Active] .chk-getback:checked").length;
+    return $("#itemrecords-list tr[status=Active] .chk-getback:checked").length;
 }
 
 function setupInterface() {
@@ -226,7 +226,7 @@ function setupInterface() {
     }
     if (record.Status == 3) {
         $("#btn-show-items-chooser").prop("disabled", true);
-        $("#rental-items-list .pricing").prop("disabled", true);
+        $("#itemrecords-list .pricing").prop("disabled", true);
         $("#customer-details input,button").prop("disabled", true);
     }
 
@@ -274,6 +274,7 @@ function change_action() {
 
     var getback_count = getbackCount();
     var service_count = serviceCount();
+    var serviced_count = servicedCount();
     var giveout_count = giveoutCount();
     var scheduled_count = scheduledCount();
     var givenout_count = givenoutCount();
@@ -330,7 +331,9 @@ function change_action() {
 
     $("#btn-update").prop("disabled", !(pass || getback || service || giveout || repeal || schedule || extend || reduce || price_change || draft));
     $("#btn-update").toggleClass("btn-secondary", draft || !(pass || getback || service || giveout || repeal || schedule || extend || reduce || price_change));
+    $("#btn-update").attr('formnovalidate', draft?'formnovalidate':null);
     $("#btn-update").toggleClass("btn-primary", pass || getback || service || giveout || repeal || schedule || extend || reduce || price_change);
+    $("#btn-service").toggle(serviced_count > 0 && record.Status > 1).prop("disabled", serviced_count == 0 || record.Status < 2);
 
     $("#btn-cancel").toggle(schedule_mode && record.Status == 1).prop("disabled", !(scheduled_count > 0));
     $("#btn-getbackall").toggle(record.Status == 2).prop("disabled", !(givenout_count>0));
@@ -344,7 +347,7 @@ function change_action() {
     $("#time-action").toggleClass("timer-active", action_now );
 
     if (time_change)
-        $("#rental-items-list tr.item-record").each(function () { updateprices(this); });
+        $("#itemrecords-list tr.item-record").each(function () { updateprices(this); });
     [price_total, price_account, price_change] = calculatePrice();
 
     $("#price").html((record.Price ? price_account.toFixed(0) : "0"));

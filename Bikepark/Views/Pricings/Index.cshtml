@@ -7,12 +7,31 @@
 }
 
 <h1>Тарифы</h1>
+<div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
+    <ul class="nav col-md-6 justify-content-start">
+        <li class="nav-item">
+            <a class="nav-link" asp-action="Create">Создать тариф</a> 
+        </li> 
+        <li class="nav-item">
+            <a class="nav-link" asp-action="Index" asp-controller="PricingCategories" >Категории тарифов</a> 
+        </li>     
+        <li class="nav-item">
+            <a class="nav-link" asp-action="Index" asp-controller="Holidays" >Праздничные дни</a> 
+        </li>       
+        <li class="nav-item">
+            <a class="nav-link" asp-action="Index" asp-controller="Storage" >Склад</a>
+        </li>   
+    </ul>
 
-<p>
-    <a asp-action="Create">Создать тариф</a> |
-    <a asp-action="Index" asp-controller="PricingCategories" >Категории тарифов</a>     | 
-    <a asp-action="Main" asp-controller="Storage">Управление</a>   
-</p>
+    <ul class="nav  col-md-6 justify-content-end">
+        <li class="nav-item">
+            <a class="nav-link" asp-action="Export">Загрузить таблицу XLS</a>
+        </li>    
+        <li class="nav-item"> 
+            <a class="nav-link" asp-action="Main" asp-controller="Storage">Управление</a> 
+        </li>    
+    </ul>  
+</div>
 <table class="table">
     <thead>
         <tr>

@@ -101,12 +101,12 @@
                     @Html.DisplayFor(m => type.ItemTypeName)
                 </td>
                 <td class="td-buttons" style="min-width: 100px; "> 
-                    <div class="flex justify-content-start btn-group" role="group"> 
-                        @foreach (var item in Items.Where(i => i.ItemTypeID==type.ItemTypeID).ToList() ){  
-                            <div>
-                                <input type="checkbox" id="chk-add-@item.ItemID"  class="btn-check chk-add" data-itemid="@item.ItemID" />                                
-                                <label                 for="chk-add-@item.ItemID" class="btn btn-sm btn-outline-success ">@item.ItemNumber</label>  
-                            </div>                        
+                    <div class="flex justify-content-start btn-group" > 
+                        @foreach (var item in await Items.Where(i => i.ItemTypeID==type.ItemTypeID).ToListAsync() ){       
+                            <input type="checkbox" id="number-check-@item.ItemID"  class="btn-check number-check" data-itemid="@item.ItemID"/>  
+                            <label id="number-@item.ItemID" for="number-check-@item.ItemID" class="btn btn-sm btn-outline-success number" data-itemid="@item.ItemID">   
+                                <i class="bi bi-key"></i>@item.ItemNumber
+                            </label>                                   
                         }
                     </div>
                 </td>

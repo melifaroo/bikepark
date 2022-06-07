@@ -10,10 +10,6 @@
     Layout = "_MainLayout";
     ViewData["Title"] = "Запись проката";
     ViewData["menu"] = "";
-    Dictionary<int, List<RecordInfo>> Availability = ViewBag.Availability;
-    var WorkingHoursStart = ViewBag.WorkingHoursStart;
-    var WorkingHoursEnd = ViewBag.WorkingHoursEnd;
-    var MinServiceDelayBetweenRents = ViewBag.MinServiceDelayBetweenRents;
 }
        @* data-val="true"
              data-val-email="The Email Address field is not a valid email address."
@@ -47,9 +43,8 @@
                 </div>
             </div>
         </div>
-        <hr />
         
-        <div class="container-fluid" id="rental-control-controls" >   
+        <div class="container-fluid mt-1" id="rental-control-controls" >   
             <div class="row row-cols-3 mx-0" >                  
                 <div class="d-flex justify-content-start col-6">
                     <button type="submit" asp-action="UpdateOrCreate" id="btn-update" class="btn btn-primary  col-6 mx-0 text-truncate" style="display: inline;" >        
@@ -117,164 +112,160 @@
             </div>             
         </div>
         <hr />
-    <div class="accordion" id="details">   
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="customer-info">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#customer-details" aria-expanded="true" aria-controls="customer-details">
-                    <span class="px-1"><b>Клиент:</b></span>
-                    <span class="px-1">@Html.DisplayFor(m => Model.Customer.CustomerFullName)</span>  
-                    <span class="px-1">@Html.DisplayFor(m => Model.Customer.CustomerContactNumber)</span>     
-                </button>
-            </h2>
-            <div id="customer-details" class="accordion-collapse collapse show" aria-labelledby="customer-info" data-bs-parent="#details">
-                <div class="accordion-body">
-                    <input name="CustomerID"          value="@Model.CustomerID"                            type="hidden"/> 
-                    <input name="Customer.CustomerID" value="@Model.Customer?.CustomerID"  id="customer-id" type="hidden"/> 
-                    <div class="row row-cols-sm-3 mx-0" id="customer-main-detail" >                    
-                        <div>                    
-                            <div>  
-                                <label for="customer-num" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerContactNumber)</label>
-                                <input  id="customer-num" class="form-control customer-input" name="Customer.CustomerContactNumber" value="@Model.Customer?.CustomerContactNumber" type="tel" placeholder="Номер телефона" />
-                            </div> 
-                            <div class="customer-more-detail" style="display: none">
-                                <label for="customer-email" class="control-label">@Html.DisplayNameFor(x => Model.Customer.CustomerEMail)</label>
-                                <input  id="customer-email" class="form-control customer-input" name="Customer.CustomerEMail" value="@Model.Customer?.CustomerEMail"  type="email" />
-                            </div>                  
-                        </div>
-                        <div>
-                            <div >
-                                <label for="customer-name" class="control-label  text-truncate ">@Html.DisplayNameFor(x => Model.Customer.CustomerFullName)</label>
-                                <input  id="customer-name" class="form-control customer-input" name="Customer.CustomerFullName" value="@Model.Customer?.CustomerFullName"  />
-                            </div> 
-                            <div  class=" customer-more-detail" style="display: none">
-                                <label for="customer-doc" class="control-label">@Html.DisplayNameFor(x => Model.Customer.CustomerPassport)</label>
-                                <input  id="customer-doc" class="form-control customer-input" name="Customer.CustomerPassport" value="@Model.Customer?.CustomerPassport"  />
+        <div class="accordion" id="details">   
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="customer-info">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#customer-details" aria-expanded="true" aria-controls="customer-details">
+                        <span class="px-1"><b>Клиент:</b></span>
+                        <span class="px-1">@Html.DisplayFor(m => Model.Customer.CustomerFullName)</span>  
+                        <span class="px-1">@Html.DisplayFor(m => Model.Customer.CustomerContactNumber)</span>     
+                    </button>
+                </h2>
+                <div id="customer-details" class="accordion-collapse collapse show" aria-labelledby="customer-info" data-bs-parent="#details">
+                    <div class="accordion-body">
+                        <input name="CustomerID"          value="@Model.CustomerID"                            type="hidden"/> 
+                        <input name="Customer.CustomerID" value="@Model.Customer?.CustomerID"  id="customer-id" type="hidden"/> 
+                        <div class="row row-cols-sm-3 mx-0" id="customer-main-detail" >                    
+                            <div>                    
+                                <div>  
+                                    <label for="customer-num" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerContactNumber)</label>
+                                    <input  id="customer-num" class="form-control customer-input" name="Customer.CustomerContactNumber" value="@Model.Customer?.CustomerContactNumber" type="tel" placeholder="" autocomplete="off"/>
+                                </div> 
+                                <div class="customer-more-detail" style="display: none">
+                                    <label for="customer-email" class="control-label">@Html.DisplayNameFor(x => Model.Customer.CustomerEMail)</label>
+                                    <input  id="customer-email" class="form-control customer-input" name="Customer.CustomerEMail" value="@Model.Customer?.CustomerEMail"  type="email"  autocomplete="off"/>
+                                </div>                  
                             </div>
-                        </div>                           
-                        <div class="row row-cols-4 mx-0 mt-4 align-content-start">
-                            <div class="col-2 row-cols-1 px-0" tabindex="0" title="Новый клиент">
-                                <input  id="chk-new-customer"   class="btn-check" type="checkbox" name="CustomerForceCreate" checked disabled>
-                                <label  for="chk-new-customer"  class="btn btn-check-label btn-outline-primary">
-                                    <i class="bi bi-person-plus"></i>                           
-                                </label>                                    
-                            </div>
-                            <div class="col-2 row-cols-1 px-0" tabindex="0" title="Обновить данные клиента">
-                                <input   id="chk-upd-customer"  class="btn-check"  type="checkbox"  name="CustomerForceUpdate"  disabled>
-                                <label  for="chk-upd-customer"  class="btn btn-check-label btn-outline-success">
-                                    <i class="bi bi-person-check"></i>                           
-                                </label>
-                            </div>
-                            <button type="button"  id="btn-search-customer" class="btn col-4 btn-outline-secondary text-truncate" title="Найти по номеру телефона">
-                                <i class="bi bi-search"></i><i class="bi bi-people"></i>
-                            </button> 
-                            <button type="button"  id="btn-more-customer-detail" class="btn col-4 btn-outline-secondary" title="Показать доп. данные">
-                                <i class="bi bi-person-lines-fill"> </i>
-                            </button> 
-                        </div> 
-                    </div>  
-                    <div id="сustomer-search-results" style="display: none">
-                        <!--partial name="_CustomersSearchResults"/-->   
-                    </div>  
-                </div>
-            </div>
-        </div>
-
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="terms-info">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#terms-details" aria-expanded="true" aria-controls="terms-details">
-                    <span class="px-1"><b>Время:</b></span>   
-                    <span class="px-1">@Html.DisplayFor(m => Model.Status)</span>   
-                    @if (Model.Start != null)
-                    {
-                        <span class="px-1">c @Html.DisplayFor(m => Model.Start)</span>
-                    }
-                    @if (Model.End != null) 
-                    {
-                        <span class="px-1">по @Html.DisplayFor(m => Model.End),</span>    
-                    }
-                    <span class="px-1" id="time-change"></span> 
-                    <span class="px-1" id="time-excess"></span> 
-                </button>
-            </h2>
-            <div id="terms-details" class="accordion-collapse collapse show" aria-labelledby="terms-info" data-bs-parent="#details">
-                <div class="accordion-body">
-                    <div class="row row-cols-sm-3 mx-0" > 
-                        <div class="form-group">
-                            <label for="time-start" class="control-label" id="time-start-label"></label>
-                            <div class="input-group">
-                                <div class="input-group-append order-2" id="time-start-now-option">
-                                    <input  id="time-start-now" class="btn-check order-2" type="checkbox" checked />
-                                    <label for="time-start-now" class="btn btn-check-label btn-outline-secondary text-truncate "><i class="bi bi-clock"></i> </label>
+                            <div>
+                                <div >
+                                    <label for="customer-name" class="control-label  text-truncate ">@Html.DisplayNameFor(x => Model.Customer.CustomerFullName)</label>
+                                    <input  id="customer-name" class="form-control customer-input" name="Customer.CustomerFullName" value="@Model.Customer?.CustomerFullName"  autocomplete="off" />
+                                </div> 
+                                <div  class=" customer-more-detail" style="display: none">
+                                    <label for="customer-doc" class="control-label">@Html.DisplayNameFor(x => Model.Customer.CustomerPassport)</label>
+                                    <input  id="customer-doc" class="form-control customer-input" name="Customer.CustomerPassport" value="@Model.Customer?.CustomerPassport"  autocomplete="off" />
                                 </div>
-                                <input  id="time-start"  class="form-control  order-1"  name="Start" type="datetime-local" value="" readonly/>
-                            </div>
-                        </div>   
-                        <div class="form-group">
-                            <label  for="time-end" class="control-label" id="time-end-label"></label>
-                            <input  id="time-end"  class="form-control"  name="End" type="datetime-local" value=""/>
-                        </div>   
-                        <div>
-                            <label  for="duration" class="control-label" id="duration-label"></label>
-                            <input  id="duration"  class="form-control"  name="Duration" type="number" value="" min="1"/>
-                        </div>   
+                            </div>                           
+                            <div class="row row-cols-4 mx-0 mt-4 align-content-start">
+                                <div class="col-2 row-cols-1 px-0" tabindex="0" title="Новый клиент">
+                                    <input  id="chk-new-customer"   class="btn-check" type="checkbox" name="CustomerForceCreate" checked disabled>
+                                    <label  for="chk-new-customer"  class="btn btn-check-label btn-outline-primary">
+                                        <i class="bi bi-person-plus"></i>                           
+                                    </label>                                    
+                                </div>
+                                <div class="col-2 row-cols-1 px-0" tabindex="0" title="Обновить данные клиента">
+                                    <input   id="chk-upd-customer"  class="btn-check"  type="checkbox"  name="CustomerForceUpdate"  disabled>
+                                    <label  for="chk-upd-customer"  class="btn btn-check-label btn-outline-success">
+                                        <i class="bi bi-person-check"></i>                           
+                                    </label>
+                                </div>
+                                <button type="button"  id="btn-search-customer" class="btn col-4 btn-outline-secondary text-truncate" title="Найти по номеру телефона">
+                                    <i class="bi bi-search"></i><i class="bi bi-people"></i>
+                                </button> 
+                                <button type="button"  id="btn-more-customer-detail" class="btn col-4 btn-outline-secondary" title="Показать доп. данные">
+                                    <i class="bi bi-person-lines-fill"> </i>
+                                </button> 
+                            </div> 
+                        </div>  
+                        <div id="сustomer-search-results" style="display: none">
+                        </div>  
                     </div>
                 </div>
             </div>
-        </div>
-         
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="items-info">                
-                <input  id="price-account" name="Price" value="@Model.Price" type="hidden"/>
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#items-details" aria-expanded="true" aria-controls="items-details">
-                   <span class="px-1"><b>Состав:</b></span> 
-                   <span class="px-1">Позиций</span> 
-                   <span class="px-1" id="items"></span>
-                   <span class="px-1" id="items-change"></span>
-                   <span class="px-1">Стоимость</span>
-                   <span class="px-1" id="price"></span>
-                   <span class="px-1" id="price-change"></span>
-                </button>
-            </h2>
-            <div id="items-details" class="accordion-collapse collapse show" aria-labelledby="items-info" data-bs-parent="#details">
-                <div class="accordion-body">
-                    
-                    <div class="d-flex flex-row pt-1 justify-content-between">
-                        <div>
-                            <button type="button" id="btn-getbackall" class="btn btn-sm btn-primary" style="width: 150px">
-                                <i class="bi bi-hand-thumbs-up-fill"></i>Принять все(<i id="givenout-count">0</i>)
-                            </button>    
-                            <button type="button" id="btn-show-items-chooser" class="btn btn-sm btn-success" style="width: 150px">
-                                <i class="bi bi-plus-lg"></i>Добавить
-                            </button>                                
-                        </div>
-                        <div id="time-action-info" class="align-content-end">
-                            <div class="form-group input-group  input-group-sm">
-                                <div class="input-group-text"> Уточнить время </div>
-                                <input  id="time-action"  class="form-control form-control-sm"  name="TimeAction"  type="datetime-local" value="" readonly/>
-                                <div class="input-group-append" id="time-action-now-option">
-                                    <input  id="time-action-now" class="btn-check" type="checkbox" checked />
-                                    <label for="time-action-now" class="btn btn-sm btn-check-label btn-outline-secondary text-truncate "><i class="bi bi-clock"></i> </label>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="terms-info">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#terms-details" aria-expanded="true" aria-controls="terms-details">
+                        <span class="px-1"><b>Время:</b></span>   
+                        <span class="px-1">@Html.DisplayFor(m => Model.Status)</span>   
+                        @if (Model.Start != null)
+                        {
+                            <span class="px-1">c @Html.DisplayFor(m => Model.Start)</span>
+                        }
+                        @if (Model.End != null) 
+                        {
+                            <span class="px-1">по @Html.DisplayFor(m => Model.End),</span>    
+                        }
+                        <span class="px-1" id="time-change"></span> 
+                        <span class="px-1" id="time-excess"></span> 
+                    </button>
+                </h2>
+                <div id="terms-details" class="accordion-collapse collapse show" aria-labelledby="terms-info" data-bs-parent="#details">
+                    <div class="accordion-body">
+                        <div class="row row-cols-sm-3 mx-0" > 
+                            <div class="form-group">
+                                <label for="time-start" class="control-label" id="time-start-label"></label>
+                                <div class="input-group">
+                                    <div class="input-group-append order-2" id="time-start-now-option">
+                                        <input  id="time-start-now" class="btn-check order-2" type="checkbox" checked />
+                                        <label for="time-start-now" class="btn btn-check-label btn-outline-secondary text-truncate "><i class="bi bi-clock"></i> </label>
+                                    </div>
+                                    <input  id="time-start"  class="form-control  order-1"  name="Start" type="datetime-local" value="" readonly/>
                                 </div>
+                            </div>   
+                            <div class="form-group">
+                                <label  for="time-end" class="control-label" id="time-end-label"></label>
+                                <input  id="time-end"  class="form-control"  name="End" type="datetime-local" value=""/>
+                            </div>   
+                            <div class="form-group">
+                                <label  for="duration" class="control-label" id="duration-label"></label>
+                                <input  id="duration"  class="form-control"  name="Duration" type="number" value="" min="1"/>
+                            </div>   
+                        </div>
+                    </div>
+                </div>
+            </div>
+         
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="items-info">                
+                    <input  id="price-account" name="Price" value="@Model.Price" type="hidden"/>
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#items-details" aria-expanded="true" aria-controls="items-details">
+                       <span class="px-1"><b>Состав:</b></span> 
+                       <span class="px-1">Позиций</span> 
+                       <span class="px-1" id="items"></span>
+                       <span class="px-1" id="items-change"></span>
+                       <span class="px-1">Стоимость</span>
+                       <span class="px-1" id="price"></span>
+                       <span class="px-1" id="price-change"></span>
+                    </button>
+                </h2>
+                <div id="items-details" class="accordion-collapse collapse show" aria-labelledby="items-info" data-bs-parent="#details">
+                    <div class="accordion-body">
+                    
+                        <div class="d-flex flex-row pt-1 justify-content-between">
+                            <div>
+                                <button type="button" id="btn-getbackall" class="btn btn-sm btn-primary" style="width: 150px">
+                                    <i class="bi bi-hand-thumbs-up-fill"></i>Принять все(<i id="givenout-count">0</i>)
+                                </button>    
+                                <button type="button" id="btn-show-items-chooser" class="btn btn-sm btn-success" style="width: 150px">
+                                    <i class="bi bi-plus-lg"></i>Добавить
+                                </button>                                
                             </div>
+                            <div id="time-action-info" class="align-content-end">
+                                <div class="form-group input-group  input-group-sm">
+                                    <div class="input-group-text"> Уточнить время </div>
+                                    <input  id="time-action"  class="form-control form-control-sm"  name="TimeAction"  type="datetime-local" value="" readonly/>
+                                    <div class="input-group-append" id="time-action-now-option">
+                                        <input  id="time-action-now" class="btn-check" type="checkbox" checked />
+                                        <label for="time-action-now" class="btn btn-sm btn-check-label btn-outline-secondary text-truncate "><i class="bi bi-clock"></i> </label>
+                                    </div>
+                                </div>
+                            </div>  
+
                         </div>  
 
-                    </div>  
-
-                    <div class="row-cols-1">  
-                        <partial name="_RentalItemsList"  /> 
-                    </div>
+                        <div class="row-cols-1">  
+                            <partial name="_ItemRecordsList"  /> 
+                        </div>
                                     
-                    <div class="row-cols-1" id="rental-items-chooser" style="display: none">
-                        <partial name="_RentalItemsChooser"  />  
-                    </div>                      
-                </div>
-            </div>    
+                        <div class="row-cols-1" id="items-chooser" style="display: none">
+                            <partial name="_ItemsChooser"  />  
+                        </div>                      
+                    </div>
+                </div>    
+            </div>      
         </div>      
-    </div>      
-        
-
-      
-    </form>     
+</form>     
              
 @section Scripts {          
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -284,19 +275,21 @@
     <script src="~/js/rent-pricing.js"></script>    
     <script src="~/js/rent-customer.js"></script>    
     <link href="~/css/rent-main.css" rel="stylesheet" asp-append-version="true" /> 
+
+
     <script>   
         var record = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model, new JsonSerializerSettings{ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
-        var prices = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject( ViewBag.Prices ));
-        var arcprices = (@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject( ViewBag.ArchivalPrices ))).Result;
-        var availability = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Availability));
+        var prices = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject( ViewBag.Pricings ));
+        var arcprices = (@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject( ViewBag.ArchivalPricings )));
+        var availability = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject( ViewBag.Availability ));
         var prepared = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Prepared));
         var holidays = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Holidays));
-        var workingHoursStart = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(WorkingHoursStart));
-        var workingHoursEnd = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(WorkingHoursEnd));
+        var workingHoursStart = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject( ViewBag.WorkingHoursStart));
+        var workingHoursEnd = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject( ViewBag.WorkingHoursEnd));
+        var minServiceDelayBetweenRents = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject( ViewBag.MinServiceDelayBetweenRents));
         var url_rental_customer = "@Url.Action("Customer", "rental")";
-        var url_rental_additem = "@Url.Action("addRentedItem", "rental")";
-        var url_rental_searchcustomer = "@Url.Action("searchCustomerByNumber", "rental")";
-        var url_rental_pricingchooser = "@Url.Action("RentalPricingChooser", "rental")";
+        var url_rental_additem = "@Url.Action("AddRentalItemRecord", "rental")";
+        var url_rental_searchcustomer = "@Url.Action("SearchCustomerByNumber", "rental")";
         var pricingTypes = [ "сутки",  "час",  "разовая", "ремонт" ]; 
     </script>
 }

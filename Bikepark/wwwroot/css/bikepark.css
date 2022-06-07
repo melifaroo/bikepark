@@ -50,6 +50,9 @@ table.tablealign td {
     table.tablealign td .btn-sm {
         width: 50px;
     }
+    table.tablealign td .number {
+        width: 60px;
+    }
 
 table.tablealign th {
     text-align: left;

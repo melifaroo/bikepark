@@ -62,7 +62,7 @@ namespace Bikepark.Controllers
         // GET: Rental
         public async Task<IActionResult> ServiceIndex()
         {
-            return View(await _context.ItemRecords.Where(record => record.Status>=Status.Service && record.Status<Status.Fixed).OrderBy(record => record.End).ToListAsync());
+            return View("ItemRecordsIndex_service", await _context.ItemRecords.Where(record => record.Status>=Status.Service && record.Status<Status.Fixed).OrderBy(record => record.End).ToListAsync());
         }
 
         // GET: Rental/OfType/5
@@ -73,7 +73,7 @@ namespace Bikepark.Controllers
                 return NotFound();
             }
             //ARCHIVE
-            return View("ItemRecordsLog", await _context.ItemRecords.Where(irecord => irecord.Item.ItemTypeID == id).ToListAsync());
+            return View("ItemRecordsIndex", await _context.ItemRecords.Where(irecord => irecord.Item.ItemTypeID == id).ToListAsync());
         }
         // GET: Rental/OfItem/5
         public async Task<IActionResult> OfItem(int? id)
@@ -83,7 +83,7 @@ namespace Bikepark.Controllers
                 return NotFound();
             }
             //ARCHIVE
-            return View("ItemRecordsLog", await _context.ItemRecords.Where(irecord => irecord.ItemID == id).ToListAsync());
+            return View("ItemRecordsIndex", await _context.ItemRecords.Where(irecord => irecord.ItemID == id).ToListAsync());
         }
 
         // GET: Rental/WithPricing/5
@@ -94,38 +94,19 @@ namespace Bikepark.Controllers
                 return NotFound();
             }
             //ARCHIVE
-            return View("ItemRecordsLog", await _context.ItemRecords.Where(irecord => irecord.PricingID == id).ToListAsync());
+            return View("ItemRecordsIndex", await _context.ItemRecords.Where(irecord => irecord.PricingID == id).ToListAsync());
         }
 
         // GET: Rental/Active
         public async Task<IActionResult> Active()
         {
-            return View(await _context.Records.Where(r => r.Status == Status.Active).OrderBy(record => record.End).ToListAsync());
+            return View("Index_active", await _context.Records.Where(r => r.Status == Status.Active).OrderBy(record => record.End).ToListAsync());
         }
 
         // GET: Rental/Scheduled
         public async Task<IActionResult> Scheduled()
         {
-            return View(await _context.Records.Where(r => r.Status == Status.Scheduled).OrderBy(record => record.Start).ToListAsync());
-        }
-
-        // GET: Rental/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var rentalRecord = await _context.Records
-                .Include(r => r.Customer)
-                .FirstOrDefaultAsync(m => m.RecordID == id);
-            if (rentalRecord == null)
-            {
-                return NotFound();
-            }
-
-            return View(rentalRecord);
+            return View("Index_scheduled", await _context.Records.Where(r => r.Status == Status.Scheduled).OrderBy(record => record.Start).ToListAsync());
         }
 
         // GET: Rental/Create
@@ -133,7 +114,8 @@ namespace Bikepark.Controllers
         {
             return await Control(new Record());
         }
-        // GET: Rental/Create
+
+        // GET: Rental/GetBackNumber
         public IActionResult GetBackNumber()
         {
             return View();
@@ -175,25 +157,23 @@ namespace Bikepark.Controllers
 
         private async Task<IActionResult> Control(Record rentalRecord)
         {
-            var Types = await _context.ItemTypes.ToListAsync();//.Where(x => !x.Archival)
-            ViewData["Items"] = _context.Items;//.Where(x => !x.Archival)
-            ViewData["Prices"] = _context.Pricings;//.Where(x => !x.Archival)
-            ViewData["ArchivalPrices"] = _context.Pricings.IgnoreQueryFilters().ToListAsync();//.Where(x => !x.Archival)
-            ViewData["Rents"] = _context.Records;
-            ViewData["Customers"] = _context.Customers;
-            ViewData["RentedItems"] = _context.ItemRecords;
+            ViewData["Items"] = _context.Items;
+            ViewData["Pricings"] = _context.Pricings;
+            ViewData["ArchivalPricings"] = await _context.Pricings.IgnoreQueryFilters().ToListAsync();
             ViewData["Holidays"] = await _context.Holidays.Select(day => day.Date).ToListAsync();
             ViewData["Prepared"] = await _context.Prepared.Select(prep=> prep.ItemID).ToListAsync();
-            ViewData["Types"] = Types;
+            ViewData["Types"] = await _context.ItemTypes.ToListAsync();
 
             ViewData["Availability"] = GetAvailability(rentalRecord.RecordID);
 
             ViewData["WorkingHoursStart"] = _config.Value.WorkingHoursStart;
             ViewData["WorkingHoursEnd"] = _config.Value.WorkingHoursEnd;
             ViewData["MinServiceDelayBetweenRents"] = _config.Value.MinServiceDelayBetweenRents;
+
             foreach (var irec in rentalRecord.ItemRecords)
                 if (irec.Item == null && irec.ItemID != null)
                     irec.Item = await _context.Items.IgnoreQueryFilters().FirstOrDefaultAsync(ir => ir.ItemID == irec.ItemID);
+
             return View("Control", rentalRecord);
         }
         private IActionResult ServiceSetup(IEnumerable<ItemRecord> itemRecords)
@@ -551,7 +531,7 @@ namespace Bikepark.Controllers
         }
 
         // GET: Rental/ItemDetails/5
-        public async Task<IActionResult> ItemDetails(int? id)
+        public async Task<IActionResult> ItemRentalDetails(int? id)
         {
             if (id == null)
             {
@@ -572,23 +552,25 @@ namespace Bikepark.Controllers
                 .Include(r => r.Record)
                 .OrderBy(r => r.Status)
                 .ToListAsync();
-            return View("ItemDetails", item);
+            return View(item);
         }
 
-        public PartialViewResult AddRentedItem(int ItemID)
+        public async Task<PartialViewResult> AddRentalItemRecord(int ItemID, DateTime start, DateTime end)
         {
-            return PartialView("_ItemRecordRow", new ItemRecord { ItemID = ItemID, Item = _context.Items.FirstOrDefault(item => item.ItemID == ItemID) });
+            var Item = await _context.Items.FindAsync(ItemID);
+            var isHoliday = await _context.Holidays.AnyAsync(day => day.Date == DateOnly.FromDateTime(start));
+            List<Pricing> actualprices = await PricingFilter.ActualPricing(_context.Pricings, Item.ItemType.PricingCategoryID, start, end, isHoliday);
+            ViewData["ActualPrices"] = actualprices;
+            return PartialView("_ItemRecordRow_rental", new ItemRecord { ItemID = ItemID, Item = Item, Start = start, End = end });
         }
 
         public JsonResult Customer(int CustomerID)
         {
-            //ARCHIVE
             return Json(_context.Customers.First(customer => customer.CustomerID == CustomerID));
         }
 
         public async Task<IActionResult> SearchCustomerByNumber(string Request)
         {
-            //ARCHIVE
             if (Request == null)
             {
                 return NotFound();

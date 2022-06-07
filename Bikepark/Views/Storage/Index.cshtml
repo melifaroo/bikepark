@@ -21,14 +21,31 @@
     List<SelectListItem> Ages = Model.DistinctBy(x => x.ItemAge).Select(x => new SelectListItem { Value =  EnumHelper<ItemAge>.GetDisplayValue(x.ItemAge ?? ItemAge.Adult), Text =  EnumHelper<ItemAge>.GetDisplayValue(x.ItemAge ?? ItemAge.Adult) }).ToList();
     List<SelectListItem> Genders = Model.DistinctBy(x => x.ItemGender).Select(x => new SelectListItem { Value = EnumHelper<ItemGender>.GetDisplayValue(x.ItemGender ?? ItemGender.Unisex), Text =  EnumHelper<ItemGender>.GetDisplayValue(x.ItemGender ?? ItemGender.Unisex) }).ToList();
 }
-<div id="storage-title">
 <h1>Велопарк</h1>
-<p>
-    <a asp-action="Create">Добавить</a> | 
-    <a asp-action="Index" asp-controller="ItemCategories">Категории</a>  | 
-    <a asp-action="Index" asp-controller="PricingCategories">Категории тарифов</a> | 
-    <a asp-action="Main">Управление</a>   
-</p>
+<div class="d-flex flex-wrap justify-content-between align-items-center border-bottom" id="storage-title">
+    <ul class="nav col-md-6 justify-content-start">
+        <li class="nav-item">
+            <a class="nav-link" asp-action="Create">Добавить</a>
+        </li> 
+        <li class="nav-item">
+            <a class="nav-link" asp-action="Index" asp-controller="ItemCategories">Категории</a>
+        </li>     
+        <li class="nav-item">
+            <a class="nav-link" asp-action="Index" asp-controller="PricingCategories">Категории тарифов</a>
+        </li>   
+        <li class="nav-item">
+            <a class="nav-link" asp-action="Index" asp-controller="Items">Велосипеды (по номерам)</a>
+        </li>     
+    </ul>
+
+    <ul class="nav  col-md-6 justify-content-end">
+        <li class="nav-item">
+            <a class="nav-link" asp-action="Export">Загрузить таблицу XLS</a>
+        </li>    
+        <li class="nav-item"> 
+            <a class="nav-link" asp-action="Main" >Управление</a> 
+        </li>    
+    </ul>  
 </div>
 
 <table id="storage" class="tablealign scroll-table" >

@@ -77,7 +77,7 @@ function setupValidator() {
                 },
                 //End: { onWorkingHours: [workingHoursStart, workingHoursEnd] },
                 Start: { onWorkingHours: [workingHoursStart, workingHoursEnd] },
-                RecordID: { ItemsAvailable: '#rental-items-list .item-record' }
+                RecordID: { ItemsAvailable: '#itemrecords-list .item-record' }
             },
             messages: {
                 "Customer.CustomerContactNumber": {

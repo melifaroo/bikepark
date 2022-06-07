@@ -34,6 +34,16 @@ button {
     display: none;
 }
 
+.number .bi-key {
+    display: none;
+}
+.number.prepared {
+    font-weight : bold;
+}
+    .number.prepared .bi-key {
+        display: inline-block;
+        transform: rotate(90deg);
+    }
 
 .check-with-label:checked + .label-for-check {
     font-weight: bold;

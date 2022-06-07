@@ -7,10 +7,28 @@
 }
 
 <h1>Категории тарификации</h1>
+<div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
+    <ul class="nav col-md-6 justify-content-start">
+        <li class="nav-item">
+            <a class="nav-link" asp-action="Create">Создать новую</a>
+        </li> 
+        <li class="nav-item">
+            <a class="nav-link" asp-action="Index" asp-controller="Pricings" >Тарифы</a>
+        </li>    
+        <li class="nav-item">
+            <a class="nav-link" asp-action="Index" asp-controller="Storage" >Склад</a>
+        </li>     
+    </ul>
 
-<p>
-    <a asp-action="Create">Создать новую</a>
-</p>
+    <ul class="nav  col-md-6 justify-content-end">
+        <li class="nav-item">
+            <a class="nav-link" asp-action="Export">Загрузить таблицу XLS</a>
+        </li>    
+        <li class="nav-item"> 
+            <a class="nav-link" asp-action="Main" asp-controller="Storage">Управление</a> 
+        </li>    
+    </ul>  
+</div>
 <table class="table">
     <thead>
         <tr>

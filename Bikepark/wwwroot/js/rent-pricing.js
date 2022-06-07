@@ -1,4 +1,4 @@
-﻿$(document).on("change", "#rental-items-list .pricing", function () {
+﻿$(document).on("change", "#itemrecords-list .pricing", function () {
     showprice(this)
     change_action();
 });
@@ -57,7 +57,7 @@ function priceChanged() {
     var changed = false;
     var BreakException = {};
     try {
-        $("#rental-items-list tr").each(function () {
+        $("#itemrecords-list tr").each(function () {
             changed = ($(this).find(".pricing").val() != $(this).find(".pricing0").val())
             if (changed) throw BreakException;
         });
@@ -77,7 +77,7 @@ function calculatePrice() {
     var price_account = parseFloat( $("#price-account").val()?$("#price-account").val():"0" );
     var price_total = record.Status > 2 ? price_account : 0;
     if (record.Status <= 2)
-        $("#rental-items-list tr").each(function () {
+        $("#itemrecords-list tr").each(function () {
             var s = (record.Status == 2) ? (($(this).attr('status') == "Draft") ? a1 : new Date($(this).find(".start").val())) : s1;
             var e = (record.Status == 2) ? (($(this).attr('status') == "Closed") ? new Date($(this).find(".end").val()) : (e1.getTime() < n.getTime())?n:e1 ) : e1;;
             var duration = durationHours(s, e);
