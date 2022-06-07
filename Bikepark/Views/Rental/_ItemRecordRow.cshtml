@@ -13,27 +13,28 @@
     var item_end_style = ((Model.Record != null)
                     && (Model.Record.Status == Status.Active || Model.Record.Status == Status.Closed)
                     && (Model.End != null && !Model.End.Equals(Model.Record.End))) ? "" : "display: none";
-    DbSet<Pricing> prices = ViewBag.Prices;
-    IEnumerable<Pricing> actualprices = new List<Pricing>();
+    //DbSet<Pricing> prices = ViewBag.Prices;
+    //IEnumerable<DateOnly> holidays = ViewBag.Holidays;
+    //IEnumerable<Pricing> actualprices = new List<Pricing>();
     int? PricingCategoryID = Model.Item.ItemType.PricingCategoryID;
-
+    //var isHoliday = holidays.Any(day => day.CompareTo(DateTime.Now) == 0);
     ViewData["PricingID"] = Model.PricingID;
-    if (Model.Record != null && Model.Status<Status.Active)
-        actualprices = await PricingFilter.ActualPricing(prices, Model.Item.ItemType.PricingCategoryID, (Model.Start ?? Model.Record.Start ?? DateTime.Now), (Model.End ?? Model.Record.End ?? DateTime.Now) );
+    //if (Model.Record != null && Model.Status<Status.Active)
+    //    actualprices = await PricingFilter.ActualPricing(prices, Model.Item.ItemType.PricingCategoryID, (Model.Start ?? Model.Record.Start ?? DateTime.Now), (Model.End ?? Model.Record.End ?? DateTime.Now) , isHoliday);
 }   
 <tr class="item-record" data-itemid="@Model.ItemID" data-id="@Model.GetHashCode()" status="@Model.Status">  
     <input type="hidden" name="ItemRecords.index" autocomplete="off" value="@Model.GetHashCode()" />
-        <td  style="width : 20%">
+        <td class="td-buttons"  style="width : 150px;">
             <div class="d-flex flex-row">
                 @{
                     if (Model.Status == Status.Active)
                     {
                         <input type="radio"   id="chk-givenout-@Model.GetHashCode()" class="btn-check chk-givenout chk-item-action" name="status-action-@Model.GetHashCode()" value = "@Status.Active" checked data-irecid="@Model.GetHashCode()">
-                        <label               for="chk-givenout-@Model.GetHashCode()" class="btn btn-sm label-giveout btn-outline-success"><i class="bi bi-bicycle"></i></label>
+                        <label               for="chk-givenout-@Model.GetHashCode()" class="btn btn-sm label-giveout btn-outline-success" title="В прокате"><i class="bi bi-bicycle"></i></label>
                         <input type="radio"   id="chk-getback-@Model.GetHashCode()" class="btn-check chk-getback chk-item-action" name="status-action-@Model.GetHashCode()" value = "@Status.Closed" unchecked data-irecid="@Model.GetHashCode()">
-                        <label               for="chk-getback-@Model.GetHashCode()" class="btn btn-sm btn-outline-primary" ><i class="bi bi-hand-thumbs-up"></i></label>
+                        <label               for="chk-getback-@Model.GetHashCode()" class="btn btn-sm btn-outline-primary" ><i class="bi bi-hand-thumbs-up" title="Принять"></i></label>
                         <input type="radio"   id="chk-service-@Model.GetHashCode()" class="btn-check chk-service chk-item-action" name="status-action-@Model.GetHashCode()" value = "@Status.Service" unchecked data-irecid="@Model.GetHashCode()">
-                        <label               for="chk-service-@Model.GetHashCode()" class="btn btn-sm btn-outline-danger" ><i class="bi bi-wrench-adjustable"></i></label>
+                        <label               for="chk-service-@Model.GetHashCode()" class="btn btn-sm btn-outline-danger" ><i class="bi bi-wrench-adjustable" title="Оформить ремонт"></i></label>
                     }else
                     if (Model.Status < Status.Active){
                         if (Model.Status == Status.Scheduled)
@@ -44,11 +45,13 @@
                     }
                     else if (Model.Status == Status.Closed)
                     {
-                        <label class="btn btn-sm btn-outline-primary" ><i class="bi bi-stopwatch"></i></label>
-                    }else if (Model.Status > Status.Closed)
+                        <label class="btn btn-sm btn-secondary" style=" width: 150px;"><i class="bi bi-stopwatch"></i>@Html.DisplayFor(m => Model.Status)</label>
+                    }else if (Model.Status > Status.Closed && Model.Status < Status.Fixed )
                     {
-                        <label class="btn btn-sm btn-outline-danger" ><i class="bi bi-wrench-adjustable-circle"></i></label>
-                        @Html.DisplayFor(m => Model.Status)
+                        <label class="btn btn-sm btn-danger" style=" width: 150px;"><i class="bi bi-wrench-adjustable-circle"></i>@Html.DisplayFor(m => Model.Status)</label>
+                    } if (Model.Status == Status.Fixed )
+                    {
+                        <label class="btn btn-sm btn-secondary" style=" width: 150px;"><i class="bi bi-wrench-adjustable-circle"></i>@Html.DisplayFor(m => Model.Status)</label>
                     }
                 }
                
@@ -57,38 +60,38 @@
                 <input name="ItemRecords[@Model.GetHashCode()].ItemID"          value="@Model.ItemID"       class="itemid" type="hidden"/> 
                 <input name="ItemRecords[@Model.GetHashCode()].Status"          value="@Model.Status"       class="status" type="hidden"/>    
                 <input value="@PricingCategoryID"  class="pricingcategoryid" type="hidden"/>    
-                <div class="col-sm">
+                <div class="col-sm" style="display: none;">
                     <p class="half-row my-0">rec# @Html.DisplayFor(m => Model.RecordID)</p>
                     <p class="half-row my-0">reci# @Html.DisplayFor(m => Model.ItemRecordID)</p>
                 </div>
-                <div class="col-sm">
+                <div class="col-sm" style="display: none;">
                     <p class="half-row my-0">item  @Html.DisplayFor(m => Model.ItemID)</p>
                     <p class="half-row my-0">price @Html.DisplayFor(m => Model.PricingID)</p>
                 </div>       
 
             </div>
-        </td>         
-        <td  style="width : 20%">
-            @Html.DisplayFor(m => Model.Item.ItemType.ItemTypeName)
-        </td>
+        </td>      
         <td  style="width : 10%; font-weight: bold">
             <a target="_blank" rel="noopener noreferrer" href="/Rental/ItemDetails?id=@Model.ItemID">
-                #@Html.DisplayFor(m => Model.Item.ItemNumber)
+                @Html.DisplayFor(m => Model.Item.ItemNumber)
             </a>
+        </td>   
+        <td  >
+            @Html.DisplayFor(m => Model.Item.ItemType.ItemTypeName)
         </td>
-        <td  style="width : 20%">
+        <td  >
                 <input name="ItemRecords[@Model.GetHashCode()].PricingID0"  value="@Model.PricingID" class="pricing0" type="hidden"/>  
                 @if (Model.Status < Status.Active)
                 {
                     <select name="ItemRecords[@Model.GetHashCode()].PricingID" value="@Model.PricingID" class="form-control form-control-sm pricing" title="price">
-                        <partial name="_ItemRecordPricingOptions" model="@actualprices"/>  
+                        @*<partial name="_ItemRecordPricingOptions" model="@actualprices"/>  *@
                     </select>
                 }else{
                     <input name="ItemRecords[@Model.GetHashCode()].PricingID"  value="@Model.PricingID" class="pricing" type="hidden"/>  
                     @Html.DisplayFor(m => Model.Pricing.PricingName)
                 }
         </td>
-        <td  style="width : 10%"> 
+        <td > 
             <span class="pricing-info">
                 
                     @Html.DisplayFor(m => Model.Pricing.Price)
@@ -97,13 +100,17 @@
                 
              </span>
         </td>
-        <td style="width : 20%; vertical-align: top">
-            <div class="col-sm">
+        <td style="width : 10%; vertical-align: top">
+            <div class="col-sm" style="display: none;">
                 <p class="half-row my-0" style="@item_start_style ">Выдан:@Html.DisplayFor(m => Model.Start)</p>
                 <p class="half-row my-0" style="@item_end_style">Сдан:@Html.DisplayFor(m => Model.End)</p>
                 <p class="half-row my-0" >Статус @Html.DisplayFor(m => Model.Status)</p>
             </div>       
-            <input name="ItemRecords[@Model.GetHashCode()].Start"   value="@Model.Start?.ToString("yyyy-MM-ddTHH:mm")"  class="start" type="datetime"/> 
-            <input name="ItemRecords[@Model.GetHashCode()].End"     value="@Model.End?.ToString("yyyy-MM-ddTHH:mm")"     class="end"   type="datetime"/>
+            <label >с @Model.Start?.ToString("HH:mm")</label>
+            <input name="ItemRecords[@Model.GetHashCode()].Start" value="@Model.Start?.ToString("yyyy-MM-ddTHH:mm")"  class="start" type="hidden"/> 
+        </td>     
+        <td style="width : 10%; vertical-align: top">    
+            <label >по @Model.End?.ToString("HH:mm")</label>
+            <input name="ItemRecords[@Model.GetHashCode()].End"   value="@Model.End?.ToString("yyyy-MM-ddTHH:mm")"     class="end"  type="hidden"/>
         </td>      
 </tr>   

@@ -24,6 +24,8 @@
     <tbody>
 @foreach (var item in Model) {
             var alert = "";
+            var start = "";
+            var end = "";
             if (item.Status == Status.Scheduled)
             {
                 if (item.Start < DateTime.Now.AddMinutes(60))
@@ -38,14 +40,14 @@
                 if (item.End < DateTime.Now)
                     alert = "alert alert-danger";                
             }
-            <tr class="@alert">
+        <tr class="@alert">
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
-            <td>
+            <td style="@start">
                 @Html.DisplayFor(modelItem => item.Start)
             </td>
-            <td>
+            <td style="@end">
                 @Html.DisplayFor(modelItem => item.End)
             </td>
             <td>

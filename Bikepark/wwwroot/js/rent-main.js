@@ -55,18 +55,28 @@ function checkAvailability() {
         }
         $(this)
             .toggleClass("unavailable", o.overlap)
-            .toggleClass("active", o.overlap && (o.status == 2 || o.status == 6))
-            .toggleClass("reserved", o.overlap && (o.status == 1 || o.status == 5));
+            .toggleClass("active", o.overlap && (o.status == 2 || o.status == 5))
+            .toggleClass("reserved", o.overlap && (o.status == 1 ));
     });
     Object.keys(availability).forEach(key => {    
         const o = overlap(availability[key], s, e);
         $("label[for='chk-add-" + key + "']")
             .toggleClass("btn-outline-success", !o.overlap)
-            .toggleClass("btn-outline-danger", o.overlap && (o.status == 2 || o.status == 6))
-            .toggleClass("btn-outline-warning", o.overlap && (o.status == 1 || o.status == 5));
+            .toggleClass("btn-outline-danger", o.overlap && (o.status == 2 || o.status == 5))
+            .toggleClass("btn-outline-warning", o.overlap && (o.status == 1 ));
+    });
+    prepared.forEach(key => {
+        var o = false;
+        if (key in availability)
+            o = overlap(availability[key], s, e).overlap;
+        $("#chk-add-" + key).parent().toggleClass("order-first", !o);
+        if (!o) {
+            $("label[for='chk-add-" + key + "']").css({ 'font-weight': "bold" });
+            $("label[for='chk-add-" + key + "']").append("<i class='bi bi-key'></i>");
+        }
     });
     selfitems.forEach( key => {
-        $("#chk-add-" + key).prop("checked", true);
+        $("#chk-add-" + key).prop('checked', true);
     });
 }
 
@@ -149,35 +159,36 @@ $(document).on("click", ".chk-action", function () {
     var d = !schedule_mode ? new Date() : prevScheduleStart;
     $("#time-start").val(time2str(d));
     update_endtime();
-
     change_action();
 });
 
 $("#btn-show-items-chooser").on("click", function () {
-    $("#rental-items-chooser").toggle("slow");
+    $("#rental-items-chooser").toggle(300);
 });
 
-$("#btn-rental-info").on("click", function () {
-    $("#rental-info").toggle("slow");
-});
-
-$("#btn-rental-items").on("click", function () {
-    $("#rental-items").toggle("slow");
+$("#btn-toggle-filters").on("click", function () {
+    $(".chooser-filter-optional").toggle();
 });
 
 function itemsCount() {
     return $("#rental-items-list tr").length;
 }
+
 function scheduledCount() {
     return $("#rental-items-list tr[status=Scheduled]").length;
 }
+function givenoutCount() {
+    return $("#rental-items-list tr[status=Active]").length;
+}
 
 function giveoutCount() {
-    return $("#rental-items-list tr:not([status=Active]):not([status=Closed])").length;
+    return $("#rental-items-list tr:not([status=Active]):not([status=Closed]):not([status=Service]):not([status=OnService]):not([status=Fixed])").length;
 }
-function givenoutCount() {
-    return $("#rental-items-list tr[status=Active] .chk-givenout:checked").length;
+
+function servicedCount() {
+    return $("#rental-items-list tr[status=Service],[status=OnService],[status=Fixed]").length;
 }
+
 function serviceCount() {
     return $("#rental-items-list tr[status=Active] .chk-service:checked").length;
 }
@@ -192,11 +203,8 @@ function setupInterface() {
     console.log(arcprices);
 
 
-    $("#customer-details").toggle(record.Status==0);
-    $("#status-action").toggle(record.Status < 2);
-    $("#rental-info").toggle(record.Status < 3);
-    $("#rental-info-active").toggle(record.Status == 2);
     $("#chk-schedule").prop("checked", record.Status == 1);
+    $("#status-action").toggle(record.Status < 2);
 
     $("#time-start-now-option").toggle(record.Status < 2);
     $("#time-action-now-option").toggle(record.Status == 2);
@@ -211,47 +219,38 @@ function setupInterface() {
     $("#time-start").val(time2str(record.Status == 0 ? now : start));
     $("#time-end").val(time2str(record.Status == 0 ? timeAfterHours(now, 1) : end ));
     $("#duration").val(record.Status == 0 ? 1 : durationHours(start, end) );
+    $("#time-action").val(time2str(now)).addClass("timer-active");
+    if (record.Status == 2) {
+        $("#time-current").html(time2text(now)).addClass("timer-active");
+        $("#duration-current").html(durationHours(start, now));
+    }
+    if (record.Status == 3) {
+        $("#btn-show-items-chooser").prop("disabled", true);
+        $("#rental-items-list .pricing").prop("disabled", true);
+        $("#customer-details input,button").prop("disabled", true);
+    }
 
     switch (record.Status) {
         case 1://scheduled
             $("#time-start-label").val("К выдаче");
             $("#time-end-label").val("К возврату");
             $("#duration-label").val("На время [час]");
-            $("#time-current-label").val("");
-            $("#duration-current-label").val("");
             break;
         case 2://active
             $("#time-start-label").html("Выдан");
             $("#time-end-label").html("К возврату (продлить)");
             $("#duration-label").html("Выдан на время (продлить)");
-            $("#time-action-label").html("Принять/выдать сейчас");
-            $("#time-current-label").html("Текущее время");
-            $("#duration-current-label").html("Время в прокате");
-
-            $("#time-current").val(time2str(now)).addClass("timer-active");
-            $("#time-action").val(time2str(now)).addClass("timer-active");
-            $("#duration-current").val(  durationHours(start, now)  );
             break;
         case 3://closed
             $("#time-start-label").html("Выдан");
             $("#time-end-label").html("Принят");
             $("#duration-label").html("Продолжительность [час]");
-            $("#time-current-label").html("");
-            $("#duration-current-label").html("");
-
-            $("#btn-show-items-chooser").prop("disabled", true);
-            $("#rental-items-list .pricing").prop("disabled", true);
-            $("#customer-details input,button").prop("disabled", true);
             break;
         case 0:
         default:
             $("#time-start-label").html("К выдаче сейчас");
             $("#time-end-label").html("К возврату");
             $("#duration-label").html("На время [час]");
-            $("#time-current-label").html("");
-            $("#duration-current-label").html("");
-
-           // $("#status").val("Active");
     }
     change_action()
     $("#rental-control").show();
@@ -280,17 +279,18 @@ function change_action() {
     var givenout_count = givenoutCount();
     var repeal_count = recordScheduledCount - scheduled_count;
     var schedule_count = giveout_count - scheduled_count;
+    var added_count = giveout_count - scheduled_count;
 
     s1 = new Date($("#time-start").val());
     e1 = new Date($("#time-end").val());
     s0 = new Date(record.Start);
     e0 = new Date(record.End);
     now = new Date();
-    //Math.round((d2.getTime() - d1.getTime()) / 60 / 60 / 1000)
-    //var diffInDays = (date1.getTime() - date2.getTime()) / (1000 * 60 * 60 * 24);
 
     var overdue = durationHours(s0, now) > 0;
-    var excess = durationHours(e0, now) > 0;
+
+    var excess = (record.Status == 2) && durationHours(e0, now) > 0;
+    var excess_time = durationHours(e0, now);
 
     var extend_time = durationHours(e0, e1) - durationHours(s0, s1);    
     var reduce_time = durationHours(e1, e0) - durationHours(s1, s0);
@@ -307,16 +307,16 @@ function change_action() {
 
     var draft = draft_mode;
 
-    $("#btn-giveout").toggle(giveout); 
-    $("#btn-pass").toggle(pass);
-    $("#btn-schedule").toggle(schedule);
-    $("#btn-repeal").toggle(repeal);
-    $("#btn-getback").toggle(getback); 
-    $("#btn-service").toggle(service);
-    $("#btn-extend").toggle(extend);
-    $("#btn-reduce").toggle(reduce);
-    $("#btn-price").toggle(price_change);
-    $("#btn-schedule-time").toggle(record.Status != 0 && time_change);
+    $("#label-action-giveout").toggle(giveout);
+    $("#label-action-pass").toggle(pass);
+    $("#label-action-schedule").toggle(schedule);
+    $("#label-action-repeal").toggle(repeal);
+    $("#label-action-getback").toggle(getback);
+    $("#label-action-service").toggle(service);
+    $("#label-action-extend").toggle(extend);
+    $("#label-action-reduce").toggle(reduce);
+    $("#label-action-price").toggle(price_change);
+    $("#label-action-schedule-time").toggle(record.Status == 1 && time_change);
 
     $("#giveout-count").html(giveout_count);
     $("#schedule-count").html(schedule_count);
@@ -328,8 +328,9 @@ function change_action() {
     $("#extend-time").html(duration2str(extend_time));
     $("#reduce-time").html(duration2str(reduce_time));
 
-    $("#btn-update").show().prop("disabled", !(pass || getback || service || giveout || repeal || schedule || extend || reduce || price_change));
-    $("#btn-draft").toggle(draft);
+    $("#btn-update").prop("disabled", !(pass || getback || service || giveout || repeal || schedule || extend || reduce || price_change || draft));
+    $("#btn-update").toggleClass("btn-secondary", draft || !(pass || getback || service || giveout || repeal || schedule || extend || reduce || price_change));
+    $("#btn-update").toggleClass("btn-primary", pass || getback || service || giveout || repeal || schedule || extend || reduce || price_change);
 
     $("#btn-cancel").toggle(schedule_mode && record.Status == 1).prop("disabled", !(scheduled_count > 0));
     $("#btn-getbackall").toggle(record.Status == 2).prop("disabled", !(givenout_count>0));
@@ -343,16 +344,31 @@ function change_action() {
     $("#time-action").toggleClass("timer-active", action_now );
 
     if (time_change)
-        $("#rental-items-list tr.item-record").each(function () {
-            updateprices(this);
-        });
-    if (time_change || price_change || giveout || repeal || schedule) {
-    }
-
+        $("#rental-items-list tr.item-record").each(function () { updateprices(this); });
     [price_total, price_account, price_change] = calculatePrice();
-    $("#price-total").val(price_total);
-    $("#price-account").val(price_account);
-    $("#price-change").val(price_change);
+
+    $("#price").html((record.Price ? price_account.toFixed(0) : "0"));
+    $("#price-change").html(((price_change > 0) ? ("(+" + price_change.toFixed(0) + ") => " + price_total.toFixed(0)) : ""));
+    $("#price-change").toggleClass("attention-text", price_change > 0);
+    $("#price-change").toggleClass("alert-text", excess > 0);
+
+    $("#items").html((record.Status == 1) ? scheduledCount : (record.Status == 2 ? givenoutCount : 0));
+    $("#items-change").html(added_count > 0 ? ("(+" + added_count + ")"):"");
+    $("#items-change").toggleClass("attention-text", added_count > 0);
+
+    if (extend_time>0)
+        $("#time-change").html(("(+" + duration2str(extend_time) + ")"));
+    else if (reduce_time>0)
+        $("#time-change").html(("(-" + duration2str(reduce_time) + ")"));
+    else
+        $("#time-change").html((""));
+    $("#time-change").toggleClass("attention-text", extend_time != 0 );
+
+  
+    $("#time-excess").html((excess && excess_time > 0) ? ("просрочен на " + duration2str(excess_time)) : "");
+    $("#time-excess").toggleClass("attention-text", excess_time > 0);
+    $("#time-excess").toggleClass("alert-text", excess_time > 0);
+  
 
     checkAvailability();
    // validator.form();

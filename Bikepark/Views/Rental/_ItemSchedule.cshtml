@@ -24,7 +24,7 @@
             </th>
             <th style="width : 30%">
                 <div class="row-sm">@Html.DisplayNameFor(m => someRent.End)</div>
-            </th >
+            </th>
         </tr>
     </thead>
     <tbody id="rental-items-list">
@@ -32,24 +32,32 @@
         {
             var Start = rent.Start ?? rent.Record.Start;
             var End = rent.End ?? rent.Record.End;
-            <tr>      
-            <td style="width : 20%">                
-                <a asp-action="Control" asp-route-id="@rent.RecordID">
-                    <div class="row-sm">Запись #@Html.DisplayFor(m => rent.RecordID)</div>
-                </a> 
-            </td>
-            <td style="width : 20%">
-                <div class="row-sm">@Html.DisplayFor(m => rent.Status)</div>
-            </td>
-            <td style="width : 30%">
-                <div class="row-sm">@Html.DisplayFor(m => Start )</div>
-            </td>
-            <td style="width : 30%">
-                <div class="row-sm">@Html.DisplayFor(m => End )</div>
-            </td >
-        </tr>            
+            <tr>
+                <td style="width : 20%">
+                    @if (rent.Status == Status.Scheduled || rent.Status == Status.Active)
+                    {
+                        <a asp-action="Control" asp-route-id="@rent.RecordID">
+                            <div class="row-sm">Запись #@Html.DisplayFor(m => rent.RecordID)</div>
+                        </a>
+                    }else if (rent.Status == Status.OnService)
+                    {
+                        <a asp-action="Control" asp-route-id="@rent.RecordID">
+                            <div class="row-sm">Запись #@Html.DisplayFor(m => rent.RecordID)</div>
+                        </a>
+                    }
+                </td>
+                <td style="width : 20%">
+                    <div class="row-sm">@Html.DisplayFor(m => rent.Status)</div>
+                </td>
+                <td style="width : 30%">
+                    <div class="row-sm">@Html.DisplayFor(m => Start )</div>
+                </td>
+                <td style="width : 30%">
+                    <div class="row-sm">@Html.DisplayFor(m => End )</div>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
-                                
+
 

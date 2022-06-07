@@ -12,56 +12,55 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" id="navbar-main">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">                
                 <a class="navbar-brand" href="#">Велопрокат</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse row-cols-2">
-                    <ul class="navbar-nav mt-1 row-cols-7 col-md-8">       
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
+                    <ul class="navbar-nav">       
                         @if ( User.Identity.IsAuthenticated ){
                             <li class="nav-item col-md-2 ">    
-                                <a class="nav-link btn col-12  btn-success" style="color:white;" asp-area="" asp-controller="Rental" asp-action="Create">Выдать</a>    
+                                <a class="nav-link btn btn-success col-12 text-truncate" style="color:white;" asp-area="" asp-controller="Rental" asp-action="Create">Выдать</a>    
                             </li>
                             <li class="nav-item col-md-2">    
-                                <a class="nav-link btn col-12  btn-primary" style="color:white;" asp-area="" asp-controller="Rental" asp-action="GetBackNumber">Принять</a>    
+                                <a class="nav-link btn btn-primary col-12 text-truncate" style="color:white;" asp-area="" asp-controller="Rental" asp-action="GetBackNumber">Принять</a>    
                             </li>
-                            <li class="nav-item col-md-2 px-2">
-                                <a class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="Active"   style="white-space:nowrap">Прокат
+                            <li class="nav-item col-md-2 px-2">     
+                                <a class="nav-link btn btn-light col-12 text-truncate" asp-area="" asp-controller="Rental" asp-action="Index">Журнал    
+                                </a>         
+                            </li>
+                            <li class="nav-item col-md-3 px-2">
+                                <a class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="Active"   style="text-overflow: ellipsis;  white-space:nowrap;">Прокат
                                     (<i id="active-count">0</i>)                                  
                                   <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-warning"  id="active-warning"></span>
                                   <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger"  id="active-overdue"></span>
                                 </a>     
                             </li> 
-                            <li class="nav-item col-md-2 px-2">
-                                <a type="button" class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="Scheduled"  style="white-space:nowrap">Бронь
+                            <li class="nav-item col-md-3 px-2">
+                                <a type="button" class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="Scheduled"  style="text-overflow: ellipsis;  white-space:nowrap;">Бронь
                                     (<i id="scheduled-count">0</i>)
                                   <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-warning"  id="scheduled-warning"></span>
                                   <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger"  id="scheduled-overdue"></span>
                                 </a>     
                             </li> 
-                            <li class="nav-item col-md-2 px-2">     
-                                <a type="button" class="nav-link btn btn-light col-12  position-relative" asp-area="" asp-controller="Rental" asp-action="Index">Журнал    
-                                </a>         
-                            </li>
-                            <li class="nav-item col-md-2 px-2">     
-                                <a type="button" class="nav-link btn btn-light col-12  position-relative" asp-area="" asp-controller="Rental" asp-action="ServiceIndex">Ремонт    
+                            <li class="nav-item col-md-3 px-2">     
+                                <a type="button" class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="ServiceIndex"  style="text-overflow: ellipsis;  white-space:nowrap;">Ремонт    
                                    (<i id="service-count">0</i>)
                                   <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-warning"  id="service-warning"></span>
                                   <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-danger"  id="service-needaction"></span> 
                                 </a>         
                             </li>
-                            if ( User.IsInRole(BikeparkConfig.ManagersRole) ){   
-                                <li class="nav-item col-md-2 px-2">      
-                                    <a type="button"  class="nav-link btn btn-secondary col-12" asp-area="" asp-controller="Storage" asp-action="Main">Управление</a>        
-                                </li>                             
-                            }
                         }  
-                        <partial name="_LoginPartial" />  
-                    </ul>    
-                    
+                    </ul>
+                    <ul  class="navbar-nav">
+                    @if ( User.IsInRole(BikeparkConfig.ManagersRole) ){   
+                        <li class="nav-item">      
+                            <a type="button"  class="nav-link btn btn-secondary col-12 text-truncate" asp-area="" asp-controller="Storage" asp-action="Main">Управление</a>        
+                        </li>                             
+                    }
+                    </ul>                      
                 </div>
             </div>
         </nav>
@@ -69,39 +68,36 @@
     
 
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="footer border-top  text-muted">
-        <nav class="navbar bg-light">
-            <div class="container-fluid">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                &copy; 2022 - Велоцентр - Федюхины высоты
-                    </li>     
-                </ul>
-            </div>
-        </nav>
-    </footer>
+   <footer class="d-flex flex-wrap justify-content-between align-items-center border-top">
+
+        <p class="col-md-6 mt-3 text-muted">&copy; 2022 - Велоцентр - Федюхины высоты</p>
+
+        <ul class="nav col-md-6 justify-content-end">
+            <partial name="_LoginPartial" /> 
+        </ul>
+
+  </footer>
+
+   @* <footer class="footer border-top text-muted">
+        <section class="d-flex justify-content-center justify-content-lg-between p-4">
+
+            <div class="me-5 d-none d-lg-block">
+            </div>  
+                
+        </section>
+    </footer>*@
            
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/bikepark.js"></script>   
-
     
-    @await RenderSectionAsync("Scripts", required: false)  
+    @await RenderSectionAsync("Scripts", required: false) 
 </body>
 
 </html>
 
-
-
-<style>
-    
-    .nav-item.active  {
-       background-color:lightgray
-    }
-
-</style>

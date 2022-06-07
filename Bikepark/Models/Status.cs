@@ -14,11 +14,9 @@ namespace Bikepark.Models
         [Display(Name = "Завершен")]
         Closed,
 
-        [Display(Name = "Подлежит ремонту")]
+        [Display(Name = "Нужен ремонт")]
         Service,
-        [Display(Name = "Запланирован ремонт")]
-        ServiceScheduled,
-        [Display(Name = "В ремонте")]
+        [Display(Name = "Ремонт")]
         OnService,
         [Display(Name = "Отремонтирован")]
         Fixed,     
