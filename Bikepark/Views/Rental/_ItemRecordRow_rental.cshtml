@@ -1,27 +1,15 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-
 @model Bikepark.Models.ItemRecord
 @using Bikepark.Models
 @using Microsoft.EntityFrameworkCore;
 @using HtmlHelpers.BeginCollectionItemCore
 @{
-    var item_start_style = ((Model.Record != null)
-                    && (Model.Record.Status == Status.Active || Model.Record.Status == Status.Closed)
-                    && (Model.Start != null && !Model.Start.Equals(Model.Record.Start))) ? "" : "display: none";
-    var item_end_style = ((Model.Record != null)
-                    && (Model.Record.Status == Status.Active || Model.Record.Status == Status.Closed)
-                    && (Model.End != null && !Model.End.Equals(Model.Record.End))) ? "" : "display: none";
-    //DbSet<Pricing> prices = ViewBag.Prices;
-    //IEnumerable<DateOnly> holidays = ViewBag.Holidays;
-    //IEnumerable<Pricing> actualprices = new List<Pricing>();
     int? PricingCategoryID = Model.Item.ItemType.PricingCategoryID;
-    //var isHoliday = holidays.Any(day => day.CompareTo(DateTime.Now) == 0);
-    ViewData["PricingID"] = Model.PricingID;
-    //if (Model.Record != null && Model.Status<Status.Active)
-    //    actualprices = await PricingFilter.ActualPricing(prices, Model.Item.ItemType.PricingCategoryID, (Model.Start ?? Model.Record.Start ?? DateTime.Now), (Model.End ?? Model.Record.End ?? DateTime.Now) , isHoliday);
+    List<Pricing> actualprices = ViewBag.ActualPrices;
 }   
+
 <tr class="item-record" data-itemid="@Model.ItemID" data-id="@Model.GetHashCode()" status="@Model.Status">  
     <input type="hidden" name="ItemRecords.index" autocomplete="off" value="@Model.GetHashCode()" />
         <td class="td-buttons"  style="width : 150px;">
@@ -72,7 +60,7 @@
             </div>
         </td>      
         <td  style="width : 10%; font-weight: bold">
-            <a target="_blank" rel="noopener noreferrer" href="/Rental/ItemDetails?id=@Model.ItemID">
+            <a target="_blank" rel="noopener noreferrer" href="/Rental/ItemRentalDetails?id=@Model.ItemID">
                 @Html.DisplayFor(m => Model.Item.ItemNumber)
             </a>
         </td>   
@@ -83,8 +71,12 @@
                 <input name="ItemRecords[@Model.GetHashCode()].PricingID0"  value="@Model.PricingID" class="pricing0" type="hidden"/>  
                 @if (Model.Status < Status.Active)
                 {
-                    <select name="ItemRecords[@Model.GetHashCode()].PricingID" value="@Model.PricingID" class="form-control form-control-sm pricing" title="price">
-                        @*<partial name="_ItemRecordPricingOptions" model="@actualprices"/>  *@
+                    <select name="ItemRecords[@Model.GetHashCode()].PricingID" value="@Model.PricingID" class="form-control form-control-sm pricing" title="price"> 
+                        @foreach (var price in actualprices)
+                        {
+                            var selected = ViewBag.PricingID == price.PricingID;
+                            <option value="@price.PricingID" selected="@selected">@price.PricingName</option>
+                        }
                     </select>
                 }else{
                     <input name="ItemRecords[@Model.GetHashCode()].PricingID"  value="@Model.PricingID" class="pricing" type="hidden"/>  
@@ -92,18 +84,16 @@
                 }
         </td>
         <td > 
-            <span class="pricing-info">
-                
-                    @Html.DisplayFor(m => Model.Pricing.Price)
-                    <span>-</span>
-                    @Html.DisplayFor(m => Model.Pricing.PricingType)  
-                
+            <span class="pricing-info">                
+                @Html.DisplayFor(m => Model.Pricing.Price)
+                <span>-</span>
+                @Html.DisplayFor(m => Model.Pricing.PricingType)                  
              </span>
         </td>
         <td style="width : 10%; vertical-align: top">
             <div class="col-sm" style="display: none;">
-                <p class="half-row my-0" style="@item_start_style ">Выдан:@Html.DisplayFor(m => Model.Start)</p>
-                <p class="half-row my-0" style="@item_end_style">Сдан:@Html.DisplayFor(m => Model.End)</p>
+                <p class="half-row my-0" >Выдан:@Html.DisplayFor(m => Model.Start)</p>
+                <p class="half-row my-0" >Сдан:@Html.DisplayFor(m => Model.End)</p>
                 <p class="half-row my-0" >Статус @Html.DisplayFor(m => Model.Status)</p>
             </div>       
             <label >с @Model.Start?.ToString("HH:mm")</label>

@@ -7,11 +7,9 @@
 @using Microsoft.EntityFrameworkCore
 @using Bikepark.Views.Helpers
 @{
-    DbSet<Item> Items = ViewBag.Items;
-    List<ItemType> Types = ViewBag.Types;
-    DbSet<Record> Rents = ViewBag.Rents;
-    DbSet<ItemRecord> RentedItems = ViewBag.RentedItems;
     ItemRecord someItemRecord = new ItemRecord();
+    List<DateOnly> Holidays = ViewBag.Holidays;
+    DbSet<Pricing> Pricings = ViewBag.Pricings;
 }
 
 <table class="tablealign">
@@ -40,10 +38,13 @@
             </th>
         </tr>
     </thead>
-    <tbody id="rental-items-list">
+    <tbody id="itemrecords-list">
         @foreach (var itemRecord in Model.ItemRecords)
         {
-            <partial name="_ItemRecordRow" model = "@itemRecord" />  
+            var isHoliday = Holidays.Any(day => day == DateOnly.FromDateTime(itemRecord.Start ?? DateTime.Now));
+            List<Pricing> actualprices = await PricingFilter.ActualPricing(Pricings, itemRecord.Item.ItemType.PricingCategoryID, itemRecord.Start ?? DateTime.Now, itemRecord.End ?? (itemRecord.Start ?? DateTime.Now).AddHours(1), isHoliday);
+            ViewData["ActualPrices"] = actualprices;
+            <partial name="_ItemRecordRow_rental" model = "@itemRecord" />  
         }
     </tbody>
 </table>
