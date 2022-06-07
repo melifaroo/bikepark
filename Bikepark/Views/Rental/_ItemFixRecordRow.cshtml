@@ -12,17 +12,22 @@
 
 }   
 <tr class="item-fixing-record" data-itemid="@Model.ItemID" data-id="@Model.GetHashCode()">  
-    <input type="hidden" name="ItemRecords.index" autocomplete="off" value="@Model.GetHashCode()" />
-        <td  style="width : 15%">
+        <input type="hidden" name="ItemRecords.index" autocomplete="off" value="@Model.GetHashCode()" />
+        <td class="td-buttons" style="width : 200px">
             <div class="d-flex flex-row">
-                <select name="ItemRecords[@Model.GetHashCode()].Status" asp-items="Html.GetEnumSelectList<Status>().Where(sli => int.Parse(sli.Value)>3)">
-                   
-                </select>
+                <select  class="form-control form-control-sm status" name="ItemRecords[@Model.GetHashCode()].Status">
+                @foreach( Status status in Enum.GetValues(typeof(Status)).Cast<Status>().ToList().Where(sli => ((int)sli)>3) )
+                {
+                    var selected = status == Model.Status;
+                    var name = EnumHelper<Status>.GetDisplayValue(status);
+                    <option value="@Model.Status" selected="@selected">@name</option>                    
+                }
+            </select>
                   
                 <input name="ItemRecords[@Model.GetHashCode()].ItemRecordID"    value="@Model.ItemRecordID" class="itemrecordid" type="hidden"/> 
                 <input name="ItemRecords[@Model.GetHashCode()].RecordID"        value="@Model.RecordID"     class="recordid" type="hidden"/> 
                 <input name="ItemRecords[@Model.GetHashCode()].ItemID"          value="@Model.ItemID"       class="itemid" type="hidden"/> 
-                <div class="col-sm">
+                <div class="col-sm"  style="display: none;">
                     <p class="half-row my-0">rec#   @Html.DisplayFor(m => Model.RecordID)</p>
                     <p class="half-row my-0">reci#  @Html.DisplayFor(m => Model.ItemRecordID)</p>
                 </div>
@@ -42,13 +47,14 @@
         </td>
         <td style="width : 15%">
             <input name="ItemRecords[@Model.GetHashCode()].Start"   value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"  class="start" type="datetime-local"/> 
-        </td>        
-        <td style="width : 15%">
-            <input name="ItemRecords[@Model.GetHashCode()].End"     value=""                                             class="end"   type="datetime-local"/>
-        </td> 
+        </td>      
         <td  style="width : 20%">
-            <select name="ItemRecords[@Model.GetHashCode()].PricingID" class="form-control form-control-sm pricing" title="">                 
-                <partial name="_ItemRecordPricingOptions" model="@serviceprices"/>  
+            <select name="ItemRecords[@Model.GetHashCode()].PricingID" class="form-control form-control-sm pricing" title="">                   
+                @foreach (var price in serviceprices)
+                {
+                    var selected = ViewBag.PricingID == price.PricingID;
+                    <option value="@price.PricingID" selected="@selected">@price.PricingName</option>
+                }
             </select>
         </td>
         <td  style="width : 10%">

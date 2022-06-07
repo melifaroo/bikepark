@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore.Proxies;
 using Bikepark.Data;
-
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -12,11 +11,12 @@ builder.Configuration
             .SetBasePath(Environment.CurrentDirectory)
             .AddJsonFile("bikepark.json", optional: true, reloadOnChange: true);
 
+var baseConnectionString = builder.Configuration.GetConnectionString("SQLiteConnection");
 
-var connectionString = builder.Configuration.GetConnectionString("SQLiteConnection");
 builder.Services.AddDbContext<BikeparkContext>(options => options
                                                 .UseLazyLoadingProxies()
-                                                .UseSqlite(connectionString)); 
+                                                .UseSqlite(baseConnectionString)); 
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => {

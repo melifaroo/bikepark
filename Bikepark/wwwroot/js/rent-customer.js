@@ -13,11 +13,6 @@ $("#btn-more-customer-detail").on("click", function () {
     $(".customer-more-detail").toggle("slow");
 });
 
-$("#btn-customer").on("click", function () {
-    $("#customer-details").toggle("slow");
-});
-
-
 $(document).on("click", ".btn-cancel-customer", function () {
     $("#сustomer-search-results").hide("slow");
 });

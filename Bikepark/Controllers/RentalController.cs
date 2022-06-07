@@ -159,7 +159,7 @@ namespace Bikepark.Controllers
         }
 
         // GET: Rental/ControlFixing/5
-        public async Task<IActionResult> Service(int? id)
+        public async Task<IActionResult> ServiceSetup(int? id)
         {
             if (id == null)
             {
@@ -170,7 +170,7 @@ namespace Bikepark.Controllers
             {
                 return NotFound();
             }
-            return Service(itemRecords);
+            return ServiceSetup(itemRecords);
         }
 
         private async Task<IActionResult> Control(Record rentalRecord)
@@ -182,6 +182,8 @@ namespace Bikepark.Controllers
             ViewData["Rents"] = _context.Records;
             ViewData["Customers"] = _context.Customers;
             ViewData["RentedItems"] = _context.ItemRecords;
+            ViewData["Holidays"] = await _context.Holidays.Select(day => day.Date).ToListAsync();
+            ViewData["Prepared"] = await _context.Prepared.Select(prep=> prep.ItemID).ToListAsync();
             ViewData["Types"] = Types;
 
             ViewData["Availability"] = GetAvailability(rentalRecord.RecordID);
@@ -194,11 +196,16 @@ namespace Bikepark.Controllers
                     irec.Item = await _context.Items.IgnoreQueryFilters().FirstOrDefaultAsync(ir => ir.ItemID == irec.ItemID);
             return View("Control", rentalRecord);
         }
-        private IActionResult Service(IEnumerable<ItemRecord> itemRecords)
+        private IActionResult ServiceSetup(IEnumerable<ItemRecord> itemRecords)
         {
-            //ARCHIVE
-            ViewData["Prices"] = _context.Pricings;//.Where(x => !x.Archival);
-            return View("Service", itemRecords);
+            ViewData["Prices"] = _context.Pricings;
+            return View("ServiceSetup", itemRecords);
+        }
+
+        private IActionResult Service(ItemRecord itemRecord)
+        {
+            ViewData["Prices"] = _context.Pricings;
+            return View("ServiceSetup", new List<ItemRecord>() { itemRecord });
         }
 
         private Dictionary<int, List<RecordInfo>> GetAvailability( int? RecordID ) {
@@ -350,7 +357,7 @@ namespace Bikepark.Controllers
                                         toFix.Add(new ItemRecord { ItemID = itemRecord.ItemID, Item = itemRecord.Item, Status = Status.Service, RecordID = itemRecord.RecordID, UserID = user.Id });
                                     }
                                 }
-
+                                //_context.Update(itemRecord);
                             }
                             if (closeditems == rentalRecord.ItemRecords.Count && rentalRecord.Status == Status.Active)
                             { // close record
@@ -381,7 +388,7 @@ namespace Bikepark.Controllers
                     }
 
                     return (toFix.Count > 0) ?
-                        RedirectToAction(nameof(Service), new { id = rentalRecord.RecordID }) :
+                        RedirectToAction(nameof(ServiceSetup), new { id = rentalRecord.RecordID }) :
                         RedirectToAction(nameof(Control), new { id = rentalRecord.RecordID });
                 }
             }
@@ -397,7 +404,35 @@ namespace Bikepark.Controllers
 
         }
 
-        private async Task<double> ComputePrice(Record rentalRecord)
+        // POST: Rental/SaveServiceRecords
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveServiceRecords(IEnumerable<Bikepark.Models.ItemRecord> itemRecords)
+        {
+            if (ModelState.IsValid)
+            {
+                foreach (ItemRecord itemRecord in itemRecords) {
+                    if (itemRecord.ItemRecordID == null)
+                    {
+                        _context.Add(itemRecord);
+                    }
+                    else
+                    {
+                        _context.Update(itemRecord);
+                    }
+                    await _context.SaveChangesAsync();
+                }
+                return RedirectToAction(nameof(ServiceIndex));
+            }
+            else
+            {
+                return ServiceSetup(itemRecords);
+            }
+        }
+
+       private async Task<double> ComputePrice(Record rentalRecord)
         {
             double price = 0;
             foreach (ItemRecord irec in rentalRecord.ItemRecords) {
@@ -532,7 +567,7 @@ namespace Bikepark.Controllers
             }
 
             ViewData["ItemRecs"] = await _context.ItemRecords
-                .Where(r => r.Status == Status.Active || r.Status == Status.Scheduled)
+                .Where(r => r.Status == Status.Active || r.Status == Status.Scheduled || r.Status == Status.OnService)
                 .Where(r => r.ItemID == id)
                 .Include(r => r.Record)
                 .OrderBy(r => r.Status)
@@ -562,5 +597,7 @@ namespace Bikepark.Controllers
             var foundCustomers = await _context.Customers.Where(customer => customer.CustomerContactNumber.Contains(trimmedRequest)).ToListAsync();
             return PartialView("_CustomersSearchResults", foundCustomers);
         }
+
+
     }
 }

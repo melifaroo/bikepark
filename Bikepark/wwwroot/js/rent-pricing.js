@@ -12,7 +12,23 @@ function showprice(pricing) {
 function updateprices(row) {
     var pricingID = $(row).find(".pricing").val();
     var pricingCategoryID = $(row).find("input.pricingcategoryid").val();
-    var dayOfWeek = new Date($("#time-start").val()).getDay();//
+    var date = new Date($("#time-start").val());
+    date.setHours(0, 0, 0, 0);
+    var dayOfWeek = date.getDay();//
+    var isHoliday = false;
+
+    var BreakException = {};
+    try {
+        holidays.forEach(day => {
+            var holi = new Date(day.Year + "-" + zeroPadded(day.Month) + "-" + zeroPadded(day.Day));
+            holi.setHours(0, 0, 0, 0);
+            isHoliday = date.getTime() == holi.getTime();
+            if (isHoliday) throw BreakException;
+        });
+    } catch (e) {
+        if (e !== BreakException) throw e;
+    }
+
     d1 = new Date($("#time-start").val());
     d2 = new Date($("#time-end").val());
     var duration = Math.ceil(durationHours(d1, d2));
@@ -21,7 +37,7 @@ function updateprices(row) {
         ((p.PricingCategoryID==null || !pricingCategoryID)?true:p.PricingCategoryID == pricingCategoryID) &&
         p.DaysOfWeek.filter(d => d == dayOfWeek).length > 0 &&
         p.MinDuration <= duration &&
-        p.PricingType < 2);
+        p.PricingType < 2 && (!p.IsHoliday || isHoliday));
     actualprices.forEach(price => {
         $(row).find(".pricing").append($("<option />").val(price.PricingID).text(price.PricingName));
     });
@@ -56,13 +72,14 @@ function calculatePrice() {
     var s1 = new Date($("#time-start").val());
     var a1 = new Date($("#time-action").val());
     var e1 = new Date($("#time-end").val());
+    var n = new Date();
 
-    var price_account = $("#price-account").val();
+    var price_account = parseFloat( $("#price-account").val()?$("#price-account").val():"0" );
     var price_total = record.Status > 2 ? price_account : 0;
     if (record.Status <= 2)
         $("#rental-items-list tr").each(function () {
-            var s = (record.Status == 2) ? (($(this).find(".status").val() == "Draft") ? a1 : new Date($(this).find(".start").val())) : s1;
-            var e = (record.Status == 2) ? (($(this).find(".status").val() == "Closed") ? new Date($(this).find(".end").val()) :e1) : e1;;
+            var s = (record.Status == 2) ? (($(this).attr('status') == "Draft") ? a1 : new Date($(this).find(".start").val())) : s1;
+            var e = (record.Status == 2) ? (($(this).attr('status') == "Closed") ? new Date($(this).find(".end").val()) : (e1.getTime() < n.getTime())?n:e1 ) : e1;;
             var duration = durationHours(s, e);
             console.log(duration);
             var pricingID = $(this).find(".pricing").val();

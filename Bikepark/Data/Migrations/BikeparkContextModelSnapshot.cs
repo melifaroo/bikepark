@@ -67,9 +67,20 @@ namespace Bikepark.Data.Migrations
                     b.Property<DateOnly>("Date")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("HolidayID");
 
                     b.ToTable("Holidays");
+
+                    b.HasData(
+                        new
+                        {
+                            HolidayID = 1,
+                            Date = new DateOnly(2022, 6, 12),
+                            Name = "День России"
+                        });
                 });
 
             modelBuilder.Entity("Bikepark.Models.Item", b =>
@@ -546,6 +557,44 @@ namespace Bikepark.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Bikepark.Models.ItemPrepared", b =>
+                {
+                    b.Property<int>("ItemPreparedID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ItemID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ItemPreparedID");
+
+                    b.HasIndex("ItemID");
+
+                    b.ToTable("Prepared");
+
+                    b.HasData(
+                        new
+                        {
+                            ItemPreparedID = 1,
+                            ItemID = 10
+                        },
+                        new
+                        {
+                            ItemPreparedID = 2,
+                            ItemID = 11
+                        },
+                        new
+                        {
+                            ItemPreparedID = 3,
+                            ItemID = 31
+                        },
+                        new
+                        {
+                            ItemPreparedID = 4,
+                            ItemID = 32
+                        });
+                });
+
             modelBuilder.Entity("Bikepark.Models.ItemRecord", b =>
                 {
                     b.Property<int?>("ItemRecordID")
@@ -592,9 +641,11 @@ namespace Bikepark.Data.Migrations
                         new
                         {
                             ItemRecordID = 1,
+                            End = new DateTime(2022, 4, 19, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             ItemID = 1,
                             PricingID = 1,
                             RecordID = 1,
+                            Start = new DateTime(2022, 4, 19, 9, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 3
                         },
                         new
@@ -604,11 +655,13 @@ namespace Bikepark.Data.Migrations
                             ItemID = 2,
                             PricingID = 1,
                             RecordID = 1,
+                            Start = new DateTime(2022, 4, 19, 9, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 3
                         },
                         new
                         {
                             ItemRecordID = 3,
+                            End = new DateTime(2022, 4, 19, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             ItemID = 3,
                             PricingID = 1,
                             RecordID = 1,
@@ -628,57 +681,71 @@ namespace Bikepark.Data.Migrations
                         new
                         {
                             ItemRecordID = 5,
+                            End = new DateTime(2022, 4, 19, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             ItemID = 34,
                             PricingID = 26,
                             RecordID = 1,
+                            Start = new DateTime(2022, 4, 19, 9, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 3
                         },
                         new
                         {
                             ItemRecordID = 6,
+                            End = new DateTime(2022, 5, 15, 19, 0, 0, 0, DateTimeKind.Unspecified),
                             ItemID = 1,
                             PricingID = 1,
                             RecordID = 2,
+                            Start = new DateTime(2022, 5, 15, 16, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 1
                         },
                         new
                         {
                             ItemRecordID = 7,
+                            End = new DateTime(2022, 5, 15, 19, 0, 0, 0, DateTimeKind.Unspecified),
                             ItemID = 34,
                             PricingID = 26,
                             RecordID = 2,
+                            Start = new DateTime(2022, 5, 15, 16, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 1
                         },
                         new
                         {
                             ItemRecordID = 8,
+                            End = new DateTime(2022, 5, 15, 19, 0, 0, 0, DateTimeKind.Unspecified),
                             ItemID = 2,
                             PricingID = 1,
                             RecordID = 3,
+                            Start = new DateTime(2022, 5, 15, 16, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 1
                         },
                         new
                         {
                             ItemRecordID = 9,
+                            End = new DateTime(2022, 5, 15, 19, 0, 0, 0, DateTimeKind.Unspecified),
                             ItemID = 35,
                             PricingID = 26,
                             RecordID = 3,
+                            Start = new DateTime(2022, 5, 15, 16, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 1
                         },
                         new
                         {
                             ItemRecordID = 10,
+                            End = new DateTime(2022, 5, 16, 14, 0, 0, 0, DateTimeKind.Unspecified),
                             ItemID = 29,
                             PricingID = 25,
                             RecordID = 4,
+                            Start = new DateTime(2022, 5, 16, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 1
                         },
                         new
                         {
                             ItemRecordID = 11,
+                            End = new DateTime(2022, 5, 14, 23, 0, 0, 0, DateTimeKind.Unspecified),
                             ItemID = 29,
                             PricingID = 25,
                             RecordID = 5,
+                            Start = new DateTime(2022, 5, 14, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 2
                         },
                         new
@@ -688,11 +755,13 @@ namespace Bikepark.Data.Migrations
                             ItemID = 30,
                             PricingID = 25,
                             RecordID = 5,
+                            Start = new DateTime(2022, 5, 14, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 3
                         },
                         new
                         {
                             ItemRecordID = 13,
+                            End = new DateTime(2022, 5, 14, 23, 0, 0, 0, DateTimeKind.Unspecified),
                             ItemID = 31,
                             PricingID = 25,
                             RecordID = 5,
@@ -1757,6 +1826,7 @@ namespace Bikepark.Data.Migrations
                             RecordID = 1,
                             CustomerID = 1,
                             End = new DateTime(2022, 4, 19, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            Price = 1200.0,
                             Start = new DateTime(2022, 4, 19, 9, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 3
                         },
@@ -1765,6 +1835,7 @@ namespace Bikepark.Data.Migrations
                             RecordID = 2,
                             CustomerID = 2,
                             End = new DateTime(2022, 5, 15, 19, 0, 0, 0, DateTimeKind.Unspecified),
+                            Price = 750.0,
                             Start = new DateTime(2022, 5, 15, 16, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 1
                         },
@@ -1773,6 +1844,7 @@ namespace Bikepark.Data.Migrations
                             RecordID = 3,
                             CustomerID = 1,
                             End = new DateTime(2022, 5, 15, 19, 0, 0, 0, DateTimeKind.Unspecified),
+                            Price = 750.0,
                             Start = new DateTime(2022, 5, 15, 16, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 1
                         },
@@ -1781,6 +1853,7 @@ namespace Bikepark.Data.Migrations
                             RecordID = 4,
                             CustomerID = 1,
                             End = new DateTime(2022, 5, 16, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            Price = 1200.0,
                             Start = new DateTime(2022, 5, 16, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 1
                         },
@@ -1789,6 +1862,7 @@ namespace Bikepark.Data.Migrations
                             RecordID = 5,
                             CustomerID = 2,
                             End = new DateTime(2022, 5, 14, 23, 0, 0, 0, DateTimeKind.Unspecified),
+                            Price = 3000.0,
                             Start = new DateTime(2022, 5, 14, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = 2
                         });
@@ -1993,6 +2067,17 @@ namespace Bikepark.Data.Migrations
                         .HasForeignKey("ItemTypeID");
 
                     b.Navigation("ItemType");
+                });
+
+            modelBuilder.Entity("Bikepark.Models.ItemPrepared", b =>
+                {
+                    b.HasOne("Bikepark.Models.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("Bikepark.Models.ItemRecord", b =>

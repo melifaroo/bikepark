@@ -41,7 +41,6 @@
             int active = await ItemRecs.Where(itemrec => itemrec.ItemID == item.ItemID).CountAsync(itemrec => itemrec.Status == Bikepark.Models.Status.Active);
             int onservice = await ItemRecs.Where(itemrec => itemrec.ItemID == item.ItemID).CountAsync(itemrec => itemrec.Status == Bikepark.Models.Status.OnService);
             int schedule = await ItemRecs.Where(itemrec => itemrec.ItemID == item.ItemID).CountAsync(itemrec => itemrec.Status == Bikepark.Models.Status.Scheduled);
-            int serviceschedule = await ItemRecs.Where(itemrec => itemrec.ItemID == item.ItemID).CountAsync(itemrec => itemrec.Status == Bikepark.Models.Status.ServiceScheduled);
         
         var Status = ((active>0)?"Выдан ":"") + 
                         ((active>1)?"Ошибка, кол-во одновременных выдач " + active:"") + 

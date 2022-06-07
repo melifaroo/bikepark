@@ -17,6 +17,7 @@ namespace Bikepark.Data
         public DbSet<Pricing> Pricings { get; set; }
         public DbSet<ItemType> ItemTypes { get; set; }
         public DbSet<Holiday> Holidays { get; set; }
+        public DbSet<ItemPrepared> Prepared { get; set; }
 
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -314,27 +315,31 @@ namespace Bikepark.Data
             modelBuilder.Entity<Customer>().HasData(new Customer { CustomerID = 1, CustomerFullName = "Василий Пупкин", CustomerPassport = "00 000001", CustomerContactNumber = "+79781234567", CustomerEMail = "vasily.pupkin@maily.su" });
             modelBuilder.Entity<Customer>().HasData(new Customer { CustomerID = 2, CustomerFullName = "Иван Петров", CustomerPassport = "00 000002", CustomerContactNumber = "+79780123456", CustomerEMail = "ivan.petrov@maily.su" });
 
-            modelBuilder.Entity<Record>().HasData(new Record { RecordID = 1, CustomerID = 1, Status = Status.Closed   , Start = DateTime.Parse("19.04.2022 09:00"), End = DateTime.Parse("19.04.2022 12:00") });
-            modelBuilder.Entity<Record>().HasData(new Record { RecordID = 2, CustomerID = 2, Status = Status.Scheduled, Start = DateTime.Parse("15.05.2022 16:00"), End = DateTime.Parse("15.05.2022 19:00") });
-            modelBuilder.Entity<Record>().HasData(new Record { RecordID = 3, CustomerID = 1, Status = Status.Scheduled, Start = DateTime.Parse("15.05.2022 16:00"), End = DateTime.Parse("15.05.2022 19:00") });
-            modelBuilder.Entity<Record>().HasData(new Record { RecordID = 4, CustomerID = 1, Status = Status.Scheduled, Start = DateTime.Parse("16.05.2022 10:00"), End = DateTime.Parse("16.05.2022 14:00") });
-            modelBuilder.Entity<Record>().HasData(new Record { RecordID = 5, CustomerID = 2, Status = Status.Active   , Start = DateTime.Parse("14.05.2022 18:00"), End = DateTime.Parse("14.05.2022 23:00") });
+            modelBuilder.Entity<Record>().HasData(new Record { RecordID = 1, CustomerID = 1, Status = Status.Closed   , Start = DateTime.Parse("19.04.2022 09:00"), End = DateTime.Parse("19.04.2022 12:00"), Price = 1200 });
+            modelBuilder.Entity<Record>().HasData(new Record { RecordID = 2, CustomerID = 2, Status = Status.Scheduled, Start = DateTime.Parse("15.05.2022 16:00"), End = DateTime.Parse("15.05.2022 19:00"), Price = 750 });
+            modelBuilder.Entity<Record>().HasData(new Record { RecordID = 3, CustomerID = 1, Status = Status.Scheduled, Start = DateTime.Parse("15.05.2022 16:00"), End = DateTime.Parse("15.05.2022 19:00"), Price = 750 });
+            modelBuilder.Entity<Record>().HasData(new Record { RecordID = 4, CustomerID = 1, Status = Status.Scheduled, Start = DateTime.Parse("16.05.2022 10:00"), End = DateTime.Parse("16.05.2022 14:00"), Price = 1200 });
+            modelBuilder.Entity<Record>().HasData(new Record { RecordID = 5, CustomerID = 2, Status = Status.Active   , Start = DateTime.Parse("14.05.2022 18:00"), End = DateTime.Parse("14.05.2022 23:00"), Price = 3000 });
 
-            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 1, RecordID = 1, ItemID = 1,    PricingID = 1,  Status = Status.Closed });
-            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 2, RecordID = 1, ItemID = 2,    PricingID = 1,  Status = Status.Closed, End = DateTime.Parse("19.04.2022 11:00") });
-            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 3, RecordID = 1, ItemID = 3,    PricingID = 1,  Status = Status.Closed, Start = DateTime.Parse("19.04.2022 10:00") });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 1, RecordID = 1, ItemID = 1,    PricingID = 1,  Status = Status.Closed, Start = DateTime.Parse("19.04.2022 09:00"), End = DateTime.Parse("19.04.2022 12:00") });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 2, RecordID = 1, ItemID = 2,    PricingID = 1,  Status = Status.Closed, Start = DateTime.Parse("19.04.2022 09:00"), End = DateTime.Parse("19.04.2022 11:00") });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 3, RecordID = 1, ItemID = 3,    PricingID = 1,  Status = Status.Closed, Start = DateTime.Parse("19.04.2022 10:00"), End = DateTime.Parse("19.04.2022 12:00") });
             modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 4, RecordID = 1, ItemID = 4,    PricingID = 1,  Status = Status.Closed, Start = DateTime.Parse("19.04.2022 10:00"), End = DateTime.Parse("19.04.2022 11:00") });
-            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 5, RecordID = 1, ItemID = 34,   PricingID = 26, Status = Status.Closed });
-            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 6, RecordID = 2, ItemID = 1,    PricingID = 1,  Status = Status.Scheduled });
-            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 7, RecordID = 2, ItemID = 34,   PricingID = 26, Status = Status.Scheduled });
-            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 8, RecordID = 3, ItemID = 2,    PricingID = 1,  Status = Status.Scheduled });
-            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 9, RecordID = 3, ItemID = 35,   PricingID = 26, Status = Status.Scheduled });
-            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 10, RecordID = 4, ItemID = 29,  PricingID = 25, Status = Status.Scheduled });
-            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 11, RecordID = 5, ItemID = 29,  PricingID = 25, Status = Status.Active });
-            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 12, RecordID = 5, ItemID = 30,  PricingID = 25, Status = Status.Closed, End = DateTime.Parse("14.05.2022 19:00") });
-            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 13, RecordID = 5, ItemID = 31,  PricingID = 25, Status = Status.Active, Start = DateTime.Parse("14.05.2022 19:00") });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 5, RecordID = 1, ItemID = 34,   PricingID = 26, Status = Status.Closed, Start = DateTime.Parse("19.04.2022 09:00"), End = DateTime.Parse("19.04.2022 12:00") });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 6, RecordID = 2, ItemID = 1,    PricingID = 1,  Status = Status.Scheduled, Start = DateTime.Parse("15.05.2022 16:00"), End = DateTime.Parse("15.05.2022 19:00") });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 7, RecordID = 2, ItemID = 34,   PricingID = 26, Status = Status.Scheduled, Start = DateTime.Parse("15.05.2022 16:00"), End = DateTime.Parse("15.05.2022 19:00")  });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 8, RecordID = 3, ItemID = 2,    PricingID = 1,  Status = Status.Scheduled, Start = DateTime.Parse("15.05.2022 16:00"), End = DateTime.Parse("15.05.2022 19:00")  });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 9, RecordID = 3, ItemID = 35,   PricingID = 26, Status = Status.Scheduled, Start = DateTime.Parse("15.05.2022 16:00"), End = DateTime.Parse("15.05.2022 19:00")  });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 10, RecordID = 4, ItemID = 29,  PricingID = 25, Status = Status.Scheduled, Start = DateTime.Parse("16.05.2022 10:00"), End = DateTime.Parse("16.05.2022 14:00") });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 11, RecordID = 5, ItemID = 29,  PricingID = 25, Status = Status.Active, Start = DateTime.Parse("14.05.2022 18:00"), End = DateTime.Parse("14.05.2022 23:00") });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 12, RecordID = 5, ItemID = 30,  PricingID = 25, Status = Status.Closed, Start = DateTime.Parse("14.05.2022 18:00"), End = DateTime.Parse("14.05.2022 19:00") });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 13, RecordID = 5, ItemID = 31,  PricingID = 25, Status = Status.Active, Start = DateTime.Parse("14.05.2022 19:00"), End = DateTime.Parse("14.05.2022 23:00") });
 
-
+            modelBuilder.Entity<Holiday>().HasData(new Holiday { HolidayID = 1, Date = DateOnly.Parse("12.06.2022"), Name = "День России" });
+            modelBuilder.Entity<ItemPrepared>().HasData(new ItemPrepared { ItemPreparedID = 1, ItemID = 10 });
+            modelBuilder.Entity<ItemPrepared>().HasData(new ItemPrepared { ItemPreparedID = 2, ItemID = 11 });
+            modelBuilder.Entity<ItemPrepared>().HasData(new ItemPrepared { ItemPreparedID = 3, ItemID = 31 });
+            modelBuilder.Entity<ItemPrepared>().HasData(new ItemPrepared { ItemPreparedID = 4, ItemID = 32 });
 
         }
 

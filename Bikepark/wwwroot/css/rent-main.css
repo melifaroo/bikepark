@@ -12,6 +12,14 @@ button {
     white-space: nowrap;
 }
 
+.alert-text {
+    color: red;
+}
+
+.attention-text {
+    font-weight: bold;
+}
+
 
 .chk-giveout .bi-question {
     display: none;

@@ -10,12 +10,13 @@
 }
 
 function timer() {
-            d = new Date();
-            $("#rental-control .timer-active").val(time2str(d));
-            if (record.Status < 2)
-                update_endtime();
-            if (record.Status == 2)
-                update_duration_actual();
+    d = new Date();
+    $("#rental-control input .timer-active").val(time2str(d));
+    $("#rental-control :not(input) .timer-active").html(time2text(d));
+    if (record.Status < 2)
+        update_endtime();
+    if (record.Status == 2)
+        update_duration_actual();
 }
 
 var prevScheduleStart;
@@ -36,7 +37,7 @@ function update_duration() {
 function update_duration_actual() {
     d1 = new Date($("#time-start").val());
     d2 = new Date();
-    $("#duration-current").val(duration2str(durationHours(d1, d2)));
+    $("#duration-current").html("в прокате: " + duration2str(durationHours(d1, d2)));
 }
 
 $("#duration").on("change", function () {

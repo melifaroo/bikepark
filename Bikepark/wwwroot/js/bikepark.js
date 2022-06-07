@@ -8,9 +8,9 @@ $(document).ready(function () {
         secondsRemaining = (60 - time.getSeconds()) * 1000;
 
     maintimer();
-    setTimeout(function () {
+    setTimeout(async function () {
         maintimer();
-        setInterval(maintimer(), 60000);
+        await setInterval( await maintimer(), 60000 );
     }, secondsRemaining);
 });
 

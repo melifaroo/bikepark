@@ -19,13 +19,13 @@ $(document).on("change", ".chooser-filter", function () {
 
 
 $(document).ready(function () {
-    var height = window.innerHeight - 110 - $("header").height() - $("footer").height() - $("#storage thead").height() - $("#storage-title").height();
+    var height = window.innerHeight - 60 - $("header").height() - $("footer").height() - $("#storage thead").height() - $("#storage-title").height();
     height = Math.max(100, height);
     $("#storage tbody").height(height);
 });
 
 $(window).resize(function () {
-    var height = window.innerHeight - 110 - $("header").height() - $("footer").height() - $("#storage thead").height() - $("#storage-title").height();
+    var height = window.innerHeight - 60 - $("header").height() - $("footer").height() - $("#storage thead").height() - $("#storage-title").height();
     height = Math.max(100, height);
     $("#storage tbody").height(height);
 });
