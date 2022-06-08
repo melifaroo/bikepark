@@ -8,7 +8,7 @@
 @using Bikepark.Views.Helpers
 @{
     ItemRecord someItemRecord = new ItemRecord();
-    List<DateOnly> Holidays = ViewBag.Holidays;
+    List<DateTime> Holidays = ViewBag.Holidays;
     DbSet<Pricing> Pricings = ViewBag.Pricings;
 }
 
@@ -41,7 +41,7 @@
     <tbody id="itemrecords-list">
         @foreach (var itemRecord in Model.ItemRecords)
         {
-            var isHoliday = Holidays.Any(day => day == DateOnly.FromDateTime(itemRecord.Start ?? DateTime.Now));
+            var isHoliday = Holidays.Any(day =>  DateOnly.FromDateTime(day) == DateOnly.FromDateTime(itemRecord.Start ?? DateTime.Now));
             List<Pricing> actualprices = await PricingFilter.ActualPricing(Pricings, itemRecord.Item.ItemType.PricingCategoryID, itemRecord.Start ?? DateTime.Now, itemRecord.End ?? (itemRecord.Start ?? DateTime.Now).AddHours(1), isHoliday);
             ViewData["ActualPrices"] = actualprices;
             <partial name="_ItemRecordRow_rental" model = "@itemRecord" />  

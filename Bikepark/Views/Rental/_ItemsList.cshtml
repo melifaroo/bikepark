@@ -1,0 +1,36 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<Bikepark.Models.Item>
+
+
+@using Bikepark.Models
+@using Microsoft.EntityFrameworkCore
+@using Bikepark.Views.Helpers
+@{
+    Item someItem = new Item();
+}
+
+<table class="tablealign">
+    <thead>
+        <tr>
+            <th style="width : 150px;">
+                <div class="row-sm"></div>
+            </th>
+            <th style="width : 10%">
+                <div class="row-sm">@Html.DisplayNameFor(m => someItem.ItemNumber)</div>
+            </th >
+            <th >
+                <div class="row-sm">@Html.DisplayNameFor(m => someItem.ItemType)</div>
+            </th>
+        </tr>
+    </thead>
+    <tbody id="items-list">
+        @foreach (var item in Model)
+        {
+            <partial name="_ItemRow" model = "@item" />  
+        }
+    </tbody>
+</table>
+                                
+

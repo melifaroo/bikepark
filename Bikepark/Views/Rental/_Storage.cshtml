@@ -1,7 +1,6 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@model Bikepark.Models.Record
 
 @using Bikepark.Models
 @using Microsoft.EntityFrameworkCore
@@ -20,7 +19,6 @@
     List<SelectListItem> Genders = Types.DistinctBy(x => x.ItemGender).Select(x => new SelectListItem { Value = EnumHelper<ItemGender>.GetDisplayValue(x.ItemGender ?? ItemGender.Unisex), Text =  EnumHelper<ItemGender>.GetDisplayValue(x.ItemGender ?? ItemGender.Unisex) }).ToList();
 
 }
-
 
 <table class="tablealign scroll-table" style = "height: 200px;">
     <thead>

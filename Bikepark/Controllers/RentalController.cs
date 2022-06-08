@@ -36,6 +36,31 @@ namespace Bikepark.Controllers
             _config = config;
         }
 
+        // GET: Rental/Main
+        public IActionResult Main()
+        {
+            return View();
+        }
+
+        // GET: Rental/Prepare
+        public async Task<IActionResult> Prepare()
+        {
+            ViewData["Items"] = _context.Items;
+            ViewData["Types"] = await _context.ItemTypes.ToListAsync();
+            return View(await _context.Prepared.Select(prep => prep.Item).ToListAsync());
+        }
+
+        // GET: Rental/Pricings
+        public async Task<IActionResult> Pricings()
+        {
+            return View(await _context.Pricings.ToListAsync());
+        }
+
+        // GET: Rental/Settings
+        public IActionResult Settings()
+        {
+            return View();
+        }
 
         // GET: Rental/stat
         public async Task<IActionResult> Stat()
@@ -158,11 +183,11 @@ namespace Bikepark.Controllers
         private async Task<IActionResult> Control(Record rentalRecord)
         {
             ViewData["Items"] = _context.Items;
+            ViewData["Types"] = await _context.ItemTypes.ToListAsync();
             ViewData["Pricings"] = _context.Pricings;
             ViewData["ArchivalPricings"] = await _context.Pricings.IgnoreQueryFilters().ToListAsync();
             ViewData["Holidays"] = await _context.Holidays.Select(day => day.Date).ToListAsync();
             ViewData["Prepared"] = await _context.Prepared.Select(prep=> prep.ItemID).ToListAsync();
-            ViewData["Types"] = await _context.ItemTypes.ToListAsync();
 
             ViewData["Availability"] = GetAvailability(rentalRecord.RecordID);
 
@@ -412,7 +437,33 @@ namespace Bikepark.Controllers
             }
         }
 
-       private async Task<double> ComputePrice(Record rentalRecord)
+        // POST: Rental/SaveServiceRecords
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PrepareUpdate(IEnumerable<Item> items)
+        {
+            if (ModelState.IsValid)
+            {
+                LinqHelper.ForEach(_context.Prepared, prepared => _context.Entry(prepared).State = EntityState.Deleted);
+                foreach (Item item in items)
+                {                    
+                    if (item.ItemID != null)
+                    {
+                        _context.Add(new ItemPrepared { ItemID = (int)item.ItemID } );
+                    }
+                }
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Prepare));
+            }
+            else
+            {
+                return RedirectToAction(nameof(Prepare));
+            }
+        }
+
+        private async Task<double> ComputePrice(Record rentalRecord)
         {
             double price = 0;
             foreach (ItemRecord irec in rentalRecord.ItemRecords) {
@@ -555,13 +606,18 @@ namespace Bikepark.Controllers
             return View(item);
         }
 
-        public async Task<PartialViewResult> AddRentalItemRecord(int ItemID, DateTime start, DateTime end)
+        public async Task<PartialViewResult> AddRentalItemRecord(int ItemID, DateTime Start, DateTime End)
         {
             var Item = await _context.Items.FindAsync(ItemID);
-            var isHoliday = await _context.Holidays.AnyAsync(day => day.Date == DateOnly.FromDateTime(start));
-            List<Pricing> actualprices = await PricingFilter.ActualPricing(_context.Pricings, Item.ItemType.PricingCategoryID, start, end, isHoliday);
-            ViewData["ActualPrices"] = actualprices;
-            return PartialView("_ItemRecordRow_rental", new ItemRecord { ItemID = ItemID, Item = Item, Start = start, End = end });
+            var isHoliday = await _context.Holidays.AnyAsync(day => day.Date.DayOfYear == Start.DayOfYear);
+            List<Pricing> actualprices = await PricingFilter.ActualPricing(_context.Pricings, Item.ItemType.PricingCategoryID, Start, End, isHoliday);
+            ViewBag.ActualPrices = actualprices;
+            return PartialView("_ItemRecordRow_rental", new ItemRecord { ItemID = ItemID, Item = Item, Start = Start, End = End });
+        }
+        public async Task<PartialViewResult> AddPreparedItemRecord(int ItemID)
+        {
+            var Item = await _context.Items.FindAsync(ItemID);
+            return PartialView("_ItemRow", Item);
         }
 
         public JsonResult Customer(int CustomerID)

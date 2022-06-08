@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<Bikepark.Models.Pricing>
+
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Тарифы";
     ViewData["menu"] = "pricing";
     Layout = "_MainLayout";
 }
@@ -9,16 +10,7 @@
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
     <ul class="nav col-md-6 justify-content-start">
         <li class="nav-item">
-            <a class="nav-link" asp-action="Create">Создать тариф</a> 
-        </li> 
-        <li class="nav-item">
-            <a class="nav-link" asp-action="Index" asp-controller="PricingCategories" >Категории тарифов</a> 
-        </li>     
-        <li class="nav-item">
-            <a class="nav-link" asp-action="Holidays">Праздничные дни</a> 
-        </li>       
-        <li class="nav-item">
-            <a class="nav-link" asp-action="Index" asp-controller="Storage" >Склад</a>
+            <a class="nav-link" asp-action="Prepare" asp-controller="Rental" >Склад и подготовка велосипедов</a>
         </li>   
     </ul>
 
@@ -27,7 +19,7 @@
             <a class="nav-link" asp-action="Export">Загрузить таблицу XLS</a>
         </li>    
         <li class="nav-item"> 
-            <a class="nav-link" asp-action="Main" asp-controller="Storage">Управление</a> 
+            <a class="nav-link" asp-action="Main" asp-controller="Rental">Управление</a> 
         </li>    
     </ul>  
 </div>
@@ -89,8 +81,6 @@
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.PricingID">Изменить</a> |
-                <a asp-action="Delete" asp-route-id="@item.PricingID">Удалить</a>
             </td>
         </tr>
 }

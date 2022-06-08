@@ -335,7 +335,7 @@ namespace Bikepark.Data
             modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 12, RecordID = 5, ItemID = 30,  PricingID = 25, Status = Status.Closed, Start = DateTime.Parse("14.05.2022 18:00"), End = DateTime.Parse("14.05.2022 19:00") });
             modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 13, RecordID = 5, ItemID = 31,  PricingID = 25, Status = Status.Active, Start = DateTime.Parse("14.05.2022 19:00"), End = DateTime.Parse("14.05.2022 23:00") });
 
-            modelBuilder.Entity<Holiday>().HasData(new Holiday { HolidayID = 1, Date = DateOnly.Parse("12.06.2022"), Name = "День России" });
+            modelBuilder.Entity<Holiday>().HasData(new Holiday { HolidayID = 1, Date = DateTime.Parse("12.06.2022"), Name = "День России" });
             modelBuilder.Entity<ItemPrepared>().HasData(new ItemPrepared { ItemPreparedID = 1, ItemID = 10 });
             modelBuilder.Entity<ItemPrepared>().HasData(new ItemPrepared { ItemPreparedID = 2, ItemID = 11 });
             modelBuilder.Entity<ItemPrepared>().HasData(new ItemPrepared { ItemPreparedID = 3, ItemID = 31 });

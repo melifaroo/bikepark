@@ -12,16 +12,14 @@ function showprice(pricing) {
 function updateprices(row) {
     var pricingID = $(row).find(".pricing").val();
     var pricingCategoryID = $(row).find("input.pricingcategoryid").val();
-    var date = new Date($("#time-start").val());
-    date.setHours(0, 0, 0, 0);
+    var date = new Date($("#time-start").val()); date.setHours(0, 0, 0, 0);
     var dayOfWeek = date.getDay();//
     var isHoliday = false;
 
     var BreakException = {};
     try {
         holidays.forEach(day => {
-            var holi = new Date(day.Year + "-" + zeroPadded(day.Month) + "-" + zeroPadded(day.Day));
-            holi.setHours(0, 0, 0, 0);
+            var holi = new Date(day); holi.setHours(0, 0, 0, 0);
             isHoliday = date.getTime() == holi.getTime();
             if (isHoliday) throw BreakException;
         });

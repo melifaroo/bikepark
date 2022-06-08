@@ -27,6 +27,44 @@ namespace Bikepark.Controllers
             return View(await _context.Pricings.ToListAsync());//.Where(x => !x.Archival)
         }
 
+        // GET: Pricings/Holidays
+        public async Task<IActionResult> Holidays()
+        {
+            return View(await _context.Holidays.ToListAsync());
+        }
+
+        // POST: Pricings/AddHoliday
+        public async Task<IActionResult> AddHoliday(Holiday holiday)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Holidays.Add(holiday);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Holidays));
+            }
+            return RedirectToAction(nameof(Holidays));
+        }
+
+        // Get: Pricings/DeleteHoliday
+        public async Task<IActionResult> DeleteHoliday(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var holiday = await _context.Holidays.FindAsync(id);
+            if (holiday != null)
+            {
+                _context.Holidays.Remove(holiday);
+            }
+
+            await _context.SaveChangesAsync();
+
+
+            return RedirectToAction(nameof(Holidays));
+        }
+
         // GET: Pricings/InCategory/5
         public async Task<IActionResult> InCategory(int? id)
         {

@@ -1,0 +1,76 @@
+﻿@model IEnumerable<Bikepark.Models.Holiday>
+@{
+
+
+
+}
+
+<h1>Праздничные дни</h1> 
+<div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
+    <ul class="nav col-md-9 justify-content-start"  >    
+        <form asp-controller="Storage" >           
+            <div class="row">  
+                <button type="submit" asp-action="AddHoliday" class="col-md-3 btn btn-link text-decoration-none" id="btn-add-holiday">
+                    Добавить
+                </button>                
+                <div class="col-md-4">  
+                    <div class="input-group">  
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" >Дата</span>
+                        </div>
+                        <input  id="date" class="form-control" name="Date" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" autocomplete="off" required/>
+                    </div> 
+                </div> 
+                <div class="col-md-5">  
+                <div class="input-group" >
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" >Название</span>
+                    </div>
+                    <input  id="name" class="form-control customer-input" name="Name" value="" pplaceholder="Введите название" type="text"  autocomplete="off" required/>
+                </div>
+                </div> 
+            </div>
+        </form>
+    </ul>
+
+    <ul class="nav col-md-3 justify-content-end">  
+        <li class="nav-item"> 
+            <a class="nav-link" asp-action="Index" >Тарифы</a> 
+        </li>    
+        <li class="nav-item"> 
+            <a class="nav-link" asp-action="Main" asp-controller="Storage">Управление</a> 
+        </li>    
+    </ul>  
+</div>
+
+<div class="container-sm">  
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var day in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => day.Name)
+                </td>
+                <td>
+                    @day.Date.ToShortDateString()
+                </td>
+                <td>
+                    <a asp-action="DeleteHoliday" asp-route-id="@day.HolidayID">Удалить</a>
+                </td>
+            </tr>}
+        </tbody>
+    </table>
+</div>
