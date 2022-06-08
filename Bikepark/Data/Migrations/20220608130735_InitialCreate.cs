@@ -70,7 +70,7 @@ namespace Bikepark.Data.Migrations
                 {
                     HolidayID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Date = table.Column<DateOnly>(type: "TEXT", nullable: false),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -391,7 +391,7 @@ namespace Bikepark.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Holidays",
                 columns: new[] { "HolidayID", "Date", "Name" },
-                values: new object[] { 1, new DateOnly(2022, 6, 12), "День России" });
+                values: new object[] { 1, new DateTime(2022, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "День России" });
 
             migrationBuilder.InsertData(
                 table: "ItemCategories",

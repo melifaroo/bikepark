@@ -58,7 +58,7 @@ function checkAvailability() {
             .toggleClass("active", o.overlap && (o.status == 2 || o.status == 5))
             .toggleClass("reserved", o.overlap && (o.status == 1 ));
     });
-    $("#items-chooser .number").each(function (i, number) {
+    $("#storage .number").each(function (i, number) {
         key = $(number).data("itemid");
         var ovlap = false;
         var statu = 0;
@@ -74,7 +74,7 @@ function checkAvailability() {
             .toggleClass("order-first",  prepared.includes(key) && !ovlap)
             .toggleClass("prepared", prepared.includes(key) && !ovlap);
     });
-    $("#items-chooser .number-check").each(function (i, number) {
+    $("#storage .number-check").each(function (i, number) {
         key = $(number).data("itemid");
         $(number).prop("checked", selfitems.includes(key));
     });
@@ -82,13 +82,13 @@ function checkAvailability() {
 
 $(document).on("change", ".chooser-filter", function () {
     var filter = {};
-    $("#items-chooser table thead .chooser-filter").each(function () {
+    $("#storage table thead .chooser-filter").each(function () {
         var field = $(this).data("field");
         var value = $(this).val();
         if (value!="All")
             filter[field] = value;
     });
-    $("#items-chooser table tbody tr").each(function () {
+    $("#storage table tbody tr").each(function () {
         var filtered = true;
         for (var field in filter) {
             filtered = filtered && ($(this).children("td[data-field='" + field + "']").text().trim() == filter[field].trim());
@@ -99,8 +99,10 @@ $(document).on("change", ".chooser-filter", function () {
 
 async function add_item(id) {
     var recid = -1;
+    start = ($("#time-start").val());
+    end = ($("#time-end").val());
     try {
-        const result = await $.get(url_rental_additem, { ItemID: id });        
+        const result = await $.get(url_rental_additem, { ItemID: id, Start: start, End: end });        
         $("#itemrecords-list").append(result);
         recid = $(result).attr("data-id");
         updateprices($("#itemrecords-list tr.item-record[data-id='"+recid+"']"));
@@ -115,7 +117,7 @@ function delete_item(id) {
     $("#number-check-" + id).prop("checked", false);
 }
 
-$(document).on("change", "#items-chooser .number-check", async function () {
+$(document).on("change", "#storage .number-check", async function () {
     var itemid = $(this).data("itemid");
     if ($(this).is(":checked")) {
         await add_item(itemid);
@@ -163,7 +165,7 @@ $(document).on("click", ".chk-action", function () {
 });
 
 $("#btn-show-items-chooser").on("click", function () {
-    $("#items-chooser").toggle(300);
+    $("#storage").toggle(300);
 });
 
 $("#btn-toggle-filters").on("click", function () {

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bikepark.Data.Migrations
 {
     [DbContext(typeof(BikeparkContext))]
-    [Migration("20220606224350_InitialCreate")]
+    [Migration("20220608130735_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,7 +66,7 @@ namespace Bikepark.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("Date")
+                    b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -80,7 +80,7 @@ namespace Bikepark.Data.Migrations
                         new
                         {
                             HolidayID = 1,
-                            Date = new DateOnly(2022, 6, 12),
+                            Date = new DateTime(2022, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "День России"
                         });
                 });

@@ -28,6 +28,12 @@ namespace Bikepark.Controllers
             return View();
         }
 
+        // GET: Rental/Settings
+        public IActionResult Settings()
+        {
+            return View();
+        }
+
         // GET: Storage
         public async Task<IActionResult> Index()
         {

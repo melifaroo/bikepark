@@ -64,7 +64,7 @@ namespace Bikepark.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("Date")
+                    b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -78,7 +78,7 @@ namespace Bikepark.Data.Migrations
                         new
                         {
                             HolidayID = 1,
-                            Date = new DateOnly(2022, 6, 12),
+                            Date = new DateTime(2022, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "День России"
                         });
                 });
