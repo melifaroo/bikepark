@@ -1,6 +1,8 @@
-﻿@{
+﻿@model BikeparkConfig
+
+@{
 }
-<div >
+
 <h1>Настройки</h1>
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom" id="storage-title">
     <ul class="nav col-md-6 justify-content-start">        
@@ -15,7 +17,38 @@
 
 
 <div class="container-sm">  
+    <form asp-controller="Storage">
+        <div class="row">
+            <div class="col-md-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-</div>
+                <div class="form-group">
+                    <label for="WorkingHoursStart" class="control-label">Время открытия велоцентра</label>
+                    <input id="WorkingHoursStart" name="WorkingHoursStart" value="@Model.WorkingHoursStart.ToString("HH:mm")" type="time" class="form-control" required/>
+                </div>
+                <div class="form-group">
+                    <label for="WorkingHoursEnd" class="control-label">Время закрытия велоцентра</label>
+                    <input id="WorkingHoursEnd" name="WorkingHoursEnd" value="@Model.WorkingHoursEnd.ToString("HH:mm")" type="time" class="form-control" required/>
 
+                </div>
+
+                <div class="form-group" id="duration">
+                    <label for="MinServiceDelayBetweenRentsMinutes" class="control-label">Минимальное время между прокатами одного велосипеда (минут)</label>
+                    <input id="MinServiceDelayBetweenRentsMinutes" name="MinServiceDelayBetweenRentsMinutes" value="@Model.MinServiceDelayBetweenRentsMinutes" type="number" step="15" min="0"  class="form-control" required/>
+                </div>
+                <div class="form-group">
+                    <label for="DefaultRentTimeHours" class="control-label">Продолжительность проката по умолчанию (часов)</label>
+                    <input id="DefaultRentTimeHours" name="DefaultRentTimeHours" value="@Model.DefaultRentTimeHours" type="number" step="1" min="0" max="8" class="form-control" required/>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex-row justify-content-start">
+            <div class="row ">   
+                <div class="form-group col-md-4 ">
+                    <button type="submit"  asp-action="SettingsUpdate" class="btn btn-primary col-md-12">Сохранить настройки</button> 
+                </div>
+            </div>
+        </div>
+    </form>
 </div>

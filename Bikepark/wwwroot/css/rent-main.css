@@ -16,6 +16,10 @@ button {
     color: red;
 }
 
+.warning-text {
+    color: darkorange;
+}
+
 .attention-text {
     font-weight: bold;
 }

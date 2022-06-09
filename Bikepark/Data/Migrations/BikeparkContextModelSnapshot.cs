@@ -45,7 +45,7 @@ namespace Bikepark.Data.Migrations
                             CustomerID = 1,
                             CustomerContactNumber = "+79781234567",
                             CustomerEMail = "vasily.pupkin@maily.su",
-                            CustomerFullName = "Василий Пупкин",
+                            CustomerFullName = "Петр Иванов",
                             CustomerPassport = "00 000001"
                         },
                         new

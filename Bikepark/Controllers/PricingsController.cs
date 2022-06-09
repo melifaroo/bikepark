@@ -133,6 +133,20 @@ namespace Bikepark.Controllers
             if (ModelState.IsValid)
             {
                 pricing.PricingID = null;
+                if (pricing.PricingType == PricingType.Service) { 
+                    pricing.DaysOfWeek = new List<DayOfWeek> {
+                            DayOfWeek.Monday,
+                            DayOfWeek.Tuesday,
+                            DayOfWeek.Wednesday,
+                            DayOfWeek.Thursday,
+                            DayOfWeek.Friday,
+                            DayOfWeek.Saturday,
+                            DayOfWeek.Sunday,
+                    };
+                    pricing.IsReduced = false;
+                    pricing.IsHoliday = false;
+                    pricing.MinDuration = 0;
+                }
                 _context.Add(pricing);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Details), new { id = pricing.PricingID });
@@ -153,6 +167,21 @@ namespace Bikepark.Controllers
             {
                 try
                 {
+                    if (pricing.PricingType == PricingType.Service)
+                    {
+                        pricing.DaysOfWeek = new List<DayOfWeek> {
+                            DayOfWeek.Monday,
+                            DayOfWeek.Tuesday,
+                            DayOfWeek.Wednesday,
+                            DayOfWeek.Thursday,
+                            DayOfWeek.Friday,
+                            DayOfWeek.Saturday,
+                            DayOfWeek.Sunday,
+                        };
+                        pricing.IsReduced = false;
+                        pricing.IsHoliday = false;
+                        pricing.MinDuration = 0;
+                    }
                     _context.Update(pricing);
                     await _context.SaveChangesAsync();
                 }
@@ -193,6 +222,21 @@ namespace Bikepark.Controllers
                     MinDuration = pricing.MinDuration,
                     Price = pricing.Price                    
                 };
+                if (replace.PricingType == PricingType.Service)
+                {
+                    replace.DaysOfWeek = new List<DayOfWeek> {
+                            DayOfWeek.Monday,
+                            DayOfWeek.Tuesday,
+                            DayOfWeek.Wednesday,
+                            DayOfWeek.Thursday,
+                            DayOfWeek.Friday,
+                            DayOfWeek.Saturday,
+                            DayOfWeek.Sunday,
+                        };
+                    replace.IsReduced = false;
+                    replace.IsHoliday = false;
+                    replace.MinDuration = 0;
+                }
                 _context.Add(replace);
                 var HasRecords = await _context.ItemRecords.AnyAsync(irecord => irecord.PricingID == id);
                 if (HasRecords)

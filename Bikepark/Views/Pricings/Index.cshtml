@@ -24,7 +24,7 @@
 
     <ul class="nav  col-md-6 justify-content-end">
         <li class="nav-item">
-            <a class="nav-link" asp-action="Export">Загрузить таблицу XLS</a>
+            <a class="nav-link" asp-action="Export" style="display: none">Загрузить таблицу XLS</a>
         </li>    
         <li class="nav-item"> 
             <a class="nav-link" asp-action="Main" asp-controller="Storage">Управление</a> 
@@ -73,17 +73,29 @@
             <td>
                 @Html.DisplayFor(modelItem => item.PricingType)
             </td>
-            <td>                
-                <partial name="_DaysOfWeekLabel" model="@item.DaysOfWeek" />
+            <td>        
+                @if(item.PricingType != PricingType.Service)
+                {                        
+                    <partial name="_DaysOfWeekLabel" model="@item.DaysOfWeek" />
+                }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsHoliday)
+                    @if (item.PricingType != PricingType.Service)
+                    {
+                        @Html.DisplayFor(modelItem => item.IsHoliday)
+                    }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsReduced)
+                    @if (item.PricingType != PricingType.Service)
+                    {
+                        @Html.DisplayFor(modelItem => item.IsReduced)
+                    }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MinDuration)
+                    @if (item.PricingType != PricingType.Service)
+                    {
+                        @Html.DisplayFor(modelItem => item.MinDuration)
+                    }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)

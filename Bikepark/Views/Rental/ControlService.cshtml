@@ -9,14 +9,13 @@
 @{
     Layout = "_MainLayout";
     ViewData["Title"] = "Ремонт";
+    var RecordID = ViewBag.RecordID;
     ItemRecord someItemRecord = new ItemRecord();
 }
-    <form  id="fixing-control" asp-controller="Rental" class="container-sm">
+    <form  id="fixing-control" asp-controller="Rental" class="container-lg">
         <div class="container-fluid"> 
             <div class="row justify-content-start mx-0 align-self-baseline" >  
-                <h4 class="row">Требуется ремонт</h4> 
-                <div class="row ms-5">укажите что ремонтировать для расчета стоимости </div> 
-                <div class="row ms-5">назначьте сроки (не обязательно) </div> 
+                <h5 class="row">Ремонт</h5> 
             </div>
         </div>
         <hr />
@@ -29,13 +28,24 @@
                         Сохранить
                     </button>    
                 </div>  
-                <div class="d-flex justify-content-end col-6">
+                <div class="d-flex justify-content-end col-6">                    
+                       <span class="px-1">Цена</span>
+                       <span class="px-1" id="price"></span>
                 </div>
                 <div class="d-flex justify-content-end col-3">
-                    <button type="submit" asp-action="Index" class="btn btn-secondary col-12 " id="btn-discard" formnovalidate="formnovalidate" >
-                        <i class="bi bi-arrow-return-left"></i>
-                    </button>
-                </div>
+                    @if(RecordID==null)
+                    {
+                        <button type="submit" asp-action="ServiceIndex" class="btn btn-secondary col-12 " id="btn-discard" formnovalidate="formnovalidate" >
+                            <i class="bi bi-arrow-return-left"></i>
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit" asp-action="Control" asp-route-id="@RecordID" class="btn btn-secondary col-12 " id="btn-discard" formnovalidate="formnovalidate" >
+                            <i class="bi bi-arrow-return-left"></i>
+                        </button>                        
+                    }
+                    </div>
             </div>
         </div>
         <hr />
@@ -43,27 +53,29 @@
         <table class="tablealign">
             <thead>
                 <tr>
-                    <th style="width : 200px">
-                        <div class="row-sm">Назначить ремонт</div>
+                    <th style="width : 150px">
+                        <div class="row-sm">Назначить</div>
                     </th>
-                    <th style="width : 15%">
-                        <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.Item.ItemType)</div>
-                    </th>
-                    <th style="width : 10%">
+                    <th style="width : 5%">
                         <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.Item.ItemNumber)</div>
                     </th >
                     <th style="width : 15%">
                         <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.Start)</div>
                     </th>
-                    <th  style="width : 20%">
+                    <th style="width : 15%">
+                        <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.End)</div>
+                    </th>
+                    <th  style="width : 15%">
                         <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.Pricing.PricingName)</div>
                     </th>
-                    <th style="width : 10%">
-                        <div class="row-sm">Сумма</div>
+                    <th style="width : 5%">
+                        <div class="row-sm">Стоимость</div>
+                    </th>
+                    <th style="width : 150px">
                     </th>
                 </tr>
             </thead>
-            <tbody id="fixing-items-list">
+            <tbody id="itemrecords-list">
                 @foreach (var itemRecord in Model)
                 {
                     <partial name="_ItemRecordRow_service" model = "@itemRecord" />  
@@ -78,7 +90,16 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script src="~/js/rent-service.js"></script>    
     <link href="~/css/rent-main.css" rel="stylesheet" asp-append-version="true" /> 
+    
+    <script>   
+        var prices = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject( ViewBag.Pricings ));
+        var arcprices = (@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject( ViewBag.ArchivalPricings )));
+        var availability = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject( ViewBag.Availability ));
+        var url_rental_addservicerecord = "@Url.Action("AddServiceItemRecord", "rental")";
+    </script>   
 }
 
 

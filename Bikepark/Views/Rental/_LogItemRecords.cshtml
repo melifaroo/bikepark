@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<Bikepark.Models.ItemRecord>
 
 @{
-
 }
 <table class="table">
     <thead>
@@ -27,9 +26,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Pricing)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -54,7 +50,7 @@
             {
                 if (item.End < DateTime.Now.AddDays(1))
                     alert = "alert alert-warning";
-                if (item.Status == Status.Service)
+                if (item.Status == Status.Service || (item.Status == Status.OnService && item.End < DateTime.Now ))
                     alert = "alert alert-danger";                
             }
             <tr class="@alert">
@@ -68,7 +64,9 @@
                 @Html.DisplayFor(modelItem => item.End)
             </td>
             <td>
-                #@Html.DisplayFor(modelItem => item.RecordID)
+                @if(@item.RecordID!=null){
+                    <a asp-action="Control" asp-route-id="@item.RecordID">#@Html.DisplayFor(modelItem => item.RecordID)</a>
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Item.ItemType.ItemTypeName)
@@ -80,13 +78,22 @@
                 @Html.DisplayFor(modelItem => item.Pricing.PricingName)
                 :
                 @Html.DisplayFor(modelItem => item.Pricing.Price)
-                -
-                @Html.DisplayFor(modelItem => item.Pricing.PricingType)
-            </td>
+                    @if (item.Pricing != null)
+                    {
+                        @if (item.Pricing.PricingType != PricingType.Service)
+                        {
+                            <span> - </span>
+                            @Html.DisplayFor(modelItem => item.Pricing.PricingType)
+                        }
+                    }
+                </td>
             <td>
-                @Html.DisplayFor(modelItem => item.User.NormalizedUserName)
-            </td>
-            <td>
+                @if(@item.Status==Status.Service || @item.Status==Status.OnService ){
+                    <a asp-action="ControlItemService" asp-route-id="@item.ItemRecordID">Управление</a>
+                }
+                @if( @item.Status==Status.OnService ){
+                    <a asp-action="ItemServiceFixed" asp-route-id="@item.ItemRecordID">Отремонтирован</a>
+                }
                 @if ( User.Identity.IsAuthenticated ){
                     if ( User.IsInRole(BikeparkConfig.ManagersRole) ){  
                         <a asp-action="DeleteItemRecord" asp-route-id="@item.ItemRecordID">Удалить</a> 

@@ -36,6 +36,10 @@ namespace Bikepark.Data
                 // allowed user can create and edit contacts that they create
                 var managerID = await EnsureUser(serviceProvider, testUserPw, "manager@sevbike.ru");
                 await EnsureRole(serviceProvider, managerID, BikeparkConfig.ManagersRole);
+
+                // allowed user can create and edit contacts that they create
+                var developerID = await EnsureUser(serviceProvider, testUserPw, "developer@sevbike.ru");
+                await EnsureRole(serviceProvider, developerID, BikeparkConfig.ManagersRole);
             }
         }
 
@@ -312,7 +316,7 @@ namespace Bikepark.Data
             modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 34, PricingName = "Ремонт цепи", PricingCategoryID = null, PricingType = PricingType.Service, Price = 2000 });
             modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 35, PricingName = "Ремонт тормоза", PricingCategoryID = null, PricingType = PricingType.Service, Price = 1000 });
 
-            modelBuilder.Entity<Customer>().HasData(new Customer { CustomerID = 1, CustomerFullName = "Василий Пупкин", CustomerPassport = "00 000001", CustomerContactNumber = "+79781234567", CustomerEMail = "vasily.pupkin@maily.su" });
+            modelBuilder.Entity<Customer>().HasData(new Customer { CustomerID = 1, CustomerFullName = "Петр Иванов", CustomerPassport = "00 000001", CustomerContactNumber = "+79781234567", CustomerEMail = "vasily.pupkin@maily.su" });
             modelBuilder.Entity<Customer>().HasData(new Customer { CustomerID = 2, CustomerFullName = "Иван Петров", CustomerPassport = "00 000002", CustomerContactNumber = "+79780123456", CustomerEMail = "ivan.petrov@maily.su" });
 
             modelBuilder.Entity<Record>().HasData(new Record { RecordID = 1, CustomerID = 1, Status = Status.Closed   , Start = DateTime.Parse("19.04.2022 09:00"), End = DateTime.Parse("19.04.2022 12:00"), Price = 1200 });

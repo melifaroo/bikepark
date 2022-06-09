@@ -6,60 +6,54 @@
 @using Bikepark.Models
 @using Microsoft.EntityFrameworkCore;
 @using HtmlHelpers.BeginCollectionItemCore
-@{    
-    DbSet<Pricing> prices = ViewBag.Prices;
-    IEnumerable<Pricing> serviceprices = await PricingFilter.ServicePricing(prices, Model.Item.ItemType.PricingCategoryID );
-
-}   
-<tr class="item-fixing-record" data-itemid="@Model.ItemID" data-id="@Model.GetHashCode()">  
-        <input type="hidden" name="ItemRecords.index" autocomplete="off" value="@Model.GetHashCode()" />
-        <td class="td-buttons" style="width : 200px">
-            <div class="d-flex flex-row">
-                <select  class="form-control form-control-sm status" name="ItemRecords[@Model.GetHashCode()].Status">
-                @foreach( Status status in Enum.GetValues(typeof(Status)).Cast<Status>().ToList().Where(sli => ((int)sli)>3) )
-                {
-                    var selected = status == Model.Status;
-                    var name = EnumHelper<Status>.GetDisplayValue(status);
-                    <option value="@Model.Status" selected="@selected">@name</option>                    
-                }
-            </select>
-                  
-                <input name="ItemRecords[@Model.GetHashCode()].ItemRecordID"    value="@Model.ItemRecordID" class="itemrecordid" type="hidden"/> 
-                <input name="ItemRecords[@Model.GetHashCode()].RecordID"        value="@Model.RecordID"     class="recordid" type="hidden"/> 
-                <input name="ItemRecords[@Model.GetHashCode()].ItemID"          value="@Model.ItemID"       class="itemid" type="hidden"/> 
-                <div class="col-sm"  style="display: none;">
-                    <p class="half-row my-0">rec#   @Html.DisplayFor(m => Model.RecordID)</p>
-                    <p class="half-row my-0">reci#  @Html.DisplayFor(m => Model.ItemRecordID)</p>
-                </div>
-                <div class="col-sm">
-                    <p class="half-row my-0">item   @Html.DisplayFor(m => Model.ItemID)</p>
-                    <p class="half-row my-0">price  @Html.DisplayFor(m => Model.PricingID)</p>
-                </div>       
-            </div>
-        </td>         
-        <td  style="width : 15%">
-            @Html.DisplayFor(m => Model.Item.ItemType.ItemTypeName)
-        </td>
-        <td  style="width : 10%; font-weight: bold">
-            <a target="_blank" rel="noopener noreferrer" href="/Rental/ItemDetails?id=@Model.ItemID">
-                #@Html.DisplayFor(m => Model.Item.ItemNumber)
-            </a>
-        </td>
-        <td style="width : 15%">
-            <input name="ItemRecords[@Model.GetHashCode()].Start"   value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"  class="start" type="datetime-local"/> 
-        </td>      
-        <td  style="width : 20%">
-            <select name="ItemRecords[@Model.GetHashCode()].PricingID" class="form-control form-control-sm pricing" title="">                   
-                @foreach (var price in serviceprices)
-                {
-                    var selected = ViewBag.PricingID == price.PricingID;
-                    <option value="@price.PricingID" selected="@selected">@price.PricingName</option>
-                }
-            </select>
-        </td>
-        <td  style="width : 10%">
-            @Html.DisplayFor(m => Model.Pricing.Price)
-            -
-            @Html.DisplayFor(m => Model.Pricing.PricingType)
-        </td>   
-</tr>   
+@{
+    DbSet<Pricing> prices = ViewBag.Pricings;
+    IEnumerable<Pricing> serviceprices = await PricingFilter.ServicePricing(prices, Model.Item.ItemType.PricingCategoryID);
+    var Start = Model.Start ?? DateTime.Now;
+    var End = Model.End ?? (Model.Start ?? DateTime.Now).AddDays(1);
+}
+<tr class="item-record" data-itemid="@Model.ItemID" data-id="@Model.GetHashCode()" data-recid="@Model.ItemRecordID">
+    <input name="ItemRecords.index" autocomplete="off" value="@Model.GetHashCode()" type="hidden" />
+    <input name="ItemRecords[@Model.GetHashCode()].ItemRecordID" value="@Model.ItemRecordID" class="itemrecordid" type="hidden" />
+    <input name="ItemRecords[@Model.GetHashCode()].RecordID" value="@Model.RecordID" class="recordid" type="hidden" />
+    <input name="ItemRecords[@Model.GetHashCode()].ItemID" value="@Model.ItemID" class="itemid" type="hidden" />
+    <td class="td-buttons" style="width : 150px">
+        <select  name="ItemRecords[@Model.GetHashCode()].Status" class="form-control form-control-sm status">
+            @foreach (Status status in Enum.GetValues(typeof(Status)).Cast<Status>().ToList().Where(sli => ((int)sli) > 3))
+            {
+                var selected = status == Model.Status;
+                var name = EnumHelper<Status>.GetDisplayValue(status);
+                <option value="@status" selected="@selected">@name</option>
+            }
+        </select>
+    </td>
+    <td style="width : 5%; font-weight: bold">
+        <a target="_blank" rel="noopener noreferrer" href="/Rental/ItemRentalDetails?id=@Model.ItemID">
+            #@Html.DisplayFor(m => Model.Item.ItemNumber)
+        </a>
+    </td>
+    <td style="width : 15%">
+        <input name="ItemRecords[@Model.GetHashCode()].Start" value="@Start.ToString("yyyy-MM-ddTHH:mm")" class="form-control form-control-sm start" type="datetime-local"  data-id="@Model.GetHashCode()"/>
+    </td>
+    <td style="width : 15%">
+        <input name="ItemRecords[@Model.GetHashCode()].End" value="@End.ToString("yyyy-MM-ddTHH:mm")" class="form-control form-control-sm end" type="datetime-local"  data-id="@Model.GetHashCode()"/>
+    </td>
+    <td style="width : 15%">
+        <select name="ItemRecords[@Model.GetHashCode()].PricingID" class="form-control form-control-sm pricing" title="">
+            <option selected></option>
+            @foreach (var price in serviceprices)
+            {
+                var selected = Model.PricingID == price.PricingID;
+                <option value="@price.PricingID" selected="@selected">@price.PricingName</option>
+            }
+        </select>
+    </td>
+    <td style="width : 5%" class="pricing-info">
+        @Html.DisplayFor(m => Model.Pricing.Price)
+    </td>
+    <td style="width : 150px">
+        <button type="button" class="btn btn-link btn-remove" data-id="@Model.GetHashCode()">Удалить</button>
+        <button type="button" class="btn btn-link btn-restore" data-id="@Model.GetHashCode()" style="display: none">Восстановить</button>
+        <button type="button" class="btn btn-link btn-add"  data-id="@Model.GetHashCode()">Добавить</button>
+    </td>
+</tr>

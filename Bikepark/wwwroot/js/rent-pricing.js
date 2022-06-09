@@ -1,5 +1,5 @@
 ﻿$(document).on("change", "#itemrecords-list .pricing", function () {
-    showprice(this)
+    showprice(this);
     change_action();
 });
 

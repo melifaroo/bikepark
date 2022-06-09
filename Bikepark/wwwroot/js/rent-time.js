@@ -3,16 +3,16 @@
     var time = new Date(),
         secondsRemaining = (60 - time.getSeconds()) * 1000;
     timer();
-    setTimeout(function () {
+    setTimeout(async function () {
         timer();
-        setInterval(timer(), 60000);
+        await setInterval(await timer(), 60000);
     }, secondsRemaining);
 }
 
-function timer() {
+async function timer() {
     d = new Date();
-    $("#rental-control input .timer-active").val(time2str(d));
-    $("#rental-control :not(input) .timer-active").html(time2text(d));
+    $("#rental-control input.timer-active").val(time2str(d));
+    $("#rental-control :not(input).timer-active").html(time2text(d));
     if (record.Status < 2)
         update_endtime();
     if (record.Status == 2)

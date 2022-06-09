@@ -74,8 +74,8 @@ namespace Bikepark.Controllers
                 ActiveWarning = await _context.Records.Where(record => record.Status == Status.Active).Where(record => record.End < DateTime.Now.AddMinutes(30)).CountAsync(),
                 ActiveOverdue = await _context.Records.Where(record => record.Status == Status.Active).Where(record => record.End < DateTime.Now).CountAsync(),
                 Service = await _context.ItemRecords.Where(record => record.Status >= Status.Service && record.Status < Status.Fixed).CountAsync(),
-                ServiceWarning = await _context.ItemRecords.Where(record => record.Status >= Status.Service && record.Status<Status.Fixed).Where(record => record.End < DateTime.Now.AddDays(1)).CountAsync(),
-                ServiceNeedAction = await _context.ItemRecords.Where(record => record.Status == Status.Service).CountAsync(),
+                ServiceWarning = await _context.ItemRecords.Where(record => record.Status == Status.OnService).Where(record => record.End < DateTime.Now.AddDays(1)).CountAsync(),
+                ServiceNeedAction = await _context.ItemRecords.Where(record => record.Status == Status.Service || (record.Status == Status.OnService && record.End < DateTime.Now )).CountAsync(),
             });
         }
 
@@ -87,7 +87,31 @@ namespace Bikepark.Controllers
         // GET: Rental
         public async Task<IActionResult> ServiceIndex()
         {
-            return View("ItemRecordsIndex_service", await _context.ItemRecords.Where(record => record.Status>=Status.Service && record.Status<Status.Fixed).OrderBy(record => record.End).ToListAsync());
+            return View("ItemRecordsIndex_service", await _context.ItemRecords.Where(record => record.Status>=Status.Service && record.Status<Status.Fixed).OrderByDescending(record => record.End).ToListAsync());
+        }
+
+        // GET: Rental
+        public async Task<IActionResult> ServiceIndexAll()
+        {
+            return View("ItemRecordsIndex_service_all", await _context.ItemRecords.Where(record => record.Status >= Status.Service && record.Status <= Status.Fixed).OrderByDescending(record => record.End).ToListAsync());
+        }
+        // GET: Rental
+        public async Task<IActionResult> ServiceIndexActual()
+        {
+            return View("ItemRecordsIndex_service", await _context.ItemRecords.Where(record => record.Status >= Status.Service && record.Status < Status.Fixed).OrderByDescending(record => record.End).ToListAsync());
+        }
+
+        public async Task<IActionResult> RentalIndexAll()
+        {
+            return View("ItemRecordsIndex_rental_all", await _context.ItemRecords.Where(record => record.Status >= Status.Draft && record.Status < Status.Fixed).OrderByDescending(record => record.End).ToListAsync());
+        }
+        public async Task<IActionResult> RentalIndexActual()
+        {
+            return View("ItemRecordsIndex_rental", await _context.ItemRecords.Where(record => record.Status >= Status.Scheduled && record.Status < Status.Closed).OrderByDescending(record => record.End).ToListAsync());
+        }
+
+        public async Task<IActionResult> ItemRecordsIndex() { 
+            return View("ItemRecordsIndex", await _context.ItemRecords.OrderByDescending(record => record.End).ToListAsync());        
         }
 
         // GET: Rental/OfType/5
@@ -98,7 +122,7 @@ namespace Bikepark.Controllers
                 return NotFound();
             }
             //ARCHIVE
-            return View("ItemRecordsIndex", await _context.ItemRecords.Where(irecord => irecord.Item.ItemTypeID == id).ToListAsync());
+            return View("ItemRecordsIndex", await _context.ItemRecords.Where(irecord => irecord.Item.ItemTypeID == id).OrderByDescending(record => record.End).ToListAsync());
         }
         // GET: Rental/OfItem/5
         public async Task<IActionResult> OfItem(int? id)
@@ -108,7 +132,7 @@ namespace Bikepark.Controllers
                 return NotFound();
             }
             //ARCHIVE
-            return View("ItemRecordsIndex", await _context.ItemRecords.Where(irecord => irecord.ItemID == id).ToListAsync());
+            return View("ItemRecordsIndex", await _context.ItemRecords.Where(irecord => irecord.ItemID == id).OrderByDescending(record => record.End).ToListAsync());
         }
 
         // GET: Rental/WithPricing/5
@@ -119,7 +143,7 @@ namespace Bikepark.Controllers
                 return NotFound();
             }
             //ARCHIVE
-            return View("ItemRecordsIndex", await _context.ItemRecords.Where(irecord => irecord.PricingID == id).ToListAsync());
+            return View("ItemRecordsIndex", await _context.ItemRecords.Where(irecord => irecord.PricingID == id).OrderByDescending(record => record.End).ToListAsync());
         }
 
         // GET: Rental/Active
@@ -145,6 +169,11 @@ namespace Bikepark.Controllers
         {
             return View();
         }
+        // GET: Rental/StartNewService
+        public IActionResult StartNewService()
+        {
+            return View();
+        }
 
         // GET: Rental/Control/5
         public async Task<IActionResult> Control(int? id)
@@ -165,35 +194,21 @@ namespace Bikepark.Controllers
             return await Control(rentalRecord);
         }
 
-        // GET: Rental/ControlFixing/5
-        public async Task<IActionResult> ServiceSetup(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            List<ItemRecord> itemRecords = await _context.ItemRecords.Where(ir => ir.RecordID == id && ir.Status>Status.Closed).ToListAsync();
-            if (itemRecords == null || itemRecords.Count==0)
-            {
-                return NotFound();
-            }
-            return ServiceSetup(itemRecords);
-        }
-
         private async Task<IActionResult> Control(Record rentalRecord)
         {
             ViewData["Items"] = _context.Items;
             ViewData["Types"] = await _context.ItemTypes.ToListAsync();
             ViewData["Pricings"] = _context.Pricings;
-            ViewData["ArchivalPricings"] = await _context.Pricings.IgnoreQueryFilters().ToListAsync();
             ViewData["Holidays"] = await _context.Holidays.Select(day => day.Date).ToListAsync();
             ViewData["Prepared"] = await _context.Prepared.Select(prep=> prep.ItemID).ToListAsync();
 
+            ViewData["ArchivalPricings"] = await _context.Pricings.IgnoreQueryFilters().ToListAsync();
             ViewData["Availability"] = GetAvailability(rentalRecord.RecordID);
 
             ViewData["WorkingHoursStart"] = _config.Value.WorkingHoursStart;
             ViewData["WorkingHoursEnd"] = _config.Value.WorkingHoursEnd;
-            ViewData["MinServiceDelayBetweenRents"] = _config.Value.MinServiceDelayBetweenRents;
+            ViewData["MinServiceDelayBetweenRentsMinutes"] = _config.Value.MinServiceDelayBetweenRentsMinutes;
+            ViewData["DefaultRentTimeHours"] = _config.Value.DefaultRentTimeHours;
 
             foreach (var irec in rentalRecord.ItemRecords)
                 if (irec.Item == null && irec.ItemID != null)
@@ -201,19 +216,7 @@ namespace Bikepark.Controllers
 
             return View("Control", rentalRecord);
         }
-        private IActionResult ServiceSetup(IEnumerable<ItemRecord> itemRecords)
-        {
-            ViewData["Prices"] = _context.Pricings;
-            return View("ServiceSetup", itemRecords);
-        }
-
-        private IActionResult Service(ItemRecord itemRecord)
-        {
-            ViewData["Prices"] = _context.Pricings;
-            return View("ServiceSetup", new List<ItemRecord>() { itemRecord });
-        }
-
-        private Dictionary<int, List<RecordInfo>> GetAvailability( int? RecordID ) {
+        private Dictionary<int, List<ItemRecord>> GetAvailability( int? RecordID ) {
 
             var availability = _context.ItemRecords.Where(renteditem =>
                     renteditem.RecordID != RecordID && 
@@ -221,25 +224,25 @@ namespace Bikepark.Controllers
                     (renteditem.Status > Status.Service && renteditem.Status < Status.Fixed)))
                     .ToLookup(
                             renteditem => renteditem.ItemID ?? -1,
-                            renteditem => new RecordInfo {
+                            renteditem => new ItemRecord {
                                 Start = renteditem.Start ?? renteditem.Record.Start ?? DateTime.MaxValue,
                                 End = 
                                     ((renteditem.Status==Status.Active || renteditem.Status == Status.OnService 
                                     && (renteditem.End ?? renteditem.Record.End ?? DateTime.MinValue)<DateTime.Now)? 
                                     DateTime.Now: 
                                     (renteditem.End ?? renteditem.Record.End ?? DateTime.MinValue))
-                                    .AddHours(_config.Value.MinServiceDelayBetweenRents) ,
+                                    .AddMinutes(_config.Value.MinServiceDelayBetweenRentsMinutes) ,
                                 Status = renteditem.Status,
-                                //renteditem.RecordID ?? -1
+                                ItemRecordID = renteditem.ItemRecordID
                             }
                         ).ToDictionary(x => x.Key, x => x.ToList());
 
             return availability;
         }
 
-        public bool Overlap(List<RecordInfo> periods, RecordInfo record2) {
+        public bool Overlap(List<ItemRecord> periods, ItemRecord record2, int? itemRecordID) {
             foreach ( var record1 in periods ){ 
-                if (RecordInfo.Overlap(record1, record2))
+                if (RecordInfo.Overlap(record1, record2) && record1.ItemRecordID!=itemRecordID)
                     return true;
             }
             return false;  
@@ -247,14 +250,14 @@ namespace Bikepark.Controllers
 
         public bool CheckAvailability(Record rentalRecord, Status Action, DateTime ActionTime) {
             var availability = GetAvailability( rentalRecord.RecordID );
-            var record = new RecordInfo {
+            var record = new ItemRecord {
                 Start = (rentalRecord.Status < Status.Active ? rentalRecord.Start : ActionTime) ?? DateTime.Now,
                 End = rentalRecord.End ?? DateTime.Now,
                 Status = Status.Draft
             };
             foreach (ItemRecord itemRecord in rentalRecord.ItemRecords.Where(ir => ir.Status < Status.Active)) {
                 if (itemRecord.ItemID!=null && availability.ContainsKey( itemRecord.ItemID??-1 )) {
-                    if (Overlap(availability[itemRecord.ItemID ?? -1], record ))
+                    if (Overlap(availability[itemRecord.ItemID ?? -1], record, itemRecord.ItemRecordID ) )
                         return false;
                 }
             }
@@ -393,7 +396,7 @@ namespace Bikepark.Controllers
                     }
 
                     return (toFix.Count > 0) ?
-                        RedirectToAction(nameof(ServiceSetup), new { id = rentalRecord.RecordID }) :
+                        RedirectToAction(nameof(ControlService), new { id = rentalRecord.RecordID }) :
                         RedirectToAction(nameof(Control), new { id = rentalRecord.RecordID });
                 }
             }
@@ -409,6 +412,57 @@ namespace Bikepark.Controllers
 
         }
 
+
+        private async Task<IActionResult> ControlService(IEnumerable<ItemRecord> itemRecords)
+        {
+            ViewData["Pricings"] =  _context.Pricings;
+            ViewData["ArchivalPricings"] = await _context.Pricings.IgnoreQueryFilters().ToListAsync();
+            ViewData["Availability"] = GetAvailability(null);
+            return View("ControlService", itemRecords);
+        }
+
+        private async Task<IActionResult> Service(ItemRecord itemRecord)
+        {
+            return await ControlService( new List<ItemRecord>() { itemRecord });
+        }
+
+        // GET: Rental/ControlService/5
+        public async Task<IActionResult> ControlService(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            List<ItemRecord> itemRecords = await _context.ItemRecords.Where(ir => ir.RecordID == id && ir.Status > Status.Closed).ToListAsync();
+            if (itemRecords == null || itemRecords.Count == 0)
+            {
+                return NotFound();
+            }
+            ViewData["RecordID"] = id;
+            return await ControlService(itemRecords);
+        }
+
+        // GET: Rental/ControlItemService/5
+        public async Task<IActionResult> ControlItemService(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            ItemRecord irec = await _context.ItemRecords.FindAsync(id);
+
+            if (irec == null)
+            {
+                return NotFound();
+            }
+            if (irec.Status < Status.Service)
+            {
+                return NotFound();
+                //return RedirectToAction(nameof(ServiceIndex));
+            }
+            return await Service(irec);
+        }
+
         // POST: Rental/SaveServiceRecords
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -418,14 +472,28 @@ namespace Bikepark.Controllers
         {
             if (ModelState.IsValid)
             {
+                //if (!CheckServiceAvailability(itemRecords))
+                //{
+                //    ViewData["Error"] = "Некоторые позиции забронированы на указанное время ремонта";
+                //    return await ControlService(itemRecords);
+                //}
+
+
                 foreach (ItemRecord itemRecord in itemRecords) {
-                    if (itemRecord.ItemRecordID == null)
+                    if (itemRecord.ItemRecordID == null && itemRecord.ItemID != null)
                     {
                         _context.Add(itemRecord);
                     }
                     else
                     {
-                        _context.Update(itemRecord);
+                        if (itemRecord.ItemID == null)
+                        {
+                            _context.Remove(itemRecord);
+                        }
+                        else
+                        {
+                            _context.Update(itemRecord);
+                        }
                     }
                     await _context.SaveChangesAsync();
                 }
@@ -433,9 +501,33 @@ namespace Bikepark.Controllers
             }
             else
             {
-                return ServiceSetup(itemRecords);
+                return await ControlService(itemRecords);
             }
         }
+        // GET: Rental/ControlItemService/5
+        public async Task<IActionResult> ItemServiceFixed(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            ItemRecord irec = await _context.ItemRecords.FindAsync(id);
+
+            if (irec == null)
+            {
+                return NotFound();
+            }
+            if (irec.Status != Status.OnService)
+            {
+                return NotFound();
+                //return RedirectToAction(nameof(ServiceIndex));
+            }
+            irec.Status = Status.Fixed;
+            _context.Update(irec);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ServiceIndex));
+        }
+        
 
         // POST: Rental/SaveServiceRecords
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -473,15 +565,34 @@ namespace Bikepark.Controllers
             return price;
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ControlForNumber(NumberGetBack number) {
+        public async Task<IActionResult> ControlServiceForNumber(Number number)
+        {
+
+            if (ModelState.IsValid)
+            {
+                Item item = await _context.Items.FirstOrDefaultAsync(item => item.ItemNumber == number.ItemNumber);
+                if (item == null)
+                {
+                    ViewData["Error"] = "номер не найден";
+                    return View("StartNewService", number);
+                }
+                return await Service(new ItemRecord { ItemID = item.ItemID, Item = item, Start = DateTime.Now, End = DateTime.Now.AddDays(1), Status = Status.Service });
+            }
+            return View("StartNewService", number);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ControlForNumber(Number number) {
 
             if (ModelState.IsValid)
             {
                 var itemRec = await _context.ItemRecords.FirstOrDefaultAsync(irec => irec.Item.ItemNumber == number.ItemNumber && irec.Status == Status.Active);
                 if (itemRec == null || itemRec.Record==null) {
-                    ViewData["error"] = "запись не найдена";
+                    ViewData["Error"] = "запись не найдена";
                     return View("GetBackNumber", number);
                 }
                 
@@ -562,6 +673,19 @@ namespace Bikepark.Controllers
             }
             return View(rentalRecord);
         }
+        public async Task<IActionResult> DeleteItemRecord(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var rentalRecord = await _context.ItemRecords.FirstOrDefaultAsync(m => m.ItemRecordID == id);
+            if (rentalRecord == null)
+            {
+                return NotFound();
+            }
+            return View(rentalRecord);
+        }
 
         // POST: Rental/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -574,6 +698,18 @@ namespace Bikepark.Controllers
             _context.Records.Remove(rentalRecord);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+
+        // POST: Rental/Delete/5
+        [HttpPost, ActionName("DeleteItemRecord")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteItemRecordConfirmed(int id)
+        {
+            var rentalRecord = await _context.ItemRecords.FindAsync(id);
+            _context.ItemRecords.Remove(rentalRecord);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ItemRecordsIndex));
         }
 
         private bool RentalRecordExists(int id)
@@ -598,7 +734,7 @@ namespace Bikepark.Controllers
             }
 
             ViewData["ItemRecs"] = await _context.ItemRecords
-                .Where(r => r.Status == Status.Active || r.Status == Status.Scheduled || r.Status == Status.OnService)
+                .Where(r => r.Status != Status.Draft && r.Status != Status.Closed && r.Status != Status.Fixed )
                 .Where(r => r.ItemID == id)
                 .Include(r => r.Record)
                 .OrderBy(r => r.Status)
@@ -614,6 +750,14 @@ namespace Bikepark.Controllers
             ViewBag.ActualPrices = actualprices;
             return PartialView("_ItemRecordRow_rental", new ItemRecord { ItemID = ItemID, Item = Item, Start = Start, End = End });
         }
+
+        public async Task<PartialViewResult> AddServiceItemRecord(int ItemID, DateTime Start, DateTime End, int? RecordID)
+        {
+            var Item = await _context.Items.FindAsync(ItemID);
+            ViewData["Pricings"] = _context.Pricings;
+            return PartialView("_ItemRecordRow_service", new ItemRecord { ItemID = ItemID, Item = Item, Start = Start, End = End, Status = Status.Service, RecordID = RecordID });
+        }
+
         public async Task<PartialViewResult> AddPreparedItemRecord(int ItemID)
         {
             var Item = await _context.Items.FindAsync(ItemID);
