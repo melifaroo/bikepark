@@ -1,7 +1,8 @@
 {
   "Bikepark": {
-    "WorkingHoursStart": "00:00",
-    "WorkingHoursEnd": "23:59",
-    "MinServiceDelayBetweenRents": 0.5
+    "WorkingHoursStart": "2022-06-09T08:00:00",
+    "WorkingHoursEnd": "2022-06-09T19:00:00",
+    "MinServiceDelayBetweenRentsMinutes": 60,
+    "DefaultRentTimeHours": 3
   }
 }

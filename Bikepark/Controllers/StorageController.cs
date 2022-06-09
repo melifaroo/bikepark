@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Bikepark.Data;
 using Bikepark.Models;
+using Microsoft.Extensions.Options;
 
 namespace Bikepark.Controllers
 {
@@ -16,10 +17,12 @@ namespace Bikepark.Controllers
     public class StorageController : Controller
     {
         private readonly BikeparkContext _context;
+        private readonly IOptions<BikeparkConfig> _config;
 
-        public StorageController(BikeparkContext context)
+        public StorageController(BikeparkContext context, IOptions<BikeparkConfig> config )
         {
             _context = context;
+            _config = config;
         }
 
         // GET: Storage/Main
@@ -31,7 +34,26 @@ namespace Bikepark.Controllers
         // GET: Rental/Settings
         public IActionResult Settings()
         {
-            return View();
+            return View(_config.Value);
+        }
+
+        // POST: Storage/SettingsUpdate
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SettingsUpdate(BikeparkConfig config)
+        {
+                BikeparkConfig.AddOrUpdateAppSetting("Bikepark:WorkingHoursEnd", config.WorkingHoursEnd);
+                BikeparkConfig.AddOrUpdateAppSetting("Bikepark:WorkingHoursStart", config.WorkingHoursStart);
+                BikeparkConfig.AddOrUpdateAppSetting("Bikepark:MinServiceDelayBetweenRentsMinutes", config.MinServiceDelayBetweenRentsMinutes);
+                BikeparkConfig.AddOrUpdateAppSetting("Bikepark:DefaultRentTimeHours", config.DefaultRentTimeHours);
+                _config.Value.WorkingHoursEnd = config.WorkingHoursEnd;
+                _config.Value.WorkingHoursStart = config.WorkingHoursStart;
+                _config.Value.MinServiceDelayBetweenRentsMinutes = config.MinServiceDelayBetweenRentsMinutes;
+                _config.Value.DefaultRentTimeHours = config.DefaultRentTimeHours;
+          
+            return RedirectToAction("Settings");
         }
 
         // GET: Storage
@@ -107,6 +129,7 @@ namespace Bikepark.Controllers
         {
             return await EditForm(new ItemType());
         }
+
 
         // GET: Storage/Edit/5
         public async Task<IActionResult> Edit(int? id)

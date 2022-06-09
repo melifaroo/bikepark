@@ -9,7 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
             .SetBasePath(Environment.CurrentDirectory)
-            .AddJsonFile("bikepark.json", optional: true, reloadOnChange: true);
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile("bikepark.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables(); ;
 
 var baseConnectionString = builder.Configuration.GetConnectionString("SQLiteConnection");
 

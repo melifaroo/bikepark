@@ -34,15 +34,15 @@
             var End = rent.End ?? rent.Record.End;
             <tr>
                 <td style="width : 20%">
-                    @if (rent.Status == Status.Scheduled || rent.Status == Status.Active)
+                    @if (rent.Status > Status.Draft && rent.Status < Status.Closed)
                     {
                         <a asp-action="Control" asp-route-id="@rent.RecordID">
                             <div class="row-sm">Запись #@Html.DisplayFor(m => rent.RecordID)</div>
                         </a>
-                    }else if (rent.Status == Status.OnService)
+                    }else if (rent.Status < Status.Fixed)
                     {
-                        <a asp-action="Control" asp-route-id="@rent.RecordID">
-                            <div class="row-sm">Запись #@Html.DisplayFor(m => rent.RecordID)</div>
+                        <a asp-action="ControlItemService" asp-route-id="@rent.ItemRecordID">
+                            <div class="row-sm">Ремонт #@Html.DisplayFor(m => rent.RecordID)</div>
                         </a>
                     }
                 </td>

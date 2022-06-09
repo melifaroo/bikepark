@@ -8,7 +8,8 @@ namespace Bikepark
         public static readonly string AdministratorsRole = "BikeparkAdministrators";
         public DateTime WorkingHoursStart { get; set; }
         public  DateTime WorkingHoursEnd{ get; set; }
-        public double MinServiceDelayBetweenRents{ get; set; }
+        public int MinServiceDelayBetweenRentsMinutes { get; set; }
+        public int DefaultRentTimeHours { get; set; }
 
         public static void AddOrUpdateAppSetting<T>(string key, T value)
         {

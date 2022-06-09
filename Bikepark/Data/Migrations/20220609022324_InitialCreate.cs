@@ -381,7 +381,7 @@ namespace Bikepark.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Customers",
                 columns: new[] { "CustomerID", "CustomerContactNumber", "CustomerEMail", "CustomerFullName", "CustomerPassport" },
-                values: new object[] { 1, "+79781234567", "vasily.pupkin@maily.su", "Василий Пупкин", "00 000001" });
+                values: new object[] { 1, "+79781234567", "vasily.pupkin@maily.su", "Петр Иванов", "00 000001" });
 
             migrationBuilder.InsertData(
                 table: "Customers",

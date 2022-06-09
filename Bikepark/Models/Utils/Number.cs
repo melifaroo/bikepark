@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bikepark.Models
 {
-    public class NumberGetBack
+    public class Number
     {
         [Required]
         [Display(Name = "Номер")]

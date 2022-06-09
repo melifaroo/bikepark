@@ -2,16 +2,16 @@
 
 @{
     Layout = "_MainLayout";
-    ViewData["Title"] = "Принять по номеру";
+    ViewData["Title"] = "Назначить ремонт по номеру";
     var Error = ViewBag.Error;
 }
 
-<h1>Принять</h1>
+<h1>Отремонтировать</h1>
 
 <h3>Введите номер велосипеда</h3>
 <div>
     <hr />
-    <form asp-action="ControlForNumber" id="item-form">        
+    <form asp-action="ControlServiceForNumber" id="item-form">        
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
@@ -20,7 +20,7 @@
                     <span asp-validation-for="ItemNumber" class="text-danger"></span>
                 </div>
                 <div class="form-group mt-3">
-                    <button type="submit" class="btn btn-primary col-md-12">Найти выдачу</button>
+                    <button type="submit" class="btn btn-primary col-md-12">Назначить ремонт</button>
                 </div>
             </div>
         </div>

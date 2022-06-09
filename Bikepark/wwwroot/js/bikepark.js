@@ -20,13 +20,13 @@ async function maintimer() {
         const result = await $.get("/rental/stat");
         var activeWarning = result.activeWarning - result.activeOverdue;
         var scheduledWarning = result.scheduledWarning - result.scheduledOverdue;
-        $("#active-count").text(result.active);
+        $("#active-record-count").text(result.active);
         $("#active-warning").text(activeWarning == 0 ? "" : activeWarning);
         $("#active-overdue").text(result.activeOverdue ==0 ? "" : result.activeOverdue);
-        $("#scheduled-count").text(result.scheduled);
+        $("#scheduled-record-count").text(result.scheduled);
         $("#scheduled-warning").text(scheduledWarning == 0 ? "" : scheduledWarning);
         $("#scheduled-overdue").text(result.scheduledOverdue == 0 ? "" : result.scheduledOverdue);
-        $("#service-count").text(result.service);
+        $("#service-record-count").text(result.service);
         $("#service-warning").text(result.serviceWarning == 0 ? "" : result.serviceWarning);
         $("#service-needaction").text(result.serviceNeedAction == 0 ? "" : result.serviceNeedAction);
 

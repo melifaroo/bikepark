@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bikepark.Data.Migrations
 {
     [DbContext(typeof(BikeparkContext))]
-    [Migration("20220608130735_InitialCreate")]
+    [Migration("20220609022324_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,7 +47,7 @@ namespace Bikepark.Data.Migrations
                             CustomerID = 1,
                             CustomerContactNumber = "+79781234567",
                             CustomerEMail = "vasily.pupkin@maily.su",
-                            CustomerFullName = "Василий Пупкин",
+                            CustomerFullName = "Петр Иванов",
                             CustomerPassport = "00 000001"
                         },
                         new

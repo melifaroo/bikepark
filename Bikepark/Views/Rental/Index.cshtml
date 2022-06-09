@@ -14,10 +14,15 @@
             <a class="nav-link" asp-action="Create">Новый прокат</a>
         </li>  
     </ul>
-    <ul class="nav  col-md-6 justify-content-end"> 
+    <ul class="nav  col-md-6 justify-content-end">   
         <li class="nav-item">
-            <a class="nav-link" asp-action="Export">Загрузить таблицу XLS</a>
+            <a class="nav-link" asp-action="RentalIndexAll">Журнал по номерам</a>
         </li>    
     </ul>  
 </div>
 <partial name="_Log"  /> 
+
+
+@section Scripts {          
+    <link href="~/css/rent-main.css" rel="stylesheet" asp-append-version="true" /> 
+}

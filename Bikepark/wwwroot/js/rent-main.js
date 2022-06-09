@@ -220,7 +220,7 @@ function setupInterface() {
 
     $("#time-start").val(time2str(record.Status == 0 ? now : start));
     $("#time-end").val(time2str(record.Status == 0 ? timeAfterHours(now, 1) : end ));
-    $("#duration").val(record.Status == 0 ? 1 : durationHours(start, end) );
+    $("#duration").val(record.Status == 0 ? defaultRentTimeHours : durationHours(start, end) );
     $("#time-action").val(time2str(now)).addClass("timer-active");
     if (record.Status == 2) {
         $("#time-current").html(time2text(now)).addClass("timer-active");
@@ -290,10 +290,11 @@ function change_action() {
     e0 = new Date(record.End);
     now = new Date();
 
-    var overdue = durationHours(s0, now) > 0;
+    var overdue_time = durationHours(s0, now) > 0;
+    var overdue = (record.Status == 1) && overdue_time > 0;
 
-    var excess = (record.Status == 2) && durationHours(e0, now) > 0;
     var excess_time = durationHours(e0, now);
+    var excess = (record.Status == 2) && excess_time > 0;
 
     var extend_time = durationHours(e0, e1) - durationHours(s0, s1);    
     var reduce_time = durationHours(e1, e0) - durationHours(s1, s0);
@@ -328,6 +329,7 @@ function change_action() {
     $("#repeal-count").html(repeal_count);
     $("#getback-count").html(getback_count);
     $("#service-count").html(service_count);
+    $("#serviced-count").html(serviced_count);
     $("#extend-time").html(duration2str(extend_time));
     $("#reduce-time").html(duration2str(reduce_time));
 
@@ -373,6 +375,10 @@ function change_action() {
     $("#time-excess").html((excess && excess_time > 0) ? ("просрочен на " + duration2str(excess_time)) : "");
     $("#time-excess").toggleClass("attention-text", excess_time > 0);
     $("#time-excess").toggleClass("alert-text", excess_time > 0);
+
+    $("#time-overdue").html((overdue && overdue_time > 0) ? ("просрочен на " + duration2str(overdue_time)) : "");
+    $("#time-overdue").toggleClass("attention-text", overdue_time > 0);
+    $("#time-overdue").toggleClass("warning-text", overdue_time > 0);
   
 
     checkAvailability();
