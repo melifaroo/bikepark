@@ -12,6 +12,12 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using System.Drawing;
+using System.Windows.Forms;
+
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Bikepark.Controllers
 {
@@ -412,6 +418,136 @@ namespace Bikepark.Controllers
 
         }
 
+        public async Task<IActionResult> ExportAllRental() {
+            var fileDownloadName = String.Format("FileName.xlsx");
+            const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            // Pass your ef data to method
+            ExcelPackage package = GenerateExcelFile(await _context.ItemRecords.ToListAsync());
+
+            return RedirectToAction(nameof(RentalIndexAll));
+
+        }
+
+        public void ExportToExcel( IEnumerable<ItemRecord> datasource, string filename )
+        {
+            try
+            {
+                if (tbl == null || tbl.Columns.Count == 0)
+                    throw new Exception("ExportToExcel: Null or empty input table!\n");
+
+                // load excel, and create a new workbook
+                var excelApp = new Excel.Application();
+                var workbook = excelApp.Workbooks.Add();
+
+                // single worksheet
+                Excel._Worksheet workSheet = (Excel._Worksheet)excelApp.ActiveSheet;
+
+                // column headings
+                for (var i = 0; i < tbl.Columns.Count; i++)
+                {
+                    workSheet.Cells[1, i + 1] = tbl.Columns[i].ColumnName;
+                }
+
+                // rows
+                for (var i = 0; i < tbl.Rows.Count; i++)
+                {
+                    // to do: format datetime values before printing
+                    for (var j = 0; j < tbl.Columns.Count; j++)
+                    {
+                        workSheet.Cells[i + 2, j + 1] = tbl.Rows[i][j];
+                    }
+                }
+
+                try
+                {
+                    var saveFileDialog = new SaveFileDialog();
+                    saveFileDialog.FileName = "StokBilgisi";
+                    saveFileDialog.DefaultExt = ".xlsx";
+                    System.Windows.
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        workbook.SaveAs(saveFileDialog.FileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                    }
+                    excelApp.Quit();
+                    Console.WriteLine("Excel file saved!");
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("ExportToExcel: Excel file could not be saved! Check filepath.\n"
+                    + ex.Message);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("ExportToExcel: \n" + ex.Message);
+            }
+        }
+
+        private static ExcelPackage GenerateExcelFile(IEnumerable<ItemRecord> datasource)
+        {
+
+            ExcelPackage pck = new ExcelPackage();
+
+            //Create the worksheet 
+            ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Log");
+
+            // Sets Headers
+            ws.Cells[1, 1].Value = "ID";
+            ws.Cells[1, 2].Value = "Категория";
+            ws.Cells[1, 3].Value = "Модель";
+            ws.Cells[1, 4].Value = "Номер";
+            ws.Cells[1, 5].Value = "Время выдачи";
+            ws.Cells[1, 6].Value = "Время возврата";
+            ws.Cells[1, 7].Value = "Статус";
+            ws.Cells[1, 8].Value = "Тариф";
+            ws.Cells[1, 9].Value = "Стоимость по тарифу";
+            ws.Cells[1, 10].Value = "Тарификация";
+            ws.Cells[1, 11].Value = "Номер заказа";
+            ws.Cells[1, 12].Value = "Клиент";
+            ws.Cells[1, 13].Value = "Телефон клиента";
+
+            // Inserts Data
+            for (int i = 0; i < datasource.Count(); i++)
+            {
+                ws.Cells[i + 2, 1].Value = datasource.ElementAt(i).ItemRecordID;
+                if (datasource.ElementAt(i).Item != null)
+                {
+                    if (datasource.ElementAt(i).Item.ItemType != null)
+                    {
+                        ws.Cells[i + 2, 2].Value = datasource.ElementAt(i).Item.ItemType.ItemCategory.ItemCategoryName;
+                        ws.Cells[i + 2, 3].Value = datasource.ElementAt(i).Item.ItemType.ItemTypeName;
+                    }
+                    ws.Cells[i + 2, 4].Value = datasource.ElementAt(i).Item.ItemNumber;
+                }
+                ws.Cells[i + 2, 5].Value = datasource.ElementAt(i).Start;
+                ws.Cells[i + 2, 6].Value = datasource.ElementAt(i).End;
+                ws.Cells[i + 2, 7].Value = datasource.ElementAt(i).Status;
+                if (datasource.ElementAt(i).Pricing != null)
+                {
+                    ws.Cells[i + 2, 8].Value = datasource.ElementAt(i).Pricing.PricingName;
+                    ws.Cells[i + 2, 9].Value = datasource.ElementAt(i).Pricing.Price;
+                    ws.Cells[i + 2, 10].Value = datasource.ElementAt(i).Pricing.PricingType;
+                }
+                if (datasource.ElementAt(i).Record != null)
+                {
+                    ws.Cells[i + 2, 11].Value = datasource.ElementAt(i).RecordID;
+                    ws.Cells[i + 2, 12].Value = datasource.ElementAt(i).Record.Customer.CustomerFullName;
+                    ws.Cells[i + 2, 13].Value = datasource.ElementAt(i).Record.Customer.CustomerContactNumber;
+                }
+            }
+
+            // Format Header of Table
+            using (ExcelRange rng = ws.Cells["A1:C1"])
+            {
+                rng.Style.Font.Bold = true;
+                rng.Style.Fill.PatternType = ExcelFillStyle.Solid; //Set Pattern for the background to Solid 
+                rng.Style.Fill.BackgroundColor.SetColor(Color.Gold); //Set color to DarkGray 
+                rng.Style.Font.Color.SetColor(Color.Black);
+            }
+            return pck;
+        }
 
         private async Task<IActionResult> ControlService(IEnumerable<ItemRecord> itemRecords)
         {
