@@ -347,23 +347,6 @@ namespace Bikepark.Data
 
         }
 
-        public override int SaveChanges()
-        {
-            UpdateSoftDeleteStatuses();
-            return base.SaveChanges();
-        }
-
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            UpdateSoftDeleteStatuses();
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        }
-
-        private void UpdateSoftDeleteStatuses()
-        {
-            //LinqHelper.ForEach(ChangeTracker.Entries<ItemCategory>().Where(e => e.State == EntityState.Deleted), e => CascadeClearItemCategory(e));
-        }
-
         private void UpdateSoftDeleteStatus(EntityEntry entry) { 
             switch (entry.State)
             {
@@ -376,6 +359,32 @@ namespace Bikepark.Data
                     break;
             }        
         }
+
+        public Dictionary<int, List<ItemRecord>> GetAvailability(int? RecordID, int minutesDelay)
+        {
+            var availability = ItemRecords.Where(renteditem =>
+                    renteditem.RecordID != RecordID &&
+                    ((renteditem.Status > Status.Draft && renteditem.Status < Status.Closed) ||
+                    (renteditem.Status > Status.Service && renteditem.Status < Status.Fixed)))
+                    .ToLookup(
+                            renteditem => renteditem.ItemID ?? -1,
+                            renteditem => new ItemRecord
+                            {
+                                Start = renteditem.Start ?? renteditem.Record.Start ?? DateTime.MaxValue,
+                                End =
+                                    ((renteditem.Status == Status.Active || renteditem.Status == Status.OnService
+                                    && (renteditem.End ?? renteditem.Record.End ?? DateTime.MinValue) < DateTime.Now) ?
+                                    DateTime.Now :
+                                    (renteditem.End ?? renteditem.Record.End ?? DateTime.MinValue))
+                                    .AddMinutes(minutesDelay),
+                                Status = renteditem.Status,
+                                ItemRecordID = renteditem.ItemRecordID
+                            }
+                        ).ToDictionary(x => x.Key, x => x.ToList());
+
+            return availability;
+        }
+
 
     }
 }
