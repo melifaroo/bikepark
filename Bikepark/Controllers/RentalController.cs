@@ -12,11 +12,6 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using System.Drawing;
-using System.Windows.Forms;
-
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Bikepark.Controllers
@@ -88,97 +83,37 @@ namespace Bikepark.Controllers
         // GET: Rental
         public async Task<IActionResult> Index()
         {
+            ViewBag.Actual = false;
             return View(await _context.Records.OrderByDescending(record => record.Start).ToListAsync());
         }
-        // GET: Rental
-        public async Task<IActionResult> ServiceIndex()
-        {
-            return View("ItemRecordsIndex_service", await _context.ItemRecords.Where(record => record.Status>=Status.Service && record.Status<Status.Fixed).OrderByDescending(record => record.End).ToListAsync());
-        }
 
-        // GET: Rental
-        public async Task<IActionResult> ServiceIndexAll()
+        // GET: Rental/Actual
+        public async Task<IActionResult> Actual()
         {
-            return View("ItemRecordsIndex_service_all", await _context.ItemRecords.Where(record => record.Status >= Status.Service && record.Status <= Status.Fixed).OrderByDescending(record => record.End).ToListAsync());
-        }
-        // GET: Rental
-        public async Task<IActionResult> ServiceIndexActual()
-        {
-            return View("ItemRecordsIndex_service", await _context.ItemRecords.Where(record => record.Status >= Status.Service && record.Status < Status.Fixed).OrderByDescending(record => record.End).ToListAsync());
-        }
-
-        public async Task<IActionResult> RentalIndexAll()
-        {
-            return View("ItemRecordsIndex_rental_all", await _context.ItemRecords.Where(record => record.Status >= Status.Draft && record.Status < Status.Fixed).OrderByDescending(record => record.End).ToListAsync());
-        }
-        public async Task<IActionResult> RentalIndexActual()
-        {
-            return View("ItemRecordsIndex_rental", await _context.ItemRecords.Where(record => record.Status >= Status.Scheduled && record.Status < Status.Closed).OrderByDescending(record => record.End).ToListAsync());
-        }
-
-        public async Task<IActionResult> ItemRecordsIndex() { 
-            return View("ItemRecordsIndex", await _context.ItemRecords.OrderByDescending(record => record.End).ToListAsync());        
-        }
-
-        // GET: Rental/OfType/5
-        public async Task<IActionResult> OfType(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            //ARCHIVE
-            return View("ItemRecordsIndex", await _context.ItemRecords.Where(irecord => irecord.Item.ItemTypeID == id).OrderByDescending(record => record.End).ToListAsync());
-        }
-        // GET: Rental/OfItem/5
-        public async Task<IActionResult> OfItem(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            //ARCHIVE
-            return View("ItemRecordsIndex", await _context.ItemRecords.Where(irecord => irecord.ItemID == id).OrderByDescending(record => record.End).ToListAsync());
-        }
-
-        // GET: Rental/WithPricing/5
-        public async Task<IActionResult> WithPricing(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            //ARCHIVE
-            return View("ItemRecordsIndex", await _context.ItemRecords.Where(irecord => irecord.PricingID == id).OrderByDescending(record => record.End).ToListAsync());
+            ViewBag.Actual = true;
+            return View("Index", await _context.Records.Where(r => r.Status == Status.Active || r.Status == Status.Scheduled).OrderBy(record => record.End).ToListAsync());
         }
 
         // GET: Rental/Active
         public async Task<IActionResult> Active()
         {
-            return View("Index_active", await _context.Records.Where(r => r.Status == Status.Active).OrderBy(record => record.End).ToListAsync());
+            ViewBag.Actual = true;
+            ViewBag.Status = Status.Active;
+            return View("Index", await _context.Records.Where(r => r.Status == Status.Active).OrderBy(record => record.End).ToListAsync());
         }
 
         // GET: Rental/Scheduled
         public async Task<IActionResult> Scheduled()
         {
-            return View("Index_scheduled", await _context.Records.Where(r => r.Status == Status.Scheduled).OrderBy(record => record.Start).ToListAsync());
+            ViewBag.Actual = true;
+            ViewBag.Status = Status.Scheduled;
+            return View("Index", await _context.Records.Where(r => r.Status == Status.Scheduled).OrderBy(record => record.Start).ToListAsync());
         }
 
         // GET: Rental/Create
         public async Task<IActionResult> Create()
         {
             return await Control(new Record());
-        }
-
-        // GET: Rental/GetBackNumber
-        public IActionResult GetBackNumber()
-        {
-            return View();
-        }
-        // GET: Rental/StartNewService
-        public IActionResult StartNewService()
-        {
-            return View();
         }
 
         // GET: Rental/Control/5
@@ -209,7 +144,7 @@ namespace Bikepark.Controllers
             ViewData["Prepared"] = await _context.Prepared.Select(prep=> prep.ItemID).ToListAsync();
 
             ViewData["ArchivalPricings"] = await _context.Pricings.IgnoreQueryFilters().ToListAsync();
-            ViewData["Availability"] = GetAvailability(rentalRecord.RecordID);
+            ViewData["Availability"] = _context.GetAvailability(rentalRecord.RecordID, _config.Value.MinServiceDelayBetweenRentsMinutes);
 
             ViewData["WorkingHoursStart"] = _config.Value.WorkingHoursStart;
             ViewData["WorkingHoursEnd"] = _config.Value.WorkingHoursEnd;
@@ -222,40 +157,9 @@ namespace Bikepark.Controllers
 
             return View("Control", rentalRecord);
         }
-        private Dictionary<int, List<ItemRecord>> GetAvailability( int? RecordID ) {
-
-            var availability = _context.ItemRecords.Where(renteditem =>
-                    renteditem.RecordID != RecordID && 
-                    ((renteditem.Status > Status.Draft && renteditem.Status < Status.Closed) ||
-                    (renteditem.Status > Status.Service && renteditem.Status < Status.Fixed)))
-                    .ToLookup(
-                            renteditem => renteditem.ItemID ?? -1,
-                            renteditem => new ItemRecord {
-                                Start = renteditem.Start ?? renteditem.Record.Start ?? DateTime.MaxValue,
-                                End = 
-                                    ((renteditem.Status==Status.Active || renteditem.Status == Status.OnService 
-                                    && (renteditem.End ?? renteditem.Record.End ?? DateTime.MinValue)<DateTime.Now)? 
-                                    DateTime.Now: 
-                                    (renteditem.End ?? renteditem.Record.End ?? DateTime.MinValue))
-                                    .AddMinutes(_config.Value.MinServiceDelayBetweenRentsMinutes) ,
-                                Status = renteditem.Status,
-                                ItemRecordID = renteditem.ItemRecordID
-                            }
-                        ).ToDictionary(x => x.Key, x => x.ToList());
-
-            return availability;
-        }
-
-        public bool Overlap(List<ItemRecord> periods, ItemRecord record2, int? itemRecordID) {
-            foreach ( var record1 in periods ){ 
-                if (RecordInfo.Overlap(record1, record2) && record1.ItemRecordID!=itemRecordID)
-                    return true;
-            }
-            return false;  
-        }
 
         public bool CheckAvailability(Record rentalRecord, Status Action, DateTime ActionTime) {
-            var availability = GetAvailability( rentalRecord.RecordID );
+            var availability = _context.GetAvailability( rentalRecord.RecordID, _config.Value.MinServiceDelayBetweenRentsMinutes ) ;
             var record = new ItemRecord {
                 Start = (rentalRecord.Status < Status.Active ? rentalRecord.Start : ActionTime) ?? DateTime.Now,
                 End = rentalRecord.End ?? DateTime.Now,
@@ -268,6 +172,15 @@ namespace Bikepark.Controllers
                 }
             }
             return true;            
+        }
+        public bool Overlap(List<ItemRecord> periods, ItemRecord record2, int? itemRecordID)
+        {
+            foreach (var record1 in periods)
+            {
+                if (RecordInfo.Overlap(record1, record2) && record1.ItemRecordID != itemRecordID)
+                    return true;
+            }
+            return false;
         }
 
         // POST: Rental/UpdateOrCreate
@@ -418,64 +331,80 @@ namespace Bikepark.Controllers
 
         }
 
-        public async Task<IActionResult> ExportAllRental() {
-            var fileDownloadName = String.Format("FileName.xlsx");
+        public async Task<FileResult> ExportAllRental( ) {            
             const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
-            // Pass your ef data to method
-            ExcelPackage package = GenerateExcelFile(await _context.ItemRecords.ToListAsync());
-
-            return RedirectToAction(nameof(RentalIndexAll));
-
+            var fileName = Path.Combine("/Temp/" , Guid.NewGuid().ToString() , ".xls" );
+            //window.open(sitePath + "Controller/DownloadFile?fileid=" + id, '_blank');
+            ExportToExcel(await _context.ItemRecords.ToListAsync(), fileName);
+            return File(fileName, contentType, "");
         }
 
         public void ExportToExcel( IEnumerable<ItemRecord> datasource, string filename )
         {
             try
             {
-                if (tbl == null || tbl.Columns.Count == 0)
-                    throw new Exception("ExportToExcel: Null or empty input table!\n");
 
                 // load excel, and create a new workbook
                 var excelApp = new Excel.Application();
                 var workbook = excelApp.Workbooks.Add();
 
                 // single worksheet
-                Excel._Worksheet workSheet = (Excel._Worksheet)excelApp.ActiveSheet;
+                Excel._Worksheet ws = (Excel._Worksheet)excelApp.ActiveSheet;
 
                 // column headings
-                for (var i = 0; i < tbl.Columns.Count; i++)
-                {
-                    workSheet.Cells[1, i + 1] = tbl.Columns[i].ColumnName;
-                }
+                ws.Cells[1, 1] = "ID";
+                ws.Cells[1, 2] = "Категория";
+                ws.Cells[1, 3] = "Модель";
+                ws.Cells[1, 4] = "Номер";
+                ws.Cells[1, 5] = "Время выдачи";
+                ws.Cells[1, 6] = "Время возврата";
+                ws.Cells[1, 7] = "Статус";
+                ws.Cells[1, 8] = "Тариф";
+                ws.Cells[1, 9] = "Стоимость по тарифу";
+                ws.Cells[1, 10] = "Тарификация";
+                ws.Cells[1, 11] = "Номер заказа";
+                ws.Cells[1, 12] = "Клиент";
+                ws.Cells[1, 13] = "Телефон клиента";
 
                 // rows
-                for (var i = 0; i < tbl.Rows.Count; i++)
+                for (int i = 0; i < datasource.Count(); i++)
                 {
-                    // to do: format datetime values before printing
-                    for (var j = 0; j < tbl.Columns.Count; j++)
+                    ws.Cells[i + 2, 1] = datasource.ElementAt(i).ItemRecordID;
+                    if (datasource.ElementAt(i).Item != null)
                     {
-                        workSheet.Cells[i + 2, j + 1] = tbl.Rows[i][j];
+                        if (datasource.ElementAt(i).Item.ItemType != null)
+                        {
+                            ws.Cells[i + 2, 2] = datasource.ElementAt(i).Item.ItemType.ItemCategory.ItemCategoryName;
+                            ws.Cells[i + 2, 3] = datasource.ElementAt(i).Item.ItemType.ItemTypeName;
+                        }
+                        ws.Cells[i + 2, 4] = datasource.ElementAt(i).Item.ItemNumber;
+                    }
+                    ws.Cells[i + 2, 5] = datasource.ElementAt(i).Start;
+                    ws.Cells[i + 2, 6] = datasource.ElementAt(i).End;
+                    ws.Cells[i + 2, 7] = datasource.ElementAt(i).Status;
+                    if (datasource.ElementAt(i).Pricing != null)
+                    {
+                        ws.Cells[i + 2, 8] = datasource.ElementAt(i).Pricing.PricingName;
+                        ws.Cells[i + 2, 9] = datasource.ElementAt(i).Pricing.Price;
+                        ws.Cells[i + 2, 10] = datasource.ElementAt(i).Pricing.PricingType;
+                    }
+                    if (datasource.ElementAt(i).Record != null)
+                    {
+                        ws.Cells[i + 2, 11] = datasource.ElementAt(i).RecordID;
+                        ws.Cells[i + 2, 12] = datasource.ElementAt(i).Record.Customer.CustomerFullName;
+                        ws.Cells[i + 2, 13] = datasource.ElementAt(i).Record.Customer.CustomerContactNumber;
                     }
                 }
 
                 try
                 {
-                    var saveFileDialog = new SaveFileDialog();
-                    saveFileDialog.FileName = "StokBilgisi";
-                    saveFileDialog.DefaultExt = ".xlsx";
-                    System.Windows.
-                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        workbook.SaveAs(saveFileDialog.FileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                    }
+                    workbook.SaveAs(filename, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
                     excelApp.Quit();
                     Console.WriteLine("Excel file saved!");
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("ExportToExcel: Excel file could not be saved! Check filepath.\n"
-                    + ex.Message);
+                    throw new Exception("ExportToExcel: Excel file could not be saved! Check filepath.\n" + ex.Message);
                 }
 
             }
@@ -483,83 +412,6 @@ namespace Bikepark.Controllers
             {
                 throw new Exception("ExportToExcel: \n" + ex.Message);
             }
-        }
-
-        private static ExcelPackage GenerateExcelFile(IEnumerable<ItemRecord> datasource)
-        {
-
-            ExcelPackage pck = new ExcelPackage();
-
-            //Create the worksheet 
-            ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Log");
-
-            // Sets Headers
-            ws.Cells[1, 1].Value = "ID";
-            ws.Cells[1, 2].Value = "Категория";
-            ws.Cells[1, 3].Value = "Модель";
-            ws.Cells[1, 4].Value = "Номер";
-            ws.Cells[1, 5].Value = "Время выдачи";
-            ws.Cells[1, 6].Value = "Время возврата";
-            ws.Cells[1, 7].Value = "Статус";
-            ws.Cells[1, 8].Value = "Тариф";
-            ws.Cells[1, 9].Value = "Стоимость по тарифу";
-            ws.Cells[1, 10].Value = "Тарификация";
-            ws.Cells[1, 11].Value = "Номер заказа";
-            ws.Cells[1, 12].Value = "Клиент";
-            ws.Cells[1, 13].Value = "Телефон клиента";
-
-            // Inserts Data
-            for (int i = 0; i < datasource.Count(); i++)
-            {
-                ws.Cells[i + 2, 1].Value = datasource.ElementAt(i).ItemRecordID;
-                if (datasource.ElementAt(i).Item != null)
-                {
-                    if (datasource.ElementAt(i).Item.ItemType != null)
-                    {
-                        ws.Cells[i + 2, 2].Value = datasource.ElementAt(i).Item.ItemType.ItemCategory.ItemCategoryName;
-                        ws.Cells[i + 2, 3].Value = datasource.ElementAt(i).Item.ItemType.ItemTypeName;
-                    }
-                    ws.Cells[i + 2, 4].Value = datasource.ElementAt(i).Item.ItemNumber;
-                }
-                ws.Cells[i + 2, 5].Value = datasource.ElementAt(i).Start;
-                ws.Cells[i + 2, 6].Value = datasource.ElementAt(i).End;
-                ws.Cells[i + 2, 7].Value = datasource.ElementAt(i).Status;
-                if (datasource.ElementAt(i).Pricing != null)
-                {
-                    ws.Cells[i + 2, 8].Value = datasource.ElementAt(i).Pricing.PricingName;
-                    ws.Cells[i + 2, 9].Value = datasource.ElementAt(i).Pricing.Price;
-                    ws.Cells[i + 2, 10].Value = datasource.ElementAt(i).Pricing.PricingType;
-                }
-                if (datasource.ElementAt(i).Record != null)
-                {
-                    ws.Cells[i + 2, 11].Value = datasource.ElementAt(i).RecordID;
-                    ws.Cells[i + 2, 12].Value = datasource.ElementAt(i).Record.Customer.CustomerFullName;
-                    ws.Cells[i + 2, 13].Value = datasource.ElementAt(i).Record.Customer.CustomerContactNumber;
-                }
-            }
-
-            // Format Header of Table
-            using (ExcelRange rng = ws.Cells["A1:C1"])
-            {
-                rng.Style.Font.Bold = true;
-                rng.Style.Fill.PatternType = ExcelFillStyle.Solid; //Set Pattern for the background to Solid 
-                rng.Style.Fill.BackgroundColor.SetColor(Color.Gold); //Set color to DarkGray 
-                rng.Style.Font.Color.SetColor(Color.Black);
-            }
-            return pck;
-        }
-
-        private async Task<IActionResult> ControlService(IEnumerable<ItemRecord> itemRecords)
-        {
-            ViewData["Pricings"] =  _context.Pricings;
-            ViewData["ArchivalPricings"] = await _context.Pricings.IgnoreQueryFilters().ToListAsync();
-            ViewData["Availability"] = GetAvailability(null);
-            return View("ControlService", itemRecords);
-        }
-
-        private async Task<IActionResult> Service(ItemRecord itemRecord)
-        {
-            return await ControlService( new List<ItemRecord>() { itemRecord });
         }
 
         // GET: Rental/ControlService/5
@@ -574,29 +426,9 @@ namespace Bikepark.Controllers
             {
                 return NotFound();
             }
+
             ViewData["RecordID"] = id;
-            return await ControlService(itemRecords);
-        }
-
-        // GET: Rental/ControlItemService/5
-        public async Task<IActionResult> ControlItemService(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            ItemRecord irec = await _context.ItemRecords.FindAsync(id);
-
-            if (irec == null)
-            {
-                return NotFound();
-            }
-            if (irec.Status < Status.Service)
-            {
-                return NotFound();
-                //return RedirectToAction(nameof(ServiceIndex));
-            }
-            return await Service(irec);
+            return RedirectToAction( nameof(LogController.ControlService), nameof(LogController), new { itemRecords = itemRecords } );
         }
 
         // POST: Rental/SaveServiceRecords
@@ -604,73 +436,7 @@ namespace Bikepark.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveServiceRecords(IEnumerable<Bikepark.Models.ItemRecord> itemRecords)
-        {
-            if (ModelState.IsValid)
-            {
-                //if (!CheckServiceAvailability(itemRecords))
-                //{
-                //    ViewData["Error"] = "Некоторые позиции забронированы на указанное время ремонта";
-                //    return await ControlService(itemRecords);
-                //}
-
-
-                foreach (ItemRecord itemRecord in itemRecords) {
-                    if (itemRecord.ItemRecordID == null && itemRecord.ItemID != null)
-                    {
-                        _context.Add(itemRecord);
-                    }
-                    else
-                    {
-                        if (itemRecord.ItemID == null)
-                        {
-                            _context.Remove(itemRecord);
-                        }
-                        else
-                        {
-                            _context.Update(itemRecord);
-                        }
-                    }
-                    await _context.SaveChangesAsync();
-                }
-                return RedirectToAction(nameof(ServiceIndex));
-            }
-            else
-            {
-                return await ControlService(itemRecords);
-            }
-        }
-        // GET: Rental/ControlItemService/5
-        public async Task<IActionResult> ItemServiceFixed(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            ItemRecord irec = await _context.ItemRecords.FindAsync(id);
-
-            if (irec == null)
-            {
-                return NotFound();
-            }
-            if (irec.Status != Status.OnService)
-            {
-                return NotFound();
-                //return RedirectToAction(nameof(ServiceIndex));
-            }
-            irec.Status = Status.Fixed;
-            _context.Update(irec);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(ServiceIndex));
-        }
-        
-
-        // POST: Rental/SaveServiceRecords
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> PrepareUpdate(IEnumerable<Item> items)
+        public async Task<IActionResult> UpdatePrepare(IEnumerable<Item> items)
         {
             if (ModelState.IsValid)
             {
@@ -702,63 +468,30 @@ namespace Bikepark.Controllers
         }
 
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ControlServiceForNumber(Number number)
+        // GET: Rental/NumberGetBack
+        public IActionResult NumberGetBack()
         {
-
-            if (ModelState.IsValid)
-            {
-                Item item = await _context.Items.FirstOrDefaultAsync(item => item.ItemNumber == number.ItemNumber);
-                if (item == null)
-                {
-                    ViewData["Error"] = "номер не найден";
-                    return View("StartNewService", number);
-                }
-                return await Service(new ItemRecord { ItemID = item.ItemID, Item = item, Start = DateTime.Now, End = DateTime.Now.AddDays(1), Status = Status.Service });
-            }
-            return View("StartNewService", number);
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ControlForNumber(Number number) {
+        public async Task<IActionResult> Control(Number number) {
 
             if (ModelState.IsValid)
             {
                 var itemRec = await _context.ItemRecords.FirstOrDefaultAsync(irec => irec.Item.ItemNumber == number.ItemNumber && irec.Status == Status.Active);
                 if (itemRec == null || itemRec.Record==null) {
                     ViewData["Error"] = "запись не найдена";
-                    return View("GetBackNumber", number);
+                    return View("NumberGetBack", number);
                 }
                 
                 return RedirectToAction(nameof(Control), new { id = itemRec.Record.RecordID });
             }
-            return View("GetBackNumber", number);
+            return View("NumberGetBack", number);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Cancel(Record rentalRecord)
-        {
-            if (ModelState.IsValid && rentalRecord.Status == Status.Scheduled)
-            {
-                if ((rentalRecord.RecordID ?? 0) <= 0)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-                return View(rentalRecord);
-            }
-            if ((rentalRecord.RecordID ?? 0) <= 0)
-            {
-                return await Control(rentalRecord);
-            }
-            else
-            {
-                return RedirectToAction(nameof(Control), new { id = rentalRecord.RecordID });
-            }
-        }
-
+        // GET: Rental/Cancel/5
         [HttpGet]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Cancel(int? id)
@@ -775,8 +508,8 @@ namespace Bikepark.Controllers
             return View(rentalRecord);
         }
 
-        // POST: Rental/CancelConfirm/5
-        [HttpPost]
+        // POST: Rental/Cancel/5
+        [HttpPost, ActionName("Cancel")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CancelConfirm(int id)
         {
@@ -796,6 +529,8 @@ namespace Bikepark.Controllers
         }
 
         // GET: Rental/Delete/5
+        [HttpGet]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -803,19 +538,6 @@ namespace Bikepark.Controllers
                 return NotFound();
             }
             var rentalRecord = await _context.Records.FirstOrDefaultAsync(m => m.RecordID == id);
-            if (rentalRecord == null)
-            {
-                return NotFound();
-            }
-            return View(rentalRecord);
-        }
-        public async Task<IActionResult> DeleteItemRecord(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var rentalRecord = await _context.ItemRecords.FirstOrDefaultAsync(m => m.ItemRecordID == id);
             if (rentalRecord == null)
             {
                 return NotFound();
@@ -837,46 +559,10 @@ namespace Bikepark.Controllers
         }
 
 
-        // POST: Rental/Delete/5
-        [HttpPost, ActionName("DeleteItemRecord")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteItemRecordConfirmed(int id)
-        {
-            var rentalRecord = await _context.ItemRecords.FindAsync(id);
-            _context.ItemRecords.Remove(rentalRecord);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(ItemRecordsIndex));
-        }
-
         private bool RentalRecordExists(int id)
         {
             return _context.Records.Any(e => e.RecordID == id);
-        }
-
-        // GET: Rental/ItemDetails/5
-        public async Task<IActionResult> ItemRentalDetails(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var item = await _context.Items.IgnoreQueryFilters()
-                .Include(i => i.ItemType)
-                .FirstOrDefaultAsync(m => m.ItemID == id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            ViewData["ItemRecs"] = await _context.ItemRecords
-                .Where(r => r.Status != Status.Draft && r.Status != Status.Closed && r.Status != Status.Fixed )
-                .Where(r => r.ItemID == id)
-                .Include(r => r.Record)
-                .OrderBy(r => r.Status)
-                .ToListAsync();
-            return View(item);
-        }
+        } 
 
         public async Task<PartialViewResult> AddRentalItemRecord(int ItemID, DateTime Start, DateTime End)
         {
