@@ -8,7 +8,7 @@ namespace Bikepark.Models
         public int? ItemRecordID { get; set; }
         public int? RecordID { get; set; }
 
-        [Display(Name = "Запись о прокате")]
+        [Display(Name = "Заказ")]
         public virtual Record? Record { get; set; }
         public int? ItemID { get; set; }
         [Display(Name = "Наименование")]

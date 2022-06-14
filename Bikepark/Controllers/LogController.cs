@@ -19,11 +19,22 @@ namespace Bikepark.Controllers
             _context = context;
         }
 
+        private IActionResult Log(IEnumerable<ItemRecord> log, string logName, bool rental = true, bool service = false, bool actual = false, DateTime? from = null, DateTime? to = null)
+        {
+            ViewData["LogName"] = logName;
+            ViewData["Service"] = service;
+            ViewData["Rental"] = rental;
+            ViewData["Actual"] = actual;
+            ViewData["From"] = from;
+            ViewData["To"] = to;
+            return View("Index", log);
+        }
+
         // GET: Log
         public async Task<IActionResult> Index()
         {
-            var bikeparkContext = _context.ItemRecords.OrderByDescending(record => record.End);//.Include(i => i.Item).Include(i => i.Pricing).Include(i => i.Record).Include(i => i.User);
-            return View(await bikeparkContext.ToListAsync());
+            var log = await _context.ItemRecords.OrderByDescending(irecord => irecord.End).ToListAsync();//.Include(i => i.Item).Include(i => i.Pricing).Include(i => i.Record).Include(i => i.User);
+            return Log( log, "Все записи" );
         }
 
         // GET: Log/Service
@@ -31,8 +42,8 @@ namespace Bikepark.Controllers
         {
             var earlyStatus = Actual ? Status.OnService : Status.Service;
             var lateStatus  = Actual ? Status.OnService : Status.Fixed;
-            var log = await _context.ItemRecords.Where(record => record.Status >= earlyStatus && record.Status <= lateStatus).OrderByDescending(record => record.End).ToListAsync();
-            return View("Index", log);
+            var log = await _context.ItemRecords.Where(irecord => irecord.Status >= earlyStatus && irecord.Status <= lateStatus).OrderByDescending(irecord => irecord.End).ToListAsync();
+            return Log(log, "Записи о ремонте", false, true, Actual, from, to);
         }
 
         // GET: Log/Actual
@@ -40,8 +51,8 @@ namespace Bikepark.Controllers
         {
             var earlyStatus = Actual ? Status.Scheduled : Status.Draft;
             var lateStatus  = Actual ? Status.Active : Status.Closed;
-            var log = await _context.ItemRecords.Where(record => record.Status >= earlyStatus && record.Status <= lateStatus).OrderByDescending(record => record.End).ToListAsync();
-            return View("Index", log);
+            var log = await _context.ItemRecords.Where(irecord => irecord.Status >= earlyStatus && irecord.Status <= lateStatus).OrderByDescending(irecord => irecord.End).ToListAsync();
+            return Log(log, "Записи о прокате", true, false, Actual, from, to);
         }
 
         // GET: Log/OfType/5
@@ -51,8 +62,14 @@ namespace Bikepark.Controllers
             {
                 return NotFound();
             }
-            //ARCHIVE
-            return View("Index", await _context.ItemRecords.Where(irecord => irecord.Item.ItemTypeID == id).OrderByDescending(record => record.End).ToListAsync());
+            var type = await _context.ItemTypes.IgnoreQueryFilters().FirstOrDefaultAsync(type => type.ItemTypeID == id);
+            if (type == null)
+            {
+                return NotFound();
+            }
+            var name = type.ItemTypeName;
+            var log = await _context.ItemRecords.Where(irecord => irecord.Item.ItemTypeID == id).OrderByDescending(irecord => irecord.End).ToListAsync();
+            return Log(log, "Записи по модели " + name +" (#"+id+")", false, false );
         }
 
         // GET: Log/OfItem/5
@@ -62,8 +79,14 @@ namespace Bikepark.Controllers
             {
                 return NotFound();
             }
-            //ARCHIVE
-            return View("Index", await _context.ItemRecords.Where(irecord => irecord.ItemID == id).OrderByDescending(record => record.End).ToListAsync());
+            var item = await _context.Items.IgnoreQueryFilters().FirstOrDefaultAsync(item => item.ItemID == id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            var number = item.ItemNumber;
+            var log = await _context.ItemRecords.Where(irecord => irecord.ItemID == id).OrderByDescending(record => record.End).ToListAsync();
+            return Log(log, "Записи по номеру #" + number, false, false );
         }
 
         // GET: Log/WithPricing/5
@@ -73,8 +96,14 @@ namespace Bikepark.Controllers
             {
                 return NotFound();
             }
-            //ARCHIVE
-            return View("Index", await _context.ItemRecords.Where(irecord => irecord.PricingID == id).OrderByDescending(record => record.End).ToListAsync());
+            var pricing = await _context.Pricings.IgnoreQueryFilters().FirstOrDefaultAsync(pricing => pricing.PricingID == id);
+            if (pricing == null)
+            {
+                return NotFound();
+            }
+            var name = pricing.PricingName;
+            var log = await _context.ItemRecords.Where(irecord => irecord.PricingID == id).OrderByDescending(record => record.End).ToListAsync();
+            return Log(log, "Записи по тарифу #" + name, false, false );
         }
 
 

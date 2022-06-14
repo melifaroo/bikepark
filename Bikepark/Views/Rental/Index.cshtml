@@ -1,27 +1,29 @@
 ﻿@model IEnumerable<Bikepark.Models.Record>
-
 @{
     Layout = "_MainLayout";
-    ViewData["Title"] = "Журнал проката";
-    ViewData["menu"] = "log";
+    ViewData["Title"] = "Заказы " + ViewBag.LogName;
+    var Number = ViewBag.Number;
+    var Error = ViewBag.Error;    
+    var Active = ViewBag.Active;
+    var Scheduled = ViewBag.Scheduled;
+    var From    = ViewBag.From;
+    var To      = ViewBag.To;
 }
-
-
-<h1>Журнал</h1>
+<h1>Заказы</h1>
+<h5>@ViewBag.LogName</h5>
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
     <ul class="nav col-md-6 justify-content-start">
         <li class="nav-item">
-            <a class="nav-link" asp-action="Create">Новый прокат</a>
+            <a class="nav-link" asp-action="Create">Новый заказ</a>
         </li>  
     </ul>
-    <ul class="nav  col-md-6 justify-content-end">   
+    <ul class="nav  col-md-6 justify-content-end"> 
         <li class="nav-item">
-            <a class="nav-link" asp-action="RentalIndexAll">Журнал по номерам</a>
-        </li>    
+            <a class="nav-link" asp-controller="Log" asp-action="Rental" asp-route-actual="@(Active || Scheduled)" asp-route-from="@(From)" asp-route-to="@(To)">Журнал по номерам</a>
+        </li> 
     </ul>  
 </div>
 <partial name="_Log"  /> 
-
 
 @section Scripts {          
     <link href="~/css/rent-main.css" rel="stylesheet" asp-append-version="true" /> 
