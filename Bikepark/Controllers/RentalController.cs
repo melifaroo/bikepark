@@ -80,34 +80,42 @@ namespace Bikepark.Controllers
             });
         }
 
+        private IActionResult Log(IEnumerable<Record> log, string logName, bool active = false, bool schedule = false, DateTime? from = null, DateTime? to = null)
+        {
+            ViewData["LogName"] = logName;
+            ViewData["Scheduled"] = schedule;
+            ViewData["Active"] = active;
+            ViewData["From"] = from;
+            ViewData["To"] = to;
+            return View("Index", log);
+        }
+
         // GET: Rental
         public async Task<IActionResult> Index()
         {
-            ViewBag.Actual = false;
-            return View(await _context.Records.OrderByDescending(record => record.Start).ToListAsync());
+            var log = await _context.Records.OrderByDescending(record => record.Start).ToListAsync();
+            return Log(log, "Все");
         }
 
         // GET: Rental/Actual
         public async Task<IActionResult> Actual()
         {
-            ViewBag.Actual = true;
-            return View("Index", await _context.Records.Where(r => r.Status == Status.Active || r.Status == Status.Scheduled).OrderBy(record => record.End).ToListAsync());
+            var log = await _context.Records.Where(r => r.Status == Status.Active || r.Status == Status.Scheduled).OrderBy(record => record.End).ToListAsync();
+            return Log(log, "Актуальные", true, true);
         }
 
         // GET: Rental/Active
         public async Task<IActionResult> Active()
         {
-            ViewBag.Actual = true;
-            ViewBag.Status = Status.Active;
-            return View("Index", await _context.Records.Where(r => r.Status == Status.Active).OrderBy(record => record.End).ToListAsync());
+            var log = await _context.Records.Where(r => r.Status == Status.Active).OrderBy(record => record.End).ToListAsync();
+            return Log(log, "Выданные", true, false);
         }
 
         // GET: Rental/Scheduled
         public async Task<IActionResult> Scheduled()
         {
-            ViewBag.Actual = true;
-            ViewBag.Status = Status.Scheduled;
-            return View("Index", await _context.Records.Where(r => r.Status == Status.Scheduled).OrderBy(record => record.Start).ToListAsync());
+            var log = await _context.Records.Where(r => r.Status == Status.Scheduled).OrderBy(record => record.Start).ToListAsync();
+            return Log(log, "Забронированные", false, true);
         }
 
         // GET: Rental/Create
@@ -468,8 +476,8 @@ namespace Bikepark.Controllers
         }
 
 
-        // GET: Rental/NumberGetBack
-        public IActionResult NumberGetBack()
+        // GET: Rental/GetBack
+        public IActionResult GetBack()
         {
             return View();
         }
@@ -483,12 +491,12 @@ namespace Bikepark.Controllers
                 var itemRec = await _context.ItemRecords.FirstOrDefaultAsync(irec => irec.Item.ItemNumber == number.ItemNumber && irec.Status == Status.Active);
                 if (itemRec == null || itemRec.Record==null) {
                     ViewData["Error"] = "запись не найдена";
-                    return View("NumberGetBack", number);
+                    return View("GetBack", number);
                 }
                 
                 return RedirectToAction(nameof(Control), new { id = itemRec.Record.RecordID });
             }
-            return View("NumberGetBack", number);
+            return View("GetBack", number);
         }
 
         // GET: Rental/Cancel/5
