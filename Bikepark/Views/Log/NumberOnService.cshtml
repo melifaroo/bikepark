@@ -1,0 +1,36 @@
+﻿@model Bikepark.Models.Number
+
+@{
+    Layout = "_MainLayout";
+    ViewData["Title"] = "Назначить ремонт по номеру";
+    var Error = ViewBag.Error;
+}
+
+<h1>Отремонтировать</h1>
+
+<h3>Введите номер велосипеда</h3>
+<div>
+    <hr />
+    <form asp-action="ControlServiceForNumber" id="item-form">        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="ItemNumber" class="control-label"></label>
+                    <input asp-for="ItemNumber" class="form-control" required/>
+                    <span asp-validation-for="ItemNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-3">
+                    <button type="submit" class="btn btn-primary col-md-12">Назначить ремонт</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {          
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/items.js"></script> 
+    <script>
+        var error = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Error));  
+    </script>
+}
