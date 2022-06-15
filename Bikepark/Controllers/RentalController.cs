@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +11,6 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
-using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Bikepark.Controllers
 {
@@ -23,6 +21,7 @@ namespace Bikepark.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly BikeparkContext _context;
         private readonly IOptions<BikeparkConfig> _config;
+        private readonly Status[] AllStatuses = Enum.GetValues(typeof(Status)).Cast<Status>().ToArray();
 
         private static readonly Regex sWhitespace = new Regex(@"\s+");
         public static string ReplaceWhitespace(string input, string replacement)
@@ -80,42 +79,47 @@ namespace Bikepark.Controllers
             });
         }
 
-        private IActionResult Log(IEnumerable<Record> log, string logName, bool active = false, bool schedule = false, DateTime? from = null, DateTime? to = null)
+        private IActionResult Log(IEnumerable<Record> log, string logName, Status[]? statuses = null, DateTime? from = null, DateTime? to = null)
         {
+            statuses = (statuses == null || statuses.Length == 0) ? AllStatuses : statuses;
             ViewData["LogName"] = logName;
-            ViewData["Scheduled"] = schedule;
-            ViewData["Active"] = active;
+            ViewData["Statuses"] = statuses;
             ViewData["From"] = from;
             ViewData["To"] = to;
             return View("Index", log);
         }
 
         // GET: Rental
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? statuses = null, DateTime? from = null, DateTime? to = null)
         {
-            var log = await _context.Records.OrderByDescending(record => record.Start).ToListAsync();
-            return Log(log, "Все");
+            statuses = (statuses == null || statuses.Length == 0) ? (string.Join(",", AllStatuses.Cast<int>())) : statuses;
+            var Statuses = statuses.Split(",").Select(Int32.Parse).Cast<Status>().ToArray();
+            var name = "Заказы" ;
+            var log = await _context.Records.Where(record => Statuses.Contains(record.Status)).Where( record => ( to==null || record.Start<=((DateTime)to).AddDays(1) ) && ( from==null || record.Start>=((DateTime)from) ) ).OrderByDescending(record => record.Start).ToListAsync();
+            DateTime? oldest = null ;
+            DateTime? newest = null;
+            if (log.Count > 0)
+            {
+                oldest = log.LastOrDefault()?.Start;
+                newest = log.FirstOrDefault()?.End;
+            }
+            return Log(log, name, Statuses, from ?? oldest, to ?? newest);
         }
 
-        // GET: Rental/Actual
-        public async Task<IActionResult> Actual()
+        // POST: Rental
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Filter( [FromForm] DateTime From, DateTime To, bool Active, bool Scheduled, bool Closed, bool Draft)
         {
-            var log = await _context.Records.Where(r => r.Status == Status.Active || r.Status == Status.Scheduled).OrderBy(record => record.End).ToListAsync();
-            return Log(log, "Актуальные", true, true);
-        }
+            var statuses = new List<Status>();
+            if (Active) statuses.Add(Status.Active); 
+            if (Scheduled) statuses.Add(Status.Scheduled);
+            if (Closed) statuses.Add(Status.Closed);
+            if (Draft) statuses.Add(Status.Draft);
 
-        // GET: Rental/Active
-        public async Task<IActionResult> Active()
-        {
-            var log = await _context.Records.Where(r => r.Status == Status.Active).OrderBy(record => record.End).ToListAsync();
-            return Log(log, "Выданные", true, false);
-        }
-
-        // GET: Rental/Scheduled
-        public async Task<IActionResult> Scheduled()
-        {
-            var log = await _context.Records.Where(r => r.Status == Status.Scheduled).OrderBy(record => record.Start).ToListAsync();
-            return Log(log, "Забронированные", false, true);
+            return RedirectToAction(nameof(Index), new { statuses = string.Join(",", statuses.Cast<int>()), from = From, to = To });
         }
 
         // GET: Rental/Create
@@ -323,7 +327,7 @@ namespace Bikepark.Controllers
                     }
 
                     return (toFix.Count > 0) ?
-                        RedirectToAction(nameof(ControlService), new { id = rentalRecord.RecordID }) :
+                        RedirectToAction(nameof(LogController.ControlRecordService), "Log", new { id = rentalRecord.RecordID }) :
                         RedirectToAction(nameof(Control), new { id = rentalRecord.RecordID });
                 }
             }
@@ -337,106 +341,6 @@ namespace Bikepark.Controllers
                 return RedirectToAction(nameof(Control), new { id = rentalRecord.RecordID });
             }
 
-        }
-
-        public async Task<FileResult> ExportAllRental( ) {            
-            const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            var fileName = Path.Combine("/Temp/" , Guid.NewGuid().ToString() , ".xls" );
-            //window.open(sitePath + "Controller/DownloadFile?fileid=" + id, '_blank');
-            ExportToExcel(await _context.ItemRecords.ToListAsync(), fileName);
-            return File(fileName, contentType, "");
-        }
-
-        public void ExportToExcel( IEnumerable<ItemRecord> datasource, string filename )
-        {
-            try
-            {
-
-                // load excel, and create a new workbook
-                var excelApp = new Excel.Application();
-                var workbook = excelApp.Workbooks.Add();
-
-                // single worksheet
-                Excel._Worksheet ws = (Excel._Worksheet)excelApp.ActiveSheet;
-
-                // column headings
-                ws.Cells[1, 1] = "ID";
-                ws.Cells[1, 2] = "Категория";
-                ws.Cells[1, 3] = "Модель";
-                ws.Cells[1, 4] = "Номер";
-                ws.Cells[1, 5] = "Время выдачи";
-                ws.Cells[1, 6] = "Время возврата";
-                ws.Cells[1, 7] = "Статус";
-                ws.Cells[1, 8] = "Тариф";
-                ws.Cells[1, 9] = "Стоимость по тарифу";
-                ws.Cells[1, 10] = "Тарификация";
-                ws.Cells[1, 11] = "Номер заказа";
-                ws.Cells[1, 12] = "Клиент";
-                ws.Cells[1, 13] = "Телефон клиента";
-
-                // rows
-                for (int i = 0; i < datasource.Count(); i++)
-                {
-                    ws.Cells[i + 2, 1] = datasource.ElementAt(i).ItemRecordID;
-                    if (datasource.ElementAt(i).Item != null)
-                    {
-                        if (datasource.ElementAt(i).Item.ItemType != null)
-                        {
-                            ws.Cells[i + 2, 2] = datasource.ElementAt(i).Item.ItemType.ItemCategory.ItemCategoryName;
-                            ws.Cells[i + 2, 3] = datasource.ElementAt(i).Item.ItemType.ItemTypeName;
-                        }
-                        ws.Cells[i + 2, 4] = datasource.ElementAt(i).Item.ItemNumber;
-                    }
-                    ws.Cells[i + 2, 5] = datasource.ElementAt(i).Start;
-                    ws.Cells[i + 2, 6] = datasource.ElementAt(i).End;
-                    ws.Cells[i + 2, 7] = datasource.ElementAt(i).Status;
-                    if (datasource.ElementAt(i).Pricing != null)
-                    {
-                        ws.Cells[i + 2, 8] = datasource.ElementAt(i).Pricing.PricingName;
-                        ws.Cells[i + 2, 9] = datasource.ElementAt(i).Pricing.Price;
-                        ws.Cells[i + 2, 10] = datasource.ElementAt(i).Pricing.PricingType;
-                    }
-                    if (datasource.ElementAt(i).Record != null)
-                    {
-                        ws.Cells[i + 2, 11] = datasource.ElementAt(i).RecordID;
-                        ws.Cells[i + 2, 12] = datasource.ElementAt(i).Record.Customer.CustomerFullName;
-                        ws.Cells[i + 2, 13] = datasource.ElementAt(i).Record.Customer.CustomerContactNumber;
-                    }
-                }
-
-                try
-                {
-                    workbook.SaveAs(filename, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                    excelApp.Quit();
-                    Console.WriteLine("Excel file saved!");
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("ExportToExcel: Excel file could not be saved! Check filepath.\n" + ex.Message);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("ExportToExcel: \n" + ex.Message);
-            }
-        }
-
-        // GET: Rental/ControlService/5
-        public async Task<IActionResult> ControlService(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            List<ItemRecord> itemRecords = await _context.ItemRecords.Where(ir => ir.RecordID == id && ir.Status > Status.Closed).ToListAsync();
-            if (itemRecords == null || itemRecords.Count == 0)
-            {
-                return NotFound();
-            }
-
-            ViewData["RecordID"] = id;
-            return RedirectToAction( nameof(LogController.ControlService), nameof(LogController), new { itemRecords = itemRecords } );
         }
 
         // POST: Rental/SaveServiceRecords
@@ -579,13 +483,6 @@ namespace Bikepark.Controllers
             List<Pricing> actualprices = await PricingFilter.ActualPricing(_context.Pricings, Item.ItemType.PricingCategoryID, Start, End, isHoliday);
             ViewBag.ActualPrices = actualprices;
             return PartialView("_ItemRecordRow_rental", new ItemRecord { ItemID = ItemID, Item = Item, Start = Start, End = End });
-        }
-
-        public async Task<PartialViewResult> AddServiceItemRecord(int ItemID, DateTime Start, DateTime End, int? RecordID)
-        {
-            var Item = await _context.Items.FindAsync(ItemID);
-            ViewData["Pricings"] = _context.Pricings;
-            return PartialView("_ItemRecordRow_service", new ItemRecord { ItemID = ItemID, Item = Item, Start = Start, End = End, Status = Status.Service, RecordID = RecordID });
         }
 
         public async Task<PartialViewResult> AddPreparedItemRecord(int ItemID)
