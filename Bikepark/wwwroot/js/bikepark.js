@@ -1,13 +1,13 @@
 ﻿
-$(document).ready(function () {
-    //$(".navbar-nav .nav-item.active").removeClass("active");
-    //if(menu>"")
-    //    $(".navbar-nav .nav-item." + menu).addClass("active");
+$(document).ready(async function () {
 
     var time = new Date(),
         secondsRemaining = (60 - time.getSeconds()) * 1000;
 
-    maintimer();
+    await maintimer();
+
+    $(".nav-alert").show();
+
     setTimeout(async function () {
         maintimer();
         await setInterval( await maintimer(), 60000 );

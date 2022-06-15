@@ -19,44 +19,42 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
-                    <ul class="nav navbar-nav col-9">       
-                        @if ( User.Identity.IsAuthenticated ){
-                           <li class="nav-item col-md-2 ">    
-                                <a class="nav-link btn btn-success col-12 text-truncate" style="color:white;" asp-area="" asp-controller="Rental" asp-action="Create">Выдать</a>    
+                    @if ( User.Identity.IsAuthenticated ){
+                    <ul class="nav navbar-nav col-9"  >       
+
+                           <li class="nav-item col-md-2 px-2">    
+                                <a class="nav-link btn btn-outline-success col-12 text-truncate"  asp-area="" asp-controller="Rental" asp-action="Create">Выдать</a>    
                             </li>
-                            <li class="nav-item col-md-2">    
-                                <a class="nav-link btn btn-primary col-12 text-truncate" style="color:white;" asp-area="" asp-controller="Rental" asp-action="GetBack">Принять</a>    
-                            </li>@* *@
+                            <li class="nav-item col-md-2 px-2">    
+                                <a class="nav-link btn btn-outline-primary col-12 text-truncate"  asp-area="" asp-controller="Rental" asp-action="GetBack">Принять</a>    
+                            </li>
                             <li class="nav-item col-md-2 px-2">     
                                 <a class="nav-link btn btn-light col-12 text-truncate" asp-area="" asp-controller="Rental" asp-action="Index">Журнал    
                                 </a>         
                             </li>
-                            <li class="nav-item col-md-2 px-2">
-                                <a class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="Active"   id="active-link" style="text-overflow: ellipsis;  white-space:nowrap;">Прокат
+                            <li class="nav-item col-md-2 px-2 nav-alert" style="display: none;">
+                                <a type="button" class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="Index" asp-route-statuses="@((int) Status.Active )" id="active-link" style="text-overflow: ellipsis;  white-space:nowrap;">Прокат
                                   (<i id="active-record-count">0</i>)                                  
                                   <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-warning"  id="active-warning"></span>
                                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"  id="active-overdue"></span>
                                 </a>     
                             </li> 
-                            <li class="nav-item col-md-2 px-2">
-                                <a type="button" class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="Scheduled"  id="scheduled-link" style="text-overflow: ellipsis;  white-space:nowrap;">Бронь
+                            <li class="nav-item col-md-2 px-2 nav-alert" style="display: none;">
+                                <a type="button" class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="Index" asp-route-statuses="@((int)Status.Scheduled)"  id="scheduled-link" style="text-overflow: ellipsis;  white-space:nowrap;">Бронь
                                     (<i id="scheduled-record-count">0</i>)
                                   <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-warning"  id="scheduled-warning"></span>
                                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"  id="scheduled-overdue"></span>
                                 </a>     
                             </li> 
-                            <li class="nav-item col-md-2 px-2">     
-                                <a type="button" class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Log" asp-action="Service" asp-route-Actual="true" id="service-lin" style="text-overflow: ellipsis;  white-space:nowrap;">Ремонт    
+                            <li class="nav-item col-md-2 px-2 nav-alert" style="display: none;">     
+                                <a type="button" class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Log" asp-action="Index" asp-route-statuses="@((int)Status.Service),@((int)Status.OnService)" id="service-link" style="text-overflow: ellipsis;  white-space:nowrap;">Ремонт    
                                    (<i id="service-record-count">0</i>)
                                   <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-warning"  id="service-warning"></span>
                                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"  id="service-needaction"></span> 
                                 </a>         
                             </li>
-                        }  
                     </ul>
                     <ul  class="nav navbar-nav navbar-right ">
-                        @if (User.Identity.IsAuthenticated)
-                        {
                             @if (User.IsInRole(BikeparkConfig.ManagersRole))
                             {
                                 <li class="nav-item">      
@@ -69,8 +67,8 @@
                                     <a type="button"  class="nav-link btn btn-light col-12 text-truncate"  style="color:black;" asp-area="" asp-controller="Rental" asp-action="Main">Управление</a>        
                                 </li>
                             }
-                        }
-                    </ul>                      
+                    </ul>   
+                    }                   
                 </div>
             </div>
         </nav>

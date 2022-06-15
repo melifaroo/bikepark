@@ -54,7 +54,7 @@
                     <button type="submit" asp-action="Cancel" id="btn-cancel" class="btn btn-warning col-6 mx-0 text-truncate" formnovalidate="formnovalidate" style="display: inline;">
                         <i class="bi bi-calendar-minus"></i> Снять бронь (<i id="scheduled-count">0</i>)
                     </button>
-                    <button type="submit" asp-action="ControlService" asp-route-id="@Model?.RecordID" id="btn-service" class="btn btn-danger col-6 mx-0 text-truncate" formnovalidate="formnovalidate" style="display: inline;">
+                    <button type="submit" asp-controller="Log" asp-action="ControlRecordService" asp-route-id="@Model?.RecordID" id="btn-service" class="btn btn-danger col-6 mx-0 text-truncate" formnovalidate="formnovalidate" style="display: inline;">
                         <i class="bi bi-wrench-adjustable"></i> Ремонт (<i id="serviced-count">0</i>)
                     </button>
                 </div>
@@ -65,7 +65,7 @@
                         <input type="radio" class="btn-check chk-action" name="StatusAction" value="@Status.Active" id="chk-giveout" autocomplete="off" checked>
                         <label class="btn btn-check-label col-4 btn-outline-success text-truncate" for="chk-giveout">Выдача</label>
                         <input type="radio" class="btn-check chk-action" name="StatusAction" value="@Status.Draft" id="chk-draft" autocomplete="off">
-                        <label class="btn btn-check-label col-4 btn-outline-secondary text-truncate" for="chk-draft" >Черновик</label>
+                        <label class="btn btn-check-label col-4 btn-outline-secondary text-truncate" for="chk-draft" style="font-size: 10px">Черновик</label>
                     </div>
                 </div>
                 <div class="d-flex justify-content-end col-2">
