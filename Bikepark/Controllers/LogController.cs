@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bikepark.Data;
 using Bikepark.Models;
-using Excel = Microsoft.Office.Interop.Excel;
 using System.Text;
 
 namespace Bikepark.Controllers
@@ -568,89 +567,89 @@ namespace Bikepark.Controllers
             }
         }
 
-        public async Task<FileResult> ExportAllRental()
-        {
-            const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            var fileName = Path.Combine("/Temp/", Guid.NewGuid().ToString(), ".xls");
-            //window.open(sitePath + "Controller/DownloadFile?fileid=" + id, '_blank');
-            ExportToExcel(await _context.ItemRecords.ToListAsync(), fileName);
-            return File(fileName, contentType, "");
-        }
+        //public async Task<FileResult> ExportAllRental()
+        //{
+        //    const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        //    var fileName = Path.Combine("/Temp/", Guid.NewGuid().ToString(), ".xls");
+        //    //window.open(sitePath + "Controller/DownloadFile?fileid=" + id, '_blank');
+        //    ExportToExcel(await _context.ItemRecords.ToListAsync(), fileName);
+        //    return File(fileName, contentType, "");
+        //}
 
-        public void ExportToExcel(IEnumerable<ItemRecord> datasource, string filename)
-        {
-            try
-            {
+        //public void ExportToExcel(IEnumerable<ItemRecord> datasource, string filename)
+        //{
+        //    try
+        //    {
 
-                // load excel, and create a new workbook
-                var excelApp = new Excel.Application();
-                var workbook = excelApp.Workbooks.Add();
+        //        // load excel, and create a new workbook
+        //        var excelApp = new Excel.Application();
+        //        var workbook = excelApp.Workbooks.Add();
 
-                // single worksheet
-                Excel._Worksheet ws = (Excel._Worksheet)excelApp.ActiveSheet;
+        //        // single worksheet
+        //        Excel._Worksheet ws = (Excel._Worksheet)excelApp.ActiveSheet;
 
-                // column headings
-                ws.Cells[1, 1] = "ID";
-                ws.Cells[1, 2] = "Категория";
-                ws.Cells[1, 3] = "Модель";
-                ws.Cells[1, 4] = "Номер";
-                ws.Cells[1, 5] = "Время выдачи";
-                ws.Cells[1, 6] = "Время возврата";
-                ws.Cells[1, 7] = "Статус";
-                ws.Cells[1, 8] = "Тариф";
-                ws.Cells[1, 9] = "Стоимость по тарифу";
-                ws.Cells[1, 10] = "Тарификация";
-                ws.Cells[1, 11] = "Номер заказа";
-                ws.Cells[1, 12] = "Клиент";
-                ws.Cells[1, 13] = "Телефон клиента";
+        //        // column headings
+        //        ws.Cells[1, 1] = "ID";
+        //        ws.Cells[1, 2] = "Категория";
+        //        ws.Cells[1, 3] = "Модель";
+        //        ws.Cells[1, 4] = "Номер";
+        //        ws.Cells[1, 5] = "Время выдачи";
+        //        ws.Cells[1, 6] = "Время возврата";
+        //        ws.Cells[1, 7] = "Статус";
+        //        ws.Cells[1, 8] = "Тариф";
+        //        ws.Cells[1, 9] = "Стоимость по тарифу";
+        //        ws.Cells[1, 10] = "Тарификация";
+        //        ws.Cells[1, 11] = "Номер заказа";
+        //        ws.Cells[1, 12] = "Клиент";
+        //        ws.Cells[1, 13] = "Телефон клиента";
 
-                // rows
-                for (int i = 0; i < datasource.Count(); i++)
-                {
-                    ws.Cells[i + 2, 1] = datasource.ElementAt(i).ItemRecordID;
-                    if (datasource.ElementAt(i).Item != null)
-                    {
-                        if (datasource.ElementAt(i).Item.ItemType != null)
-                        {
-                            ws.Cells[i + 2, 2] = datasource.ElementAt(i).Item.ItemType.ItemCategory.ItemCategoryName;
-                            ws.Cells[i + 2, 3] = datasource.ElementAt(i).Item.ItemType.ItemTypeName;
-                        }
-                        ws.Cells[i + 2, 4] = datasource.ElementAt(i).Item.ItemNumber;
-                    }
-                    ws.Cells[i + 2, 5] = datasource.ElementAt(i).Start;
-                    ws.Cells[i + 2, 6] = datasource.ElementAt(i).End;
-                    ws.Cells[i + 2, 7] = datasource.ElementAt(i).Status;
-                    if (datasource.ElementAt(i).Pricing != null)
-                    {
-                        ws.Cells[i + 2, 8] = datasource.ElementAt(i).Pricing.PricingName;
-                        ws.Cells[i + 2, 9] = datasource.ElementAt(i).Pricing.Price;
-                        ws.Cells[i + 2, 10] = datasource.ElementAt(i).Pricing.PricingType;
-                    }
-                    if (datasource.ElementAt(i).Record != null)
-                    {
-                        ws.Cells[i + 2, 11] = datasource.ElementAt(i).RecordID;
-                        ws.Cells[i + 2, 12] = datasource.ElementAt(i).Record.Customer.CustomerFullName;
-                        ws.Cells[i + 2, 13] = datasource.ElementAt(i).Record.Customer.CustomerContactNumber;
-                    }
-                }
+        //        // rows
+        //        for (int i = 0; i < datasource.Count(); i++)
+        //        {
+        //            ws.Cells[i + 2, 1] = datasource.ElementAt(i).ItemRecordID;
+        //            if (datasource.ElementAt(i).Item != null)
+        //            {
+        //                if (datasource.ElementAt(i).Item.ItemType != null)
+        //                {
+        //                    ws.Cells[i + 2, 2] = datasource.ElementAt(i).Item.ItemType.ItemCategory.ItemCategoryName;
+        //                    ws.Cells[i + 2, 3] = datasource.ElementAt(i).Item.ItemType.ItemTypeName;
+        //                }
+        //                ws.Cells[i + 2, 4] = datasource.ElementAt(i).Item.ItemNumber;
+        //            }
+        //            ws.Cells[i + 2, 5] = datasource.ElementAt(i).Start;
+        //            ws.Cells[i + 2, 6] = datasource.ElementAt(i).End;
+        //            ws.Cells[i + 2, 7] = datasource.ElementAt(i).Status;
+        //            if (datasource.ElementAt(i).Pricing != null)
+        //            {
+        //                ws.Cells[i + 2, 8] = datasource.ElementAt(i).Pricing.PricingName;
+        //                ws.Cells[i + 2, 9] = datasource.ElementAt(i).Pricing.Price;
+        //                ws.Cells[i + 2, 10] = datasource.ElementAt(i).Pricing.PricingType;
+        //            }
+        //            if (datasource.ElementAt(i).Record != null)
+        //            {
+        //                ws.Cells[i + 2, 11] = datasource.ElementAt(i).RecordID;
+        //                ws.Cells[i + 2, 12] = datasource.ElementAt(i).Record.Customer.CustomerFullName;
+        //                ws.Cells[i + 2, 13] = datasource.ElementAt(i).Record.Customer.CustomerContactNumber;
+        //            }
+        //        }
 
-                try
-                {
-                    workbook.SaveAs(filename, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                    excelApp.Quit();
-                    Console.WriteLine("Excel file saved!");
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("ExportToExcel: Excel file could not be saved! Check filepath.\n" + ex.Message);
-                }
+        //        try
+        //        {
+        //            workbook.SaveAs(filename, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+        //            excelApp.Quit();
+        //            Console.WriteLine("Excel file saved!");
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            throw new Exception("ExportToExcel: Excel file could not be saved! Check filepath.\n" + ex.Message);
+        //        }
 
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("ExportToExcel: \n" + ex.Message);
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("ExportToExcel: \n" + ex.Message);
+        //    }
+        //}
 
     }
 }
