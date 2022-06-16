@@ -475,181 +475,35 @@ namespace Bikepark.Controllers
 
         public async Task<FileResult> Export(string? statuses = null, DateTime? from = null, DateTime? to = null)
         {
-            var fileName = Guid.NewGuid().ToString() + ".csv";
-            var filePath = Path.Combine(Environment.CurrentDirectory, fileName);
-
-            //window.open(sitePath + "Controller/DownloadFile?fileid=" + id, '_blank');
+            var fileName = "Log";
+            var folderPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\Docs\Temp"));    
 
             statuses = (statuses == null || statuses.Length == 0) ? (string.Join(",", AllStatuses.Cast<int>())) : statuses;
             var Statuses = statuses.Split(",").Select(Int32.Parse).Cast<Status>().ToArray();
-            var log = await _context.ItemRecords.Where(irecord => Statuses.Contains(irecord.Status)).Where(irecord => (to == null || irecord.Start <= ((DateTime)to).AddDays(1)) && (from == null || irecord.Start >= ((DateTime)from))).OrderByDescending(irecord => irecord.End).ToListAsync();//.Include(i => i.Item).Include(i => i.Pricing).Include(i => i.Record).Include(i => i.User);
+            var data = await _context.ItemRecords
+                .Where(irecord => Statuses.Contains(irecord.Status))
+                .Where(irecord => (to == null || irecord.Start <= ((DateTime)to).AddDays(1)) && (from == null || irecord.Start >= ((DateTime)from)))
+                .OrderByDescending(irecord => irecord.End)
+                .Select(irecord => new ItemRecordExportModel { 
+                    ItemRecordID = irecord.ItemRecordID,
+                    ItemCategoryName = irecord.Item.ItemType.ItemCategory.ItemCategoryName,
+                    ItemTypeName = irecord.Item.ItemType.ItemTypeName,
+                    ItemNumber = irecord.Item.ItemNumber,
+                    Start = irecord.Start,
+                    End = irecord.End,
+                    Status = EnumHelper<Status>.GetDisplayValue(irecord.Status),
+                    PricingName = irecord.Pricing.PricingName,
+                    Price = irecord.Pricing.Price,
+                    PricingType = EnumHelper<PricingType>.GetDisplayValue(irecord.Pricing.PricingType),
+                    RecordID = irecord.RecordID
+                })
+                .ToListAsync();
 
-            ExportToFile(log, filePath);
+            var (fileFullName, fileNameWithExt) = ExcelTableHelper.CreateExcelFile<ItemRecordExportModel>(data, folderPath, fileName);
 
-
-            byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
-            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
-
-
+            byte[] fileBytes = System.IO.File.ReadAllBytes(fileFullName);
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileNameWithExt);
         }
-
-        public void ExportToFile(IEnumerable<ItemRecord> datasource, string filePath)
-        {
-            Console.WriteLine();
-            try
-            {
-                var csv = new StringBuilder();
-                var Cells = new string[datasource.Count() + 1,13];
-                // column headings
-                Cells[0, 0] = "ID";
-                Cells[0, 1] = "Категория";
-                Cells[0, 2] = "Модель";
-                Cells[0, 3] = "Номер";
-                Cells[0, 4] = "Время выдачи";
-                Cells[0, 5] = "Время возврата";
-                Cells[0, 6] = "Статус";
-                Cells[0, 7] = "Тариф";
-                Cells[0, 8] = "Стоимость по тарифу";
-                Cells[0, 9] = "Тарификация";
-                Cells[0, 10] = "Номер заказа";
-                Cells[0, 11] = "Клиент";
-                Cells[0, 12] = "Телефон клиента";
-
-                // rows
-                for (int i = 0; i < datasource.Count(); i++)
-                {
-                    Cells[i + 1, 0] = datasource.ElementAt(i).ItemRecordID?.ToString();
-                    if (datasource.ElementAt(i).Item != null)
-                    {
-                        if (datasource.ElementAt(i).Item.ItemType != null)
-                        {
-                            if (datasource.ElementAt(i).Item.ItemType.ItemCategory != null)
-                            {
-                                Cells[i + 1, 1] = datasource.ElementAt(i).Item.ItemType.ItemCategory.ItemCategoryName;
-                            }
-                            Cells[i + 1, 2] = datasource.ElementAt(i).Item.ItemType.ItemTypeName;
-                        }
-                        Cells[i + 1, 3] = datasource.ElementAt(i).Item.ItemNumber;
-                    }
-                    Cells[i + 1, 4] = datasource.ElementAt(i).Start?.ToString();
-                    Cells[i + 1, 5] = datasource.ElementAt(i).End?.ToString();
-                    Cells[i + 1, 6] = datasource.ElementAt(i).Status.ToString();
-                    if (datasource.ElementAt(i).Pricing != null)
-                    {
-                        Cells[i + 1, 7] = datasource.ElementAt(i).Pricing.PricingName;
-                        Cells[i + 1, 8] = datasource.ElementAt(i).Pricing.Price.ToString();
-                        Cells[i + 1, 9] = datasource.ElementAt(i).Pricing.PricingType.ToString();
-                    }
-                    if (datasource.ElementAt(i).Record != null)
-                    {
-                        Cells[i + 1, 10] = datasource.ElementAt(i).RecordID?.ToString();
-                        Cells[i + 1, 11] = datasource.ElementAt(i).Record.Customer.CustomerFullName;
-                        Cells[i + 1, 12] = datasource.ElementAt(i).Record.Customer.CustomerContactNumber;
-                    }
-                }
-
-                using (StreamWriter writer = new StreamWriter(new FileStream(filePath, FileMode.Create, FileAccess.Write)))
-                {
-                    for (int i = 0; i < datasource.Count() + 1; i++) {
-                        for (int j = 0; j < 13; j++)
-                        {
-                            writer.Write(Cells[i, j] + "\t");
-                        }
-                        writer.Write("\n");
-                    }
-                }
-                
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("ExportToFile: \n" + ex.Message);
-            }
-        }
-
-        //public async Task<FileResult> ExportAllRental()
-        //{
-        //    const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-        //    var fileName = Path.Combine("/Temp/", Guid.NewGuid().ToString(), ".xls");
-        //    //window.open(sitePath + "Controller/DownloadFile?fileid=" + id, '_blank');
-        //    ExportToExcel(await _context.ItemRecords.ToListAsync(), fileName);
-        //    return File(fileName, contentType, "");
-        //}
-
-        //public void ExportToExcel(IEnumerable<ItemRecord> datasource, string filename)
-        //{
-        //    try
-        //    {
-
-        //        // load excel, and create a new workbook
-        //        var excelApp = new Excel.Application();
-        //        var workbook = excelApp.Workbooks.Add();
-
-        //        // single worksheet
-        //        Excel._Worksheet ws = (Excel._Worksheet)excelApp.ActiveSheet;
-
-        //        // column headings
-        //        ws.Cells[1, 1] = "ID";
-        //        ws.Cells[1, 2] = "Категория";
-        //        ws.Cells[1, 3] = "Модель";
-        //        ws.Cells[1, 4] = "Номер";
-        //        ws.Cells[1, 5] = "Время выдачи";
-        //        ws.Cells[1, 6] = "Время возврата";
-        //        ws.Cells[1, 7] = "Статус";
-        //        ws.Cells[1, 8] = "Тариф";
-        //        ws.Cells[1, 9] = "Стоимость по тарифу";
-        //        ws.Cells[1, 10] = "Тарификация";
-        //        ws.Cells[1, 11] = "Номер заказа";
-        //        ws.Cells[1, 12] = "Клиент";
-        //        ws.Cells[1, 13] = "Телефон клиента";
-
-        //        // rows
-        //        for (int i = 0; i < datasource.Count(); i++)
-        //        {
-        //            ws.Cells[i + 2, 1] = datasource.ElementAt(i).ItemRecordID;
-        //            if (datasource.ElementAt(i).Item != null)
-        //            {
-        //                if (datasource.ElementAt(i).Item.ItemType != null)
-        //                {
-        //                    ws.Cells[i + 2, 2] = datasource.ElementAt(i).Item.ItemType.ItemCategory.ItemCategoryName;
-        //                    ws.Cells[i + 2, 3] = datasource.ElementAt(i).Item.ItemType.ItemTypeName;
-        //                }
-        //                ws.Cells[i + 2, 4] = datasource.ElementAt(i).Item.ItemNumber;
-        //            }
-        //            ws.Cells[i + 2, 5] = datasource.ElementAt(i).Start;
-        //            ws.Cells[i + 2, 6] = datasource.ElementAt(i).End;
-        //            ws.Cells[i + 2, 7] = datasource.ElementAt(i).Status;
-        //            if (datasource.ElementAt(i).Pricing != null)
-        //            {
-        //                ws.Cells[i + 2, 8] = datasource.ElementAt(i).Pricing.PricingName;
-        //                ws.Cells[i + 2, 9] = datasource.ElementAt(i).Pricing.Price;
-        //                ws.Cells[i + 2, 10] = datasource.ElementAt(i).Pricing.PricingType;
-        //            }
-        //            if (datasource.ElementAt(i).Record != null)
-        //            {
-        //                ws.Cells[i + 2, 11] = datasource.ElementAt(i).RecordID;
-        //                ws.Cells[i + 2, 12] = datasource.ElementAt(i).Record.Customer.CustomerFullName;
-        //                ws.Cells[i + 2, 13] = datasource.ElementAt(i).Record.Customer.CustomerContactNumber;
-        //            }
-        //        }
-
-        //        try
-        //        {
-        //            workbook.SaveAs(filename, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-        //            excelApp.Quit();
-        //            Console.WriteLine("Excel file saved!");
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            throw new Exception("ExportToExcel: Excel file could not be saved! Check filepath.\n" + ex.Message);
-        //        }
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("ExportToExcel: \n" + ex.Message);
-        //    }
-        //}
 
     }
 }

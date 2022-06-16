@@ -51,6 +51,9 @@
                         <i class="bi bi-save"></i>                          
                         Сохранить
                     </button>    
+                    <button type="submit" asp-action="Contract" id="btn-contract" class="btn btn-dark col-6 mx-0 text-truncate" style="display: inline;">
+                        <i class="bi bi-pencil-square"></i>Договор
+                    </button>
                     <button type="submit" asp-action="Cancel" id="btn-cancel" class="btn btn-warning col-6 mx-0 text-truncate" formnovalidate="formnovalidate" style="display: inline;">
                         <i class="bi bi-calendar-minus"></i> Снять бронь (<i id="scheduled-count">0</i>)
                     </button>
@@ -294,6 +297,7 @@
         var url_rental_customer = "@Url.Action("Customer", "rental")";
         var url_rental_additem = "@Url.Action("AddRentalItemRecord", "rental")";
         var url_rental_searchcustomer = "@Url.Action("SearchCustomerByNumber", "rental")";
+        var url_contract = "@Url.Action("Contract", "rental")";
         var pricingTypes = [ "сутки",  "час",  "разовая", "ремонт" ]; 
     </script>
 }
