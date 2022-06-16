@@ -65,14 +65,14 @@
             </td>
             <td>
                 @if(@item.RecordID!=null){
-                    <a asp-action="Control" asp-route-id="@item.RecordID">#@Html.DisplayFor(modelItem => item.RecordID)</a>
+                    <a asp-controller="Rental" asp-action="Control" asp-route-id="@item.RecordID">#@Html.DisplayFor(modelItem => item.RecordID)</a>
                 }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Item.ItemType.ItemTypeName)
             </td>
             <td>
-                #@Html.DisplayFor(modelItem => item.Item.ItemNumber)
+                <a asp-action="ItemRentalDetails" asp-route-id="@item.ItemID">#@Html.DisplayFor(modelItem => item.Item.ItemNumber)</a>   
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Pricing.PricingName)

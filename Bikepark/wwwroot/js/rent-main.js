@@ -382,7 +382,22 @@ function change_action() {
   
 
     checkAvailability();
-   // validator.form();
 }
 
 
+$("#btn-contract").on("click", function () {
+    //if (validator.form()) {
+    //    try {
+    //        $.post(url_contract)
+    //            .done(function (data) {
+
+    //            })
+    //            .fail(function () {
+    //                alert("error");
+    //            });
+    //    } catch (err) {
+    //        console.log(err);
+    //    }
+    //}
+
+})

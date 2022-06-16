@@ -343,6 +343,44 @@ namespace Bikepark.Controllers
 
         }
 
+        // POST: Rental/UpdateOrCreate
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Contract(Record rentalRecord)
+        {
+            if (ModelState.IsValid)
+            {
+                Status Action = (Status)Enum.Parse(typeof(Status), Request.Form["StatusAction"]);
+                DateTime ActionTime = DateTime.Parse(Request.Form["TimeAction"]);
+                if (CheckAvailability(rentalRecord, Action, ActionTime))
+                {
+
+                    var form = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\Docs\Forms", "RentalContractForm.xlsx"));
+                    var fileName = "Contract";
+                    var folderPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\Docs\Temp"));
+                    var fileFullName = Path.Combine(folderPath, fileName +".xlsx");
+
+                    System.IO.File.Copy(form, fileFullName);
+
+                    ExcelTableHelper.UpdateContractForRecord(fileFullName, rentalRecord);
+
+                    byte[] fileBytes = System.IO.File.ReadAllBytes(fileFullName);
+                    return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName + ".xlsx");
+                }
+            }
+
+            if ((rentalRecord.RecordID ?? 0) <= 0)
+            {
+                return await Control(rentalRecord);
+            }
+            else
+            {
+                return RedirectToAction(nameof(Control), new { id = rentalRecord.RecordID });
+            }
+        }
+
         // POST: Rental/SaveServiceRecords
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
