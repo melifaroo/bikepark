@@ -360,14 +360,11 @@ namespace Bikepark.Controllers
                     var form = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\Docs\Forms", "RentalContractForm.xlsx"));
                     var fileName = "Contract";
                     var folderPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\Docs\Temp"));
-                    var fileFullName = Path.Combine(folderPath, fileName +".xlsx");
 
-                    System.IO.File.Copy(form, fileFullName);
-
-                    ExcelTableHelper.UpdateContractForRecord(fileFullName, rentalRecord);
+                    var (fileFullName, fileNameWithExt) = ExcelTableHelper.UpdateContractForRecord(rentalRecord, form, folderPath, fileName);
 
                     byte[] fileBytes = System.IO.File.ReadAllBytes(fileFullName);
-                    return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName + ".xlsx");
+                    return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileNameWithExt);
                 }
             }
 
