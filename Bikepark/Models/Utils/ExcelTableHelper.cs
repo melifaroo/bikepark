@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.ComponentModel;
@@ -12,22 +13,32 @@ namespace Bikepark.Models
     public class ExcelTableHelper
     {
 
-        public static void UpdateContractForRecord(string fileName, Record record)
+        public static (string, string) UpdateContractForRecord(Record record, string ContractFormFile, string OutPutFileDirectory, string fileName)
         {
-            // Open the document for editing.
-            using (SpreadsheetDocument spreadSheet = SpreadsheetDocument.Open(fileName, true))
+            var datetime = DateTime.Now.ToString().Replace("/", "_").Replace(":", "_");
+
+            string fileFullName = Path.Combine(OutPutFileDirectory, fileName + ".xlsx");
+            string fileNameWithExt = fileName + ".xlsx";
+
+            if (File.Exists(fileFullName))
             {
-                // Access the main Workbook part, which contains all references.
-                WorkbookPart workbookPart = spreadSheet.WorkbookPart;
-                Worksheet sheet = workbookPart.WorksheetParts.First().Worksheet;
-                DefinedNames definedNames = workbookPart.Workbook.DefinedNames;
-
-
-
-
-                // Save the worksheet.
-                sheet.Save();
+                fileFullName = Path.Combine(OutPutFileDirectory, fileName + "_" + datetime + ".xlsx");
+                fileNameWithExt = fileName + "_" + datetime + ".xlsx";
             }
+
+            File.Copy(ContractFormFile, fileFullName);
+
+            using (var workbook = new XLWorkbook(fileFullName))
+            {
+                var worksheet = workbook.Worksheets.FirstOrDefault();
+
+                if (workbook.NamedRanges.Contains("CustomerFullName") && record.Customer!=null)
+                    workbook.Cell("CustomerFullName").Value = record.Customer.CustomerFullName;
+
+                workbook.Save();
+            }
+
+            return (fileFullName, fileNameWithExt);
         }
 
         //private static Cell GetCell(Worksheet worksheet, string columnName, uint rowIndex)
@@ -59,21 +70,21 @@ namespace Bikepark.Models
         {
             var datetime = DateTime.Now.ToString().Replace("/", "_").Replace(":", "_");
 
-            string fileFullname = Path.Combine(OutPutFileDirectory, fileName + ".xlsx");
+            string fileFullName = Path.Combine(OutPutFileDirectory, fileName + ".xlsx");
             string fileNameWithExt = fileName + ".xlsx";
 
-            if (File.Exists(fileFullname))
+            if (File.Exists(fileFullName))
             {
-                fileFullname = Path.Combine(OutPutFileDirectory, fileName + "_" + datetime + ".xlsx");
+                fileFullName = Path.Combine(OutPutFileDirectory, fileName + "_" + datetime + ".xlsx");
                 fileNameWithExt = fileName + "_" + datetime + ".xlsx";
             }
 
-            using (SpreadsheetDocument package = SpreadsheetDocument.Create(fileFullname, SpreadsheetDocumentType.Workbook))
+            using (SpreadsheetDocument package = SpreadsheetDocument.Create(fileFullName, SpreadsheetDocumentType.Workbook))
             {
                 CreatePartsForExcel<T>(package, data);
             }
 
-            return ( fileFullname, fileNameWithExt);
+            return (fileFullName, fileNameWithExt);
         }
 
         private static void CreatePartsForExcel<T>(SpreadsheetDocument document, IEnumerable<T> data)
