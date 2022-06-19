@@ -31,40 +31,76 @@ namespace Bikepark.Models
             using (var workbook = new XLWorkbook(fileFullName))
             {
                 var worksheet = workbook.Worksheets.FirstOrDefault();
+                if (record.Customer != null)
+                {
+                    if (workbook.NamedRanges.Contains("CustomerFullName") )
+                        workbook.Cell("CustomerFullName").Value = record.Customer.CustomerFullName;
+                    if (workbook.NamedRanges.Contains("CustomerPhoneNumber") )
+                        workbook.Cell("CustomerPhoneNumber").Value = record.Customer.CustomerPhoneNumber;
+                    if (workbook.NamedRanges.Contains("CustomerDocumentType") )
+                        workbook.Cell("CustomerDocumentType").Value = record.Customer.CustomerDocumentType;
+                    if (workbook.NamedRanges.Contains("CustomerDocumentSeries") )
+                        workbook.Cell("CustomerDocumentSeries").Value = record.Customer.CustomerDocumentSeries;
+                    if (workbook.NamedRanges.Contains("CustomerDocumentNumber") )
+                        workbook.Cell("CustomerDocumentNumber").Value = record.Customer.CustomerDocumentNumber;
+                }
+                if (record.End != null)
+                {
+                    if (workbook.NamedRanges.Contains("EndHours"))
+                        workbook.Cell("EndHours").Value = record.End.GetValueOrDefault().Hour;
+                    if (workbook.NamedRanges.Contains("EndMinutes"))
+                        workbook.Cell("EndMinutes").Value = record.End.GetValueOrDefault().Minute;
+                    if (workbook.NamedRanges.Contains("EndDay"))
+                        workbook.Cell("EndDay").Value = record.End.GetValueOrDefault().Day;
+                    if (workbook.NamedRanges.Contains("EndMonth"))
+                        workbook.Cell("EndMonth").Value = record.End.GetValueOrDefault().Month;
+                    if (workbook.NamedRanges.Contains("EndYear"))
+                        workbook.Cell("EndYear").Value = record.End.GetValueOrDefault().Year;
+                }
+                if (workbook.NamedRanges.Contains("Price"))
+                    workbook.Cell("Price").Value = record.Price;
+                if (record.Start != null)
+                {
+                    if (workbook.NamedRanges.Contains("DateDay"))
+                        workbook.Cell("DateDay").Value = record.Start.GetValueOrDefault().Day;
+                    if (workbook.NamedRanges.Contains("DateMonth"))
+                        workbook.Cell("DateMonth").Value = record.Start.GetValueOrDefault().Month;
+                    if (workbook.NamedRanges.Contains("DateYear"))
+                        workbook.Cell("DateYear").Value = record.Start.GetValueOrDefault().Year;
+                }
+                if (record.ItemRecords != null) {
+                    if (workbook.NamedRanges.Contains("RentalItems"))
+                    {
+                        IXLCell cell = workbook.Cell("RentalItems");
+                        int i = 0;
+                        foreach (var icat in record.ItemRecords.DistinctBy(irec => irec.Item.ItemType.ItemCategory).Select(irec => irec.Item.ItemType.ItemCategory) )
+                        {
+                            i++;
+                            if (icat==null || !icat.Accessories)
+                            {
+                                var count = record.ItemRecords.Count(irec => irec.Item.ItemType.ItemCategoryID == icat?.ItemCategoryID);
+                                var numbers = string.Join(", ", record.ItemRecords.Where(irec => irec.Item.ItemType.ItemCategoryID == icat?.ItemCategoryID).Select(irec => irec.Item.ItemNumber).ToList());
+                                cell.Value = "\t" + i + ". " + icat?.ItemCategoryName + " в количестве " + count + " шт., номера: " + numbers;
+                            }
+                            else 
+                            {
+                                cell.Value = "\t" + i +". " + icat?.ItemCategoryName + ": ";
+                                foreach (var itype in record.ItemRecords.Where(irec => irec.Item.ItemType.ItemCategoryID == icat?.ItemCategoryID).DistinctBy(irec => irec.Item.ItemType).Select(irec => irec.Item.ItemType)) { 
+                                    var count = record.ItemRecords.Count(irec => irec.Item.ItemTypeID == itype?.ItemTypeID);
+                                    cell.Value = cell.Value + itype?.ItemTypeName +" (" + count + "шт.) ";
+                                }
+                            }
+                            cell = cell.WorksheetRow().InsertRowsBelow(1).Cells().First();
+                        }
+                    }
+                }
 
-                if (workbook.NamedRanges.Contains("CustomerFullName") && record.Customer!=null)
-                    workbook.Cell("CustomerFullName").Value = record.Customer.CustomerFullName;
 
                 workbook.Save();
             }
 
             return (fileFullName, fileNameWithExt);
         }
-
-        //private static Cell GetCell(Worksheet worksheet, string columnName, uint rowIndex)
-        //{
-        //    Row row = GetRow(worksheet, rowIndex);
-
-        //    if (row == null) return null;
-
-        //    var FirstRow = row.Elements().Where(c => string.Compare
-        //    (c.CellReference.Value, columnName +
-        //    rowIndex, true) == 0).FirstOrDefault();
-
-        //    if (FirstRow == null) return null;
-
-        //    return FirstRow;
-        //}
-
-        //private static Row GetRow(Worksheet worksheet, uint rowIndex)
-        //{
-        //    Row row = worksheet.GetFirstChild().Elements().FirstOrDefault(r => r.RowIndex == rowIndex);
-        //    if (row == null)
-        //    {
-        //        throw new ArgumentException(String.Format("No row with index {0} found in spreadsheet", rowIndex));
-        //    }
-        //    return row;
-        //}
 
         public static (string, string) CreateExcelFile<T>(IEnumerable<T> data, string OutPutFileDirectory, string fileName)
         {

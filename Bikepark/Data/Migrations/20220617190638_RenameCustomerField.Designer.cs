@@ -3,6 +3,7 @@ using System;
 using Bikepark.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bikepark.Data.Migrations
 {
     [DbContext(typeof(BikeparkContext))]
-    partial class BikeparkContextModelSnapshot : ModelSnapshot
+    [Migration("20220617190638_RenameCustomerField")]
+    partial class RenameCustomerField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.5");
@@ -23,22 +25,13 @@ namespace Bikepark.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("CustomerDocumentNumber")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CustomerDocumentSeries")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CustomerDocumentType")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("CustomerEMail")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CustomerFullName")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("CustomerInformation")
+                    b.Property<string>("CustomerPassport")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CustomerPhoneNumber")
@@ -52,17 +45,17 @@ namespace Bikepark.Data.Migrations
                         new
                         {
                             CustomerID = 1,
-                            CustomerDocumentNumber = "00 000001",
                             CustomerEMail = "vasily.pupkin@maily.su",
                             CustomerFullName = "Петр Иванов",
+                            CustomerPassport = "00 000001",
                             CustomerPhoneNumber = "+79781234567"
                         },
                         new
                         {
                             CustomerID = 2,
-                            CustomerDocumentNumber = "00 000002",
                             CustomerEMail = "ivan.petrov@maily.su",
                             CustomerFullName = "Иван Петров",
+                            CustomerPassport = "00 000002",
                             CustomerPhoneNumber = "+79780123456"
                         });
                 });
@@ -525,9 +518,6 @@ namespace Bikepark.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("Accessories")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("ItemCategoryName")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)");
@@ -540,37 +530,31 @@ namespace Bikepark.Data.Migrations
                         new
                         {
                             ItemCategoryID = 1,
-                            Accessories = false,
                             ItemCategoryName = "MTB"
                         },
                         new
                         {
                             ItemCategoryID = 2,
-                            Accessories = false,
                             ItemCategoryName = "MTB подростковый"
                         },
                         new
                         {
                             ItemCategoryID = 3,
-                            Accessories = false,
                             ItemCategoryName = "BMX"
                         },
                         new
                         {
                             ItemCategoryID = 4,
-                            Accessories = false,
                             ItemCategoryName = "Беговел"
                         },
                         new
                         {
                             ItemCategoryID = 5,
-                            Accessories = false,
                             ItemCategoryName = "Электро"
                         },
                         new
                         {
                             ItemCategoryID = 6,
-                            Accessories = true,
                             ItemCategoryName = "Аксессуар"
                         });
                 });

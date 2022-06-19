@@ -361,6 +361,10 @@ namespace Bikepark.Controllers
                     var fileName = "Contract";
                     var folderPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\Docs\Temp"));
 
+                    foreach (var irec in rentalRecord.ItemRecords)
+                        if (irec.Item == null && irec.ItemID != null)
+                            irec.Item = await _context.Items.IgnoreQueryFilters().FirstOrDefaultAsync(ir => ir.ItemID == irec.ItemID);
+
                     var (fileFullName, fileNameWithExt) = ExcelTableHelper.UpdateContractForRecord(rentalRecord, form, folderPath, fileName);
 
                     byte[] fileBytes = System.IO.File.ReadAllBytes(fileFullName);
@@ -538,7 +542,7 @@ namespace Bikepark.Controllers
                 return NotFound();
             }
             var trimmedRequest = ReplaceWhitespace(Request.Trim(), "");
-            var foundCustomers = await _context.Customers.Where(customer => customer.CustomerContactNumber.Contains(trimmedRequest)).ToListAsync();
+            var foundCustomers = await _context.Customers.Where(customer => customer.CustomerPhoneNumber.Contains(trimmedRequest)).ToListAsync();
             return PartialView("_CustomersSearchResults", foundCustomers);
         }
 

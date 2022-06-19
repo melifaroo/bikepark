@@ -171,7 +171,7 @@ namespace Bikepark.Data
             modelBuilder.Entity<ItemCategory>().HasData( new ItemCategory { ItemCategoryID = 3, ItemCategoryName = "BMX" });
             modelBuilder.Entity<ItemCategory>().HasData( new ItemCategory { ItemCategoryID = 4, ItemCategoryName = "Беговел" });
             modelBuilder.Entity<ItemCategory>().HasData( new ItemCategory { ItemCategoryID = 5, ItemCategoryName = "Электро" });
-            modelBuilder.Entity<ItemCategory>().HasData(new ItemCategory { ItemCategoryID = 6, ItemCategoryName = "Аксессуар" });
+            modelBuilder.Entity<ItemCategory>().HasData(new ItemCategory { ItemCategoryID = 6, ItemCategoryName = "Аксессуар", Accessories = true });
 
             modelBuilder.Entity<PricingCategory>().HasData(new PricingCategory { PricingCategoryID = 1, PricingCategoryName = "Горный" });
             modelBuilder.Entity<PricingCategory>().HasData(new PricingCategory { PricingCategoryID = 2, PricingCategoryName = "Подросток" });
@@ -316,8 +316,8 @@ namespace Bikepark.Data
             modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 34, PricingName = "Ремонт цепи", PricingCategoryID = null, PricingType = PricingType.Service, Price = 2000 });
             modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 35, PricingName = "Ремонт тормоза", PricingCategoryID = null, PricingType = PricingType.Service, Price = 1000 });
 
-            modelBuilder.Entity<Customer>().HasData(new Customer { CustomerID = 1, CustomerFullName = "Петр Иванов", CustomerPassport = "00 000001", CustomerContactNumber = "+79781234567", CustomerEMail = "vasily.pupkin@maily.su" });
-            modelBuilder.Entity<Customer>().HasData(new Customer { CustomerID = 2, CustomerFullName = "Иван Петров", CustomerPassport = "00 000002", CustomerContactNumber = "+79780123456", CustomerEMail = "ivan.petrov@maily.su" });
+            modelBuilder.Entity<Customer>().HasData(new Customer { CustomerID = 1, CustomerFullName = "Петр Иванов", CustomerDocumentNumber = "00 000001", CustomerPhoneNumber = "+79781234567", CustomerEMail = "vasily.pupkin@maily.su" });
+            modelBuilder.Entity<Customer>().HasData(new Customer { CustomerID = 2, CustomerFullName = "Иван Петров", CustomerDocumentNumber = "00 000002", CustomerPhoneNumber = "+79780123456", CustomerEMail = "ivan.petrov@maily.su" });
 
             modelBuilder.Entity<Record>().HasData(new Record { RecordID = 1, CustomerID = 1, Status = Status.Closed   , Start = DateTime.Parse("19.04.2022 09:00"), End = DateTime.Parse("19.04.2022 12:00"), Price = 1200 });
             modelBuilder.Entity<Record>().HasData(new Record { RecordID = 2, CustomerID = 2, Status = Status.Scheduled, Start = DateTime.Parse("15.05.2022 16:00"), End = DateTime.Parse("15.05.2022 19:00"), Price = 750 });

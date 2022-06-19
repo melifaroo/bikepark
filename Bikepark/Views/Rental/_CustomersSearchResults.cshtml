@@ -10,7 +10,7 @@
             <th>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CustomerContactNumber)
+                @Html.DisplayNameFor(model => model.CustomerPhoneNumber)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CustomerFullName)
@@ -19,10 +19,11 @@
                 @Html.DisplayNameFor(model => model.CustomerEMail)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CustomerPassport)
+                @Html.DisplayNameFor(model => model.CustomerDocumentNumber)
             </th>
             <th>
-                <button class="btn-cancel-customer btn btn-sm btn-outline-secondary"  type="button"><i class="bi bi-x"></i></button>
+                <button class="btn-cancel-customer btn btn-sm btn-outline-secondary"  type="button">
+                    <i class="bi bi-x"></i></button>
             </th>
         </tr>
     </thead>
@@ -33,7 +34,7 @@
                 @Html.HiddenFor(modelItem => item.CustomerID)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CustomerContactNumber)
+                @Html.DisplayFor(modelItem => item.CustomerPhoneNumber)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CustomerFullName)
@@ -42,10 +43,11 @@
                 @Html.DisplayFor(modelItem => item.CustomerEMail)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CustomerPassport)
+                @Html.DisplayFor(modelItem => item.CustomerDocumentNumber)
             </td>
             <td>
-                <button class="btn-select-customer btn btn-sm btn-outline-secondary"  type="button" data-customerid="@item.CustomerID"><i class="bi bi-person-check"></i></button>
+                <button class="btn-select-customer btn btn-sm btn-outline-secondary"  type="button" data-customerid="@item.CustomerID">
+                    <i class="bi bi-person-check"></i></button>
             </td>
         </tr>}
     </tbody>
