@@ -12,7 +12,8 @@
     <input type="hidden" name="Items.index" autocomplete="off" value="@Model.GetHashCode()" />
     <td class="td-buttons"  style="width : 150px;">
         <div class="d-flex flex-row">
-            <button type="button" class="btn btn-sm btn-outline-danger btn-item-delete" data-itemid="@Model.ItemID"><i class="bi bi-x"></i></button>
+            <button type="button" class="btn btn-sm btn-outline-danger btn-item-delete" data-itemid="@Model.ItemID">
+                <i class="bi bi-x"></i></button>
         </div>            
         <input name="Items[@Model.GetHashCode()].ItemID"          value="@Model.ItemID"       class="itemid" type="hidden"/> 
         <input name="Items[@Model.GetHashCode()].ItemNumber"          value="@Model.ItemNumber"       class="itemid" type="hidden"/> 

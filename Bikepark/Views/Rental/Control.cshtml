@@ -121,7 +121,7 @@
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#customer-details" aria-expanded="true" aria-controls="customer-details">
                         <span class="px-1"><b>Клиент:</b></span>
                         <span class="px-1">@Html.DisplayFor(m => Model.Customer.CustomerFullName)</span>  
-                        <span class="px-1">@Html.DisplayFor(m => Model.Customer.CustomerContactNumber)</span>     
+                        <span class="px-1">@Html.DisplayFor(m => Model.Customer.CustomerPhoneNumber)</span>     
                     </button>
                 </h2>
                 <div id="customer-details" class="accordion-collapse collapse show" aria-labelledby="customer-info" data-bs-parent="#details">
@@ -131,22 +131,36 @@
                         <div class="row row-cols-sm-3 mx-0" id="customer-main-detail" >                    
                             <div>                    
                                 <div>  
-                                    <label for="customer-num" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerContactNumber)</label>
-                                    <input  id="customer-num" class="form-control customer-input" name="Customer.CustomerContactNumber" value="@Model.Customer?.CustomerContactNumber" type="tel" placeholder="" autocomplete="off"/>
+                                    <label for="customer-num" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerPhoneNumber)</label>
+                                    <input  id="customer-num" class="form-control customer-input" name="Customer.CustomerPhoneNumber" value="@Model.Customer?.CustomerPhoneNumber" type="tel" placeholder="" autocomplete="none"/>
+                                </div>       
+                                <div  class="row row-cols-sm-2 mx-0">      
+                                    <div class="mx-0">  
+                                        <label for="customer-doc" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerDocumentType)</label>
+                                        <input  id="customer-doc" class="form-control customer-input" name="Customer.CustomerDocumentType" value="@Model.Customer?.CustomerDocumentType" type="tel" placeholder="" />
+                                    </div class="mx-0">      
+                                    <div >  
+                                        <label for="customer-docseries" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerDocumentSeries)</label>
+                                        <input  id="customer-docseries" class="form-control customer-input" name="Customer.CustomerDocumentSeries" value="@Model.Customer?.CustomerDocumentSeries" type="tel" placeholder="" autocomplete="none"/>
+                                    </div>  
                                 </div> 
                                 <div class="customer-more-detail" style="display: none">
                                     <label for="customer-email" class="control-label">@Html.DisplayNameFor(x => Model.Customer.CustomerEMail)</label>
-                                    <input  id="customer-email" class="form-control customer-input" name="Customer.CustomerEMail" value="@Model.Customer?.CustomerEMail"  type="email"  autocomplete="off"/>
+                                    <input  id="customer-email" class="form-control customer-input" name="Customer.CustomerEMail" value="@Model.Customer?.CustomerEMail"  type="email"  autocomplete="none"/>
                                 </div>                  
                             </div>
                             <div>
                                 <div >
                                     <label for="customer-name" class="control-label  text-truncate ">@Html.DisplayNameFor(x => Model.Customer.CustomerFullName)</label>
-                                    <input  id="customer-name" class="form-control customer-input" name="Customer.CustomerFullName" value="@Model.Customer?.CustomerFullName"  autocomplete="off" />
+                                    <input  id="customer-name" class="form-control customer-input" name="Customer.CustomerFullName" value="@Model.Customer?.CustomerFullName" autocomplete="none" />
+                                </div>      
+                                <div >  
+                                    <label for="customer-docnum" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerDocumentNumber)</label>
+                                    <input  id="customer-docnum" class="form-control customer-input" name="Customer.CustomerDocumentNumber" value="@Model.Customer?.CustomerDocumentNumber" type="tel" placeholder="" autocomplete="none"/>
                                 </div> 
                                 <div  class=" customer-more-detail" style="display: none">
-                                    <label for="customer-doc" class="control-label">@Html.DisplayNameFor(x => Model.Customer.CustomerPassport)</label>
-                                    <input  id="customer-doc" class="form-control customer-input" name="Customer.CustomerPassport" value="@Model.Customer?.CustomerPassport"  autocomplete="off" />
+                                    <label for="customer-info" class="control-label">@Html.DisplayNameFor(x => Model.Customer.CustomerInformation)</label>
+                                    <input  id="customer-info" class="form-control customer-input" name="Customer.CustomerInformation" value="@Model.Customer?.CustomerInformation"  autocomplete="none" />
                                 </div>
                             </div>                           
                             <div class="row row-cols-4 mx-0 mt-4 align-content-start">
@@ -202,7 +216,8 @@
                                 <div class="input-group">
                                     <div class="input-group-append order-2" id="time-start-now-option">
                                         <input  id="time-start-now" class="btn-check order-2" type="checkbox" checked />
-                                        <label for="time-start-now" class="btn btn-check-label btn-outline-secondary text-truncate "><i class="bi bi-clock"></i> </label>
+                                        <label for="time-start-now" class="btn btn-check-label btn-outline-secondary text-truncate ">
+                                            <i class="bi bi-clock"></i> </label>
                                     </div>
                                     <input  id="time-start"  class="form-control  order-1"  name="Start" type="datetime-local" value="" readonly/>
                                 </div>
@@ -251,7 +266,8 @@
                                     <input  id="time-action"  class="form-control form-control-sm"  name="TimeAction"  type="datetime-local" value="" readonly/>
                                     <div class="input-group-append" id="time-action-now-option">
                                         <input  id="time-action-now" class="btn-check" type="checkbox" checked />
-                                        <label for="time-action-now" class="btn btn-sm btn-check-label btn-outline-secondary text-truncate "><i class="bi bi-clock"></i> </label>
+                                        <label for="time-action-now" class="btn btn-sm btn-check-label btn-outline-secondary text-truncate ">
+                                            <i class="bi bi-clock"></i> </label>
                                     </div>
                                 </div>
                             </div>  

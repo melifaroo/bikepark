@@ -77,6 +77,8 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var testUserPw = builder.Configuration.GetValue<string>("SeedUserPW");
+    var db = scope.ServiceProvider.GetRequiredService<BikeparkContext>();
+    db.Database.Migrate();
     await BikeparkContext.Initialize(services, testUserPw);
 }
 
