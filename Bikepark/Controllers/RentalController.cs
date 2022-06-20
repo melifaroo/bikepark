@@ -68,13 +68,13 @@ namespace Bikepark.Controllers
             return Json(new
             {
                 Scheduled = await _context.Records.Where(record => record.Status == Status.Scheduled).CountAsync(),
-                ScheduledWarning = await _context.Records.Where(record => record.Status == Status.Scheduled).Where(record => record.Start < DateTime.Now.AddMinutes(60) ).CountAsync(),
+                ScheduledWarning = await _context.Records.Where(record => record.Status == Status.Scheduled).Where(record => record.Start < DateTime.Now.AddMinutes(_config.Value.ScheduleWarningTimeMinutes) ).CountAsync(),
                 ScheduledOverdue = await _context.Records.Where(record => record.Status == Status.Scheduled).Where(record => record.Start < DateTime.Now).CountAsync(),
                 Active = await _context.Records.Where(record => record.Status == Status.Active).CountAsync(),
-                ActiveWarning = await _context.Records.Where(record => record.Status == Status.Active).Where(record => record.End < DateTime.Now.AddMinutes(30)).CountAsync(),
+                ActiveWarning = await _context.Records.Where(record => record.Status == Status.Active).Where(record => record.End < DateTime.Now.AddMinutes(_config.Value.GetBackWarningTimeMinutes)).CountAsync(),
                 ActiveOverdue = await _context.Records.Where(record => record.Status == Status.Active).Where(record => record.End < DateTime.Now).CountAsync(),
                 Service = await _context.ItemRecords.Where(record => record.Status >= Status.Service && record.Status < Status.Fixed).CountAsync(),
-                ServiceWarning = await _context.ItemRecords.Where(record => record.Status == Status.OnService).Where(record => record.End < DateTime.Now.AddDays(1)).CountAsync(),
+                ServiceWarning = await _context.ItemRecords.Where(record => record.Status == Status.OnService).Where(record => record.End < DateTime.Now.AddHours(_config.Value.OnServiceWarningTimeHours)).CountAsync(),
                 ServiceNeedAction = await _context.ItemRecords.Where(record => record.Status == Status.Service || (record.Status == Status.OnService && record.End < DateTime.Now )).CountAsync(),
             });
         }
@@ -95,7 +95,17 @@ namespace Bikepark.Controllers
             statuses = (statuses == null || statuses.Length == 0) ? (string.Join(",", AllStatuses.Cast<int>())) : statuses;
             var Statuses = statuses.Split(",").Select(Int32.Parse).Cast<Status>().ToArray();
             var name = "Заказы" ;
-            var log = await _context.Records.Where(record => Statuses.Contains(record.Status)).Where( record => ( to==null || record.Start<=((DateTime)to).AddDays(1) ) && ( from==null || record.Start>=((DateTime)from) ) ).OrderByDescending(record => record.Start).ToListAsync();
+            await _context.Records
+                .Where(record => Statuses.Contains(record.Status))
+                .Where(record => (to == null || record.Start <= ((DateTime)to).AddDays(1)) && (from == null || record.Start >= ((DateTime)from)))
+                .ForEachAsync( record => record.Attention(_config.Value.GetBackWarningTimeMinutes, _config.Value.ScheduleWarningTimeMinutes, _config.Value.OnServiceWarningTimeHours) );
+            await _context.SaveChangesAsync();
+            var log = await _context.Records
+                .Where(record => Statuses.Contains(record.Status))
+                .Where(record => (to == null || record.Start <= ((DateTime)to).AddDays(1)) && (from == null || record.Start >= ((DateTime)from)))
+                .OrderBy(record => record.AttentionStatus)
+                .ThenByDescending(record => record.Start)
+                .ToListAsync();
             DateTime? oldest = null ;
             DateTime? newest = null;
             if (log.Count > 0)
@@ -364,6 +374,8 @@ namespace Bikepark.Controllers
                     foreach (var irec in rentalRecord.ItemRecords)
                         if (irec.Item == null && irec.ItemID != null)
                             irec.Item = await _context.Items.IgnoreQueryFilters().FirstOrDefaultAsync(ir => ir.ItemID == irec.ItemID);
+
+                    rentalRecord.Price = await ComputePrice(rentalRecord);
 
                     var (fileFullName, fileNameWithExt) = ExcelTableHelper.UpdateContractForRecord(rentalRecord, form, folderPath, fileName);
 

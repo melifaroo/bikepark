@@ -32,25 +32,25 @@
                                 <a class="nav-link btn btn-light col-12 text-truncate" asp-area="" asp-controller="Rental" asp-action="Index">Журнал    
                                 </a>         
                             </li>
-                            <li class="nav-item col-md-2 px-2 nav-alert" style="display: none;">
-                                <a type="button" class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="Index" asp-route-statuses="@((int) Status.Active )" id="active-link" style="text-overflow: ellipsis;  white-space:nowrap;">Прокат
-                                  (<i id="active-record-count">0</i>)                                  
-                                  <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-warning"  id="active-warning"></span>
-                                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"  id="active-overdue"></span>
+                            <li class="nav-item col-md-2 px-2">
+                                <a class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="Index" asp-route-statuses="@((int) Status.Active )" id="active-link" style="text-overflow: ellipsis;  white-space:nowrap;">Прокат
+                                  <span class="nav-alert" style="display: none;">(<i id="active-record-count">0</i>)</span>                               
+                                  <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-warning nav-alert"  id="active-warning" style="display: none;"></span>
+                                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger nav-alert"  id="active-overdue" style="display: none;"></span>
                                 </a>     
                             </li> 
-                            <li class="nav-item col-md-2 px-2 nav-alert" style="display: none;">
-                                <a type="button" class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="Index" asp-route-statuses="@((int)Status.Scheduled)"  id="scheduled-link" style="text-overflow: ellipsis;  white-space:nowrap;">Бронь
-                                    (<i id="scheduled-record-count">0</i>)
-                                  <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-warning"  id="scheduled-warning"></span>
-                                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"  id="scheduled-overdue"></span>
+                            <li class="nav-item col-md-2 px-2">
+                                <a class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="Index" asp-route-statuses="@((int)Status.Scheduled)"  id="scheduled-link" style="text-overflow: ellipsis;  white-space:nowrap;">Бронь
+                                  <span class="nav-alert" style="display: none;">(<i id="scheduled-record-count">0</i>)</span> 
+                                  <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-warning nav-alert"  id="scheduled-warning" style="display: none;"></span>
+                                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger nav-alert"  id="scheduled-overdue" style="display: none;"></span>
                                 </a>     
                             </li> 
-                            <li class="nav-item col-md-2 px-2 nav-alert" style="display: none;">     
-                                <a type="button" class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Log" asp-action="Index" asp-route-statuses="@((int)Status.Service),@((int)Status.OnService)" id="service-link" style="text-overflow: ellipsis;  white-space:nowrap;">Ремонт    
-                                   (<i id="service-record-count">0</i>)
-                                  <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-warning"  id="service-warning"></span>
-                                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"  id="service-needaction"></span> 
+                            <li class="nav-item col-md-2 px-2">     
+                                <a class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Log" asp-action="Index" asp-route-statuses="@((int)Status.Service),@((int)Status.OnService)" id="service-link" style="text-overflow: ellipsis;  white-space:nowrap;">Ремонт    
+                                  <span class="nav-alert" style="display: none;">(<i id="service-record-count">0</i>)</span> 
+                                  <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-warning nav-alert" id="service-warning" style="display: none;"></span>
+                                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger nav-alert" id="service-needaction" style="display: none;"></span> 
                                 </a>         
                             </li>
                     </ul>
@@ -64,7 +64,7 @@
                             @if (User.IsInRole(BikeparkConfig.AdministratorsRole))
                             {
                                 <li class="nav-item">      
-                                    <a type="button"  class="nav-link btn btn-light col-12 text-truncate"  style="color:black;" asp-area="" asp-controller="Rental" asp-action="Main">Управление</a>        
+                                    <a class="nav-link btn btn-light col-12 text-truncate" style="color:black;" asp-area="" asp-controller="Rental" asp-action="Main">Управление</a>        
                                 </li>
                             }
                     </ul>   

@@ -23,9 +23,12 @@ $(document).on("click", ".btn-select-customer", function () {
     $.get(url, { CustomerID: id },
         function (result) {
             $("#customer-name").val(result.customerFullName);
-            $("#customer-num").val(result.customerContactNumber);
+            $("#customer-num").val(result.customerPhoneNumber);
             $("#customer-email").val(result.customerEMail);
-            $("#customer-doc").val(result.customerPassport);
+            $("#customer-doc").val(result.customerDocumentType);
+            $("#customer-docseries").val(result.CustomerDocumentSeries);
+            $("#customer-docnum").val(result.CustomerDocumentNumber);
+            $("#customer-info").val(result.CustomerInformation);
             $("#customer-id").val(result.customerID);
             $("#chk-new-customer").prop("checked", false).prop("disabled", true);
             $("#chk-upd-customer").prop("checked", false).prop("disabled", true);

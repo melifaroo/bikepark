@@ -8,17 +8,20 @@ using Microsoft.EntityFrameworkCore;
 using Bikepark.Data;
 using Bikepark.Models;
 using System.Text;
+using Microsoft.Extensions.Options;
 
 namespace Bikepark.Controllers
 {
     public class LogController : Controller
     {
         private readonly BikeparkContext _context;
+        private readonly IOptions<BikeparkConfig> _config;
         private readonly Status[] AllStatuses = Enum.GetValues(typeof(Status)).Cast<Status>().ToArray();
 
-        public LogController(BikeparkContext context)
+        public LogController(BikeparkContext context, IOptions<BikeparkConfig> config)
         {
             _context = context;
+            _config = config;
         }
 
         private IActionResult Log(IEnumerable<ItemRecord> log, string logName, Status[]? statuses = null, DateTime? from = null, DateTime? to = null)
@@ -30,13 +33,38 @@ namespace Bikepark.Controllers
             return View("Index", log);
         }
 
+        private int statusOrder(Status status, DateTime? start, DateTime? end)
+        {
+            return (status == Status.Active && end < DateTime.Now) ? 0 :
+                    (status == Status.Scheduled && start < DateTime.Now) ? 1 :
+                    (status == Status.Service) ? 2 :
+                    (status == Status.OnService && end < DateTime.Now) ? 3 :
+                    (status == Status.Active && end < DateTime.Now.AddMinutes(_config.Value.ScheduleWarningTimeMinutes)) ? 4 :
+                    (status == Status.Scheduled && start < DateTime.Now.AddMinutes(_config.Value.ScheduleWarningTimeMinutes)) ? 5 :
+                    (status == Status.OnService && start < DateTime.Now.AddHours(_config.Value.OnServiceWarningTimeHours)) ? 6 :
+                    (status == Status.Draft) ? 7 :
+                    (status == Status.Active) ? 8 :
+                    (status == Status.Scheduled) ? 9 :
+                    (status == Status.OnService) ? 10 : 11;
+        }
+
         // GET: Log
         public async Task<IActionResult> Index(string? statuses = null, DateTime? from = null, DateTime? to = null)
         {
             statuses = (statuses == null || statuses.Length==0) ? (string.Join(",", AllStatuses.Cast<int>())) : statuses;
             var Statuses = statuses.Split(",").Select(Int32.Parse).Cast<Status>().ToArray();
-            var name = "Записи" ;
-            var log = await _context.ItemRecords.Where(irecord => Statuses.Contains(irecord.Status) ).Where(irecord => (to == null || irecord.Start <= ((DateTime)to).AddDays(1)) && (from == null || irecord.Start >= ((DateTime)from))).OrderByDescending(irecord => irecord.End).ToListAsync();//.Include(i => i.Item).Include(i => i.Pricing).Include(i => i.Record).Include(i => i.User);
+            var name = "Записи";
+            await _context.ItemRecords
+                .Where(irecord => Statuses.Contains(irecord.Status) )
+                .Where(irecord => (to == null || irecord.Start <= ((DateTime)to).AddDays(1)) && (from == null || irecord.Start >= ((DateTime)from)))
+                .ForEachAsync(irecord => irecord.Attention(_config.Value.GetBackWarningTimeMinutes, _config.Value.ScheduleWarningTimeMinutes, _config.Value.OnServiceWarningTimeHours));
+            await _context.SaveChangesAsync();
+            var log = await _context.ItemRecords
+                .Where(irecord => Statuses.Contains(irecord.Status) )
+                .Where(irecord => (to == null || irecord.Start <= ((DateTime)to).AddDays(1)) && (from == null || irecord.Start >= ((DateTime)from)))
+                .OrderBy(irecord => irecord.AttentionStatus)
+                .ThenByDescending(irecord => irecord.End)
+                .ToListAsync();
             DateTime? oldest = null;
             DateTime? newest = null;
             if (log.Count > 0)
@@ -80,7 +108,10 @@ namespace Bikepark.Controllers
                 return NotFound();
             }
             var name = type.ItemTypeName;
-            var log = await _context.ItemRecords.Where(irecord => irecord.Item.ItemTypeID == id).OrderByDescending(irecord => irecord.End).ToListAsync();
+            var log = await _context.ItemRecords
+                .Where(irecord => irecord.Item.ItemTypeID == id)
+                .OrderByDescending(irecord => irecord.End)
+                .ToListAsync();
             return Log(log, "Записи по модели " + name +" (#"+id+")" );
         }
 
@@ -97,7 +128,10 @@ namespace Bikepark.Controllers
                 return NotFound();
             }
             var number = item.ItemNumber;
-            var log = await _context.ItemRecords.Where(irecord => irecord.ItemID == id).OrderByDescending(record => record.End).ToListAsync();
+            var log = await _context.ItemRecords
+                .Where(irecord => irecord.ItemID == id)
+                .OrderByDescending(record => record.End)
+                .ToListAsync();
             return Log(log, "Записи по номеру #" + number );
         }
 
@@ -114,7 +148,10 @@ namespace Bikepark.Controllers
                 return NotFound();
             }
             var name = pricing.PricingName;
-            var log = await _context.ItemRecords.Where(irecord => irecord.PricingID == id).OrderByDescending(record => record.End).ToListAsync();
+            var log = await _context.ItemRecords
+                .Where(irecord => irecord.PricingID == id)
+                .OrderByDescending(record => record.End)
+                .ToListAsync();
             return Log(log, "Записи по тарифу #" + name );
         }
 
@@ -439,7 +476,7 @@ namespace Bikepark.Controllers
                     }
                     await _context.SaveChangesAsync();
                 }
-                return RedirectToAction(nameof(Index), new { statuses = new Status[] { Status.Service, Status.OnService  } });
+                return RedirectToAction(nameof(Index), new { statuses = string.Join(",", (new Status[] { Status.Service, Status.OnService }).Cast<int>())  });
             }
             else
             {
@@ -470,7 +507,7 @@ namespace Bikepark.Controllers
             irec.Status = Status.Fixed;
             _context.Update(irec);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { statuses = new Status[] { Status.Service, Status.OnService } });
+            return RedirectToAction(nameof(Index), new { statuses = string.Join(",", (new Status[] { Status.Service, Status.OnService }).Cast<int>()) });
         }
 
         public async Task<FileResult> Export(string? statuses = null, DateTime? from = null, DateTime? to = null)

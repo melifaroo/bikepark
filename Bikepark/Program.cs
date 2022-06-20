@@ -17,7 +17,9 @@ var baseConnectionString = builder.Configuration.GetConnectionString("SQLiteConn
 
 builder.Services.AddDbContext<BikeparkContext>(options => options
                                                 .UseLazyLoadingProxies()
-                                                .UseSqlite(baseConnectionString)); 
+                                                .UseSqlite(baseConnectionString)
+                                                //.UseMySql("server=localhost;database=bikepark;user=root;password=Passw0rd!", new MySqlServerVersion(new Version(8, 0, 28)))
+                                                ); 
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -77,9 +79,10 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var testUserPw = builder.Configuration.GetValue<string>("SeedUserPW");
+    var rootPw = builder.Configuration.GetValue<string>("SeedRootPW");
     var db = scope.ServiceProvider.GetRequiredService<BikeparkContext>();
     db.Database.Migrate();
-    await BikeparkContext.Initialize(services, testUserPw);
+    await BikeparkContext.Initialize(services, testUserPw, rootPw);
 }
 
 // Configure the HTTP request pipeline.

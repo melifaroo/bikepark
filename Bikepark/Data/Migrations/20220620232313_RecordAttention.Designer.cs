@@ -3,6 +3,7 @@ using System;
 using Bikepark.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bikepark.Data.Migrations
 {
     [DbContext(typeof(BikeparkContext))]
-    partial class BikeparkContextModelSnapshot : ModelSnapshot
+    [Migration("20220620232313_RecordAttention")]
+    partial class RecordAttention
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.6");
