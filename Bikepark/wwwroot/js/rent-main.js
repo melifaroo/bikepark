@@ -149,13 +149,11 @@ $(document).on("click", "#itemrecords-list .chk-item-action", function () {
     change_action();
 });
 
-$(document).on("click", ".chk-action", function () {
+$(document).on("change", "#status-action", function () {//TODO
     var action = $(this).val();
-    //$("#status").val(action);
-    var mode = $("input[type=radio][name=StatusAction]:checked").val();
-    var giveout_mode = (record.Status < 3) && mode == "Active";
-    var schedule_mode = (record.Status < 3) && mode == "Scheduled";
-    var draft_mode = (record.Status < 3) && mode == "Draft";
+    var giveout_mode = (record.Status < 3) && action == "Active";
+    var schedule_mode = (record.Status < 3) && action == "Scheduled";
+    var draft_mode = (record.Status < 3) && action == "Draft";
 
     prevScheduleStart = schedule_mode && prevScheduleStart ? prevScheduleStart : new Date($("#time-start").val()) ;
     var d = !schedule_mode ? new Date() : prevScheduleStart;
@@ -204,9 +202,8 @@ function setupInterface() {
     console.log(prices);
     console.log(arcprices);
 
-
-    $("#chk-schedule").prop("checked", record.Status == 1);
-    $("#status-action").toggle(record.Status < 2);
+    $("#status-action option:first").prop("selected", record.Status == 1);
+    $("#status-action").parent().toggle(record.Status < 2);
 
     $("#time-start-now-option").toggle(record.Status < 2);
     $("#time-action-now-option").toggle(record.Status == 2);
@@ -260,11 +257,10 @@ function setupInterface() {
 
 
 function change_action() {
-
-    var mode = $("input[type=radio][name=StatusAction]:checked").val();
-    var giveout_mode = (record.Status < 2) && mode == "Active";
-    var schedule_mode = (record.Status < 2) && mode == "Scheduled";
-    var draft_mode = (record.Status < 2) && mode == "Draft";
+    var action = $("#status-action").val();
+    var giveout_mode = (record.Status < 2) && action == "Active";
+    var schedule_mode = (record.Status < 2) && action == "Scheduled";
+    var draft_mode = (record.Status < 2) && action == "Draft";
 
     var start_now = $("#time-start-now").is(":checked");
     var action_now = $("#time-action-now").is(":checked");
@@ -338,6 +334,7 @@ function change_action() {
     $("#btn-update").attr('formnovalidate', draft?'formnovalidate':null);
     $("#btn-update").toggleClass("btn-primary", pass || getback || service || giveout || repeal || schedule || extend || reduce || price_change);
     $("#btn-service").toggle(serviced_count > 0 && record.Status > 1).prop("disabled", serviced_count == 0 || record.Status < 2);
+    $("#btn-contract").toggle(giveout || (serviced_count > 0 && record.Status > 1)).prop("disabled", !giveout && !(serviced_count > 0 && record.Status > 1));
 
     $("#btn-cancel").toggle(schedule_mode && record.Status == 1).prop("disabled", !(scheduled_count > 0));
     $("#btn-getbackall").toggle(record.Status == 2).prop("disabled", !(givenout_count>0));

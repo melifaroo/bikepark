@@ -10,6 +10,9 @@ namespace Bikepark
         public  DateTime WorkingHoursEnd{ get; set; }
         public int MinServiceDelayBetweenRentsMinutes { get; set; }
         public int DefaultRentTimeHours { get; set; }
+        public int ScheduleWarningTimeMinutes { get; set; }
+        public int GetBackWarningTimeMinutes { get; set; }
+        public int OnServiceWarningTimeHours { get; set; }
 
         public static void AddOrUpdateAppSetting<T>(string key, T value)
         {

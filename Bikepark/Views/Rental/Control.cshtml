@@ -45,34 +45,32 @@
         </div>
         
         <div class="container-fluid mt-1" id="rental-control-controls" >   
-            <div class="row row-cols-3 mx-0" >                  
-                <div class="d-flex justify-content-start col-6">
-                    <button type="submit" asp-action="UpdateOrCreate" id="btn-update" class="btn btn-primary  col-6 mx-0 text-truncate" style="display: inline;" >        
+            <div class="row row-cols-sm-3 mx-0" >                  
+                <div class="d-flex justify-content-start col-sm-9">
+                    <button type="submit" asp-action="UpdateOrCreate" id="btn-update" class="btn btn-primary  col-sm-4 mx-0 text-truncate" style="display: inline;" >        
                         <i class="bi bi-save"></i>                          
                         Сохранить
-                    </button>    
-                    <button type="submit" asp-action="Contract" id="btn-contract" class="btn btn-dark col-6 mx-0 text-truncate" style="display: inline;">
+                    </button>                 
+                    <div class="col-sm-4 mx-0 ">  
+                        <select name="StatusAction" value="@Status.Active" id="status-action" class="text-truncate form-control" >
+                            <option value="@Status.Scheduled">Бронь</option>
+                            <option value="@Status.Active" selected>Выдача</option>
+                            <option value="@Status.Draft">Черновик</option>
+                        </select>
+                    </div>
+                    <button type="submit" asp-action="Contract" id="btn-contract" class="btn btn-dark col-sm-4 mx-0 text-truncate" style="display: inline;">
                         <i class="bi bi-pencil-square"></i>Договор
                     </button>
-                    <button type="submit" asp-action="Cancel" id="btn-cancel" class="btn btn-warning col-6 mx-0 text-truncate" formnovalidate="formnovalidate" style="display: inline;">
-                        <i class="bi bi-calendar-minus"></i> Снять бронь (<i id="scheduled-count">0</i>)
+                    <button type="submit" asp-action="Cancel" id="btn-cancel" class="btn btn-warning col-sm-4 mx-0 text-truncate" formnovalidate="formnovalidate" style="display: inline;">
+                        <i class="bi bi-calendar-minus"></i> Снять (<i id="scheduled-count">0</i>)
                     </button>
-                    <button type="submit" asp-controller="Log" asp-action="ControlRecordService" asp-route-id="@Model?.RecordID" id="btn-service" class="btn btn-danger col-6 mx-0 text-truncate" formnovalidate="formnovalidate" style="display: inline;">
+                    <button type="submit" asp-controller="Log" id="btn-service" class="btn btn-danger col-sm-4 mx-0 text-truncate" formnovalidate="formnovalidate" asp-action="ControlRecordService" asp-route-id="@Model?.RecordID" style="display: inline;">
                         <i class="bi bi-wrench-adjustable"></i> Ремонт (<i id="serviced-count">0</i>)
                     </button>
                 </div>
-                <div class="d-flex justify-content-end col-4" >
-                    <div  class="row row-cols-3 mx-0" id="status-action">
-                        <input type="radio" class="btn-check chk-action" name="StatusAction" value="@Status.Scheduled" id="chk-schedule" autocomplete="off">
-                        <label class="btn btn-check-label col-4 btn-outline-warning text-truncate" for="chk-schedule"  style="font-size: 10px">Бронь</label>
-                        <input type="radio" class="btn-check chk-action" name="StatusAction" value="@Status.Active" id="chk-giveout" autocomplete="off" checked>
-                        <label class="btn btn-check-label col-4 btn-outline-success text-truncate" for="chk-giveout" style="font-size: 10px">Выдача</label>
-                        <input type="radio" class="btn-check chk-action" name="StatusAction" value="@Status.Draft" id="chk-draft" autocomplete="off">
-                        <label class="btn btn-check-label col-4 btn-outline-secondary text-truncate" for="chk-draft" style="font-size: 10px">Черновик</label>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-end col-2">
-                    <button type="submit" asp-action="Index" class="btn btn-secondary col-12 " id="btn-discard" formnovalidate="formnovalidate" >
+
+                <div class="d-flex justify-content-end col-sm-3">
+                    <button type="submit" asp-action="Index" class="btn btn-secondary col-sm-12 " id="btn-discard" formnovalidate="formnovalidate" >
                         <i class="bi bi-arrow-return-left"></i>Выход
                     </button>
                 </div>
@@ -128,62 +126,71 @@
                     <div class="accordion-body">
                         <input name="CustomerID"          value="@Model.CustomerID"                            type="hidden"/> 
                         <input name="Customer.CustomerID" value="@Model.Customer?.CustomerID"  id="customer-id" type="hidden"/> 
-                        <div class="row row-cols-sm-3 mx-0" id="customer-main-detail" >                    
-                            <div>                    
-                                <div>  
-                                    <label for="customer-num" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerPhoneNumber)</label>
-                                    <input  id="customer-num" class="form-control customer-input" name="Customer.CustomerPhoneNumber" value="@Model.Customer?.CustomerPhoneNumber" type="tel" placeholder="" autocomplete="none"/>
-                                </div>       
-                                <div  class="row row-cols-sm-2 mx-0">      
-                                    <div class="mx-0">  
-                                        <label for="customer-doc" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerDocumentType)</label>
-                                        <input  id="customer-doc" class="form-control customer-input" name="Customer.CustomerDocumentType" value="@Model.Customer?.CustomerDocumentType" type="tel" placeholder="" />
-                                    </div class="mx-0">      
-                                    <div >  
-                                        <label for="customer-docseries" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerDocumentSeries)</label>
-                                        <input  id="customer-docseries" class="form-control customer-input" name="Customer.CustomerDocumentSeries" value="@Model.Customer?.CustomerDocumentSeries" type="tel" placeholder="" autocomplete="none"/>
-                                    </div>  
-                                </div> 
-                                <div class="customer-more-detail" style="display: none">
+                        <div class="row row-cols-sm-3 mx-0">               
+                            <div class="form-group">  
+                                <label for="customer-num" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerPhoneNumber)</label>
+                                <input  id="customer-num" class="form-control customer-input" name="Customer.CustomerPhoneNumber" value="@Model.Customer?.CustomerPhoneNumber" type="tel" placeholder="" autocomplete="none"/>
+                            </div>     
+                            <div class="form-group">
+                                <label for="customer-name" class="control-label  text-truncate ">@Html.DisplayNameFor(x => Model.Customer.CustomerFullName)</label>
+                                <input  id="customer-name" class="form-control customer-input" name="Customer.CustomerFullName" value="@Model.Customer?.CustomerFullName" autocomplete="none" />
+                            </div>           
+                            <div class="col">                     
+                                <div class="row row-cols-3 mx-0 mt-4" >
+                                    <input  id="chk-upd-customer"  class="btn-check"  type="checkbox"  name="CustomerForceUpdate"  disabled>
+                                    <label  for="chk-upd-customer"  class="btn btn-check-label btn-outline-success" style="display: none" >
+                                        <i class="bi bi-person-check"></i>                           
+                                    </label>   
+                                    <input  id="chk-new-customer"   class="btn-check" type="checkbox" name="CustomerForceCreate" checked disabled>
+                                    <label  for="chk-new-customer"  class="btn col-4 btn-check-label btn-outline-primary" title="Создать запись о новом клиент">
+                                        <i class="bi bi-person-plus"></i>                           
+                                    </label> 
+                                    <button type="button"  id="btn-search-customer" class="btn col-4 btn-outline-secondary text-truncate" title="Найти по номеру телефона">
+                                        <i class="bi bi-search"></i><i class="bi bi-people"></i>
+                                    </button> 
+                                    <button type="button"  id="btn-more-customer-detail" class="btn col-4 btn-outline-secondary" title="Показать доп. данные">
+                                        <i class="bi bi-person-lines-fill"> </i>
+                                    </button> 
+                                </div>         
+                            </div>                            
+                        </div>  
+                        <div class="row row-cols-sm-3 mx-0" >   
+                            <div  class=" row row-cols-sm-2 mx-0">      
+                                <div class="form-group mx-0">  
+                                    <label for="customer-doc" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerDocumentType)</label>
+                                    <input  id="customer-doc" class="form-control customer-input" name="Customer.CustomerDocumentType" value="@Model.Customer?.CustomerDocumentType" type="tel" placeholder="" />
+                                </div >      
+                                <div class="form-group mx-0">  
+                                    <label for="customer-docseries" class="control-label text-truncate" >@Html.DisplayNameFor(x => Model.Customer.CustomerDocumentSeries)</label>
+                                    <input  id="customer-docseries" class="form-control customer-input" name="Customer.CustomerDocumentSeries" value="@Model.Customer?.CustomerDocumentSeries" type="tel" placeholder="" autocomplete="none"/>
+                                </div>  
+                            </div> 
+                            <div class="form-group">  
+                                <label for="customer-docnum" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerDocumentNumber)</label>
+                                <input  id="customer-docnum" class="form-control customer-input" name="Customer.CustomerDocumentNumber" value="@Model.Customer?.CustomerDocumentNumber" type="tel" placeholder="" autocomplete="none"/>
+                            </div> 
+                            <div>
+
+                            </div>
+                        </div>
+                        
+                        <div class="row row-cols-sm-3 mx-0 customer-more-detail" style="display: none">   
+                            <div class="col mx-0" >       
+                                <div class="form-group">
                                     <label for="customer-email" class="control-label">@Html.DisplayNameFor(x => Model.Customer.CustomerEMail)</label>
                                     <input  id="customer-email" class="form-control customer-input" name="Customer.CustomerEMail" value="@Model.Customer?.CustomerEMail"  type="email"  autocomplete="none"/>
                                 </div>                  
                             </div>
-                            <div>
-                                <div >
-                                    <label for="customer-name" class="control-label  text-truncate ">@Html.DisplayNameFor(x => Model.Customer.CustomerFullName)</label>
-                                    <input  id="customer-name" class="form-control customer-input" name="Customer.CustomerFullName" value="@Model.Customer?.CustomerFullName" autocomplete="none" />
-                                </div>      
-                                <div >  
-                                    <label for="customer-docnum" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerDocumentNumber)</label>
-                                    <input  id="customer-docnum" class="form-control customer-input" name="Customer.CustomerDocumentNumber" value="@Model.Customer?.CustomerDocumentNumber" type="tel" placeholder="" autocomplete="none"/>
-                                </div> 
-                                <div  class=" customer-more-detail" style="display: none">
+                            <div  class="col mx-0">  
+                                <div  class="form-group">
                                     <label for="customer-info" class="control-label">@Html.DisplayNameFor(x => Model.Customer.CustomerInformation)</label>
                                     <input  id="customer-info" class="form-control customer-input" name="Customer.CustomerInformation" value="@Model.Customer?.CustomerInformation"  autocomplete="none" />
                                 </div>
-                            </div>                           
-                            <div class="row row-cols-4 mx-0 mt-4 align-content-start">
-                                <div class="col-2 row-cols-1 px-0" tabindex="0" title="Новый клиент">
-                                    <input  id="chk-new-customer"   class="btn-check" type="checkbox" name="CustomerForceCreate" checked disabled>
-                                    <label  for="chk-new-customer"  class="btn btn-check-label btn-outline-primary">
-                                        <i class="bi bi-person-plus"></i>                           
-                                    </label>                                    
-                                </div>
-                                <div class="col-2 row-cols-1 px-0" tabindex="0" title="Обновить данные клиента">
-                                    <input   id="chk-upd-customer"  class="btn-check"  type="checkbox"  name="CustomerForceUpdate"  disabled>
-                                    <label  for="chk-upd-customer"  class="btn btn-check-label btn-outline-success">
-                                        <i class="bi bi-person-check"></i>                           
-                                    </label>
-                                </div>
-                                <button type="button"  id="btn-search-customer" class="btn col-4 btn-outline-secondary text-truncate" title="Найти по номеру телефона">
-                                    <i class="bi bi-search"></i><i class="bi bi-people"></i>
-                                </button> 
-                                <button type="button"  id="btn-more-customer-detail" class="btn col-4 btn-outline-secondary" title="Показать доп. данные">
-                                    <i class="bi bi-person-lines-fill"> </i>
-                                </button> 
+                            </div >    
+                            <div>
                             </div> 
-                        </div>  
+                        </div> 
+
                         <div id="сustomer-search-results" style="display: none">
                         </div>  
                     </div>

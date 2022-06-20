@@ -13,8 +13,9 @@ namespace Bikepark.Data
                 .Build();
             var connectionString = config.GetConnectionString("SQLiteConnection");    
 
-            var optionsBuilder = new DbContextOptionsBuilder<BikeparkContext>();    
+            var optionsBuilder = new DbContextOptionsBuilder<BikeparkContext>();
             optionsBuilder.UseSqlite(connectionString);
+            //optionsBuilder.UseMySql(  "server=localhost;database=bikepark;user=root;password=Passw0rd!", new MySqlServerVersion(new Version(8, 0, 28)) );
 
             return new BikeparkContext(optionsBuilder.Options);
         }

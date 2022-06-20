@@ -6,7 +6,7 @@ $(document).ready(async function () {
 
     await maintimer();
 
-    $(".nav-alert").show();
+    $(".nav-alert:not(:empty)").show();
 
     setTimeout(async function () {
         maintimer();

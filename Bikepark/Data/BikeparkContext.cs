@@ -26,7 +26,7 @@ namespace Bikepark.Data
         {
         }
 
-        public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw="")
+        public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw="", string rootPw="")
         {
             using (var context = new BikeparkContext( serviceProvider.GetRequiredService<DbContextOptions<BikeparkContext>>()))
             {
@@ -38,8 +38,8 @@ namespace Bikepark.Data
                 await EnsureRole(serviceProvider, managerID, BikeparkConfig.ManagersRole);
 
                 // allowed user can create and edit contacts that they create
-                var developerID = await EnsureUser(serviceProvider, testUserPw, "developer@sevbike.ru");
-                await EnsureRole(serviceProvider, developerID, BikeparkConfig.ManagersRole);
+                var rootID = await EnsureUser(serviceProvider, rootPw, "root");
+                await EnsureRole(serviceProvider, rootID, BikeparkConfig.ManagersRole);
             }
         }
 
@@ -110,9 +110,6 @@ namespace Bikepark.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Item>()
-                .HasIndex(p => p.ItemID) // не Null
-                .IsUnique();
             modelBuilder.Entity<Pricing>()
                 .Property(e => e.DaysOfWeek)
                 .HasConversion(
