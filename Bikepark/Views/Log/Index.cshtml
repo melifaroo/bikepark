@@ -2,143 +2,154 @@
 @{
     Layout = "_MainLayout";
     ViewData["Title"] = "Журнал";
-    var Number = ViewBag.Number;
-    var Error = ViewBag.Error;    
-    Status[] Statuses = ViewBag.Statuses;
-    var From    = ViewBag.From;
-    var To      = ViewBag.To;
+
+    string Statuses = ViewBag.Statuses;
+    DateTime? From    = ViewBag.From;
+    DateTime?  To      = ViewBag.To;
+    var TotalPages = ViewBag.TotalPages;
+    var PageSize = ViewBag.PageSize;
+    
+    Status[] StatusList = (Statuses!=null)?Statuses.Split(",").Select(Int32.Parse).Cast<Status>().ToArray():
+                            Enum.GetValues(typeof(Status)).Cast<Status>().ToArray();
+    string ExportURL = "/Log/Export/";
+    if (Statuses!=null || From!=null || To!=null) ExportURL += "?";
+    if (Statuses!=null) ExportURL += "statuses=" + Statuses;
+    if (From!=null) ExportURL += "&from=" + From?.ToString("yyyy-MM-dd");
+    if (To!=null) ExportURL += "&to=" + To?.ToString("yyyy-MM-dd");
 }
-@if (Statuses != null)
-{
-    <form asp-controller="Log">
-        <div class="accordion" id="index">   
-            <div class="accordion-item">
-                <h5 class="accordion-header" id="title">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filter" aria-expanded="true" aria-controls="filter">  
-                        <b>@ViewData["Title"]</b> 
-                        <span class="px-1"> </span>  
-                        <b>@ViewBag.LogName</b>
-                    </button>
-                </h5>
-                <div class="accordion-collapse collapse" aria-labelledby="title" data-bs-parent="#index" id="filter" >
-                    <div class="accordion-body">
-                        <div class="d-flex flex-wrap justify-content-between align-items-center">
-                            <ul class="nav col-md-12 justify-content-start">       
-                                <li class="nav-item  col-md-2">                       
-                                    <input name="From" value="@(From?.ToString("yyyy-MM-dd"))" class="form-control form-control-sm" type="date"/> 
-                                </li>  
-                                <li class="nav-item  col-md-2">
-                                    <input name="To" value="@(To?.ToString("yyyy-MM-dd"))" class="form-control form-control-sm" type="date"/>
-                                </li>  
-                                <li class="nav-item  col-md-2">
-                                    <button type="submit" class="btn btn-sm btn-primary col-md-12" asp-action="Filter"  formnovalidate="formnovalidate">Показать</button>
-                                </li>  
-                            </ul> 
-                        </div>
-                        <div class="d-flex flex-wrap justify-content-between align-items-center">
-                            <ul class="nav col-md-12 justify-content-start"> 
-                                <li class="nav-item col-md-2">
-                                    <div class="form-check form-switch">
-                                        <input type="checkbox" id="active" class="form-check-input" name="Active" value="true" checked="@(Statuses.Contains(Status.Active))" />
-                                        <label for="active" class="form-check-label">Выданные</label>
-                                        <input type="hidden" name="Active" value="false"  />
-                                    </div>
-                                </li>
-                                <li class="nav-item col-md-2">
-                                    <div class="form-check form-switch">
-                                        <input type="checkbox" id="scheduled" class="form-check-input" name="Scheduled" value="true" checked="@(Statuses.Contains(Status.Scheduled))" />
-                                        <label for="scheduled" class="form-check-label">Брони</label>
-                                        <input type="hidden" name="Scheduled" value="false"  />
-                                    </div>
-                                </li>
-                                <li class="nav-item col-md-2">
-                                    <div class="form-check form-switch">
-                                        <input type="checkbox" id="closed" class="form-check-input" name="Closed" value="true" checked="@(Statuses.Contains(Status.Closed))" />
-                                        <label for="closed" class="form-check-label">Завершенные</label>
-                                        <input type="hidden" name="Closed" value="false"  />
-                                    </div>
-                                </li>
-                                <li class="nav-item col-md-2">
-                                    <div class="form-check form-switch">
-                                        <input type="checkbox" id="draft" class="form-check-input" name="Draft" value="true" checked="@(Statuses.Contains(Status.Draft))" />
-                                        <label for="draft" class="form-check-label">Черновики</label>
-                                        <input type="hidden" name="Draft" value="false"  />
-                                    </div>
-                                </li>
-                            </ul>   
-                        </div>
+<form asp-controller="Log">
+    <div class="accordion" id="index">   
+        <div class="accordion-item">
+            <h5 class="accordion-header" id="title">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filter" aria-expanded="true" aria-controls="filter">  
+                    <b>@ViewData["Title"]</b> 
+                    <span class="px-1"> </span>  
+                    <b>@ViewBag.LogName</b>
+                </button>
+            </h5>
+            <div class="accordion-collapse collapse" aria-labelledby="title" data-bs-parent="#index" id="filter" >
+                <div class="accordion-body">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center">
+                        <ul class="nav col-md-12 justify-content-start">       
+                            <li class="nav-item  col-md-2">                       
+                                <input name="From" value="@From?.ToString("yyyy-MM-dd")" class="form-control form-control-sm" type="date"/> 
+                            </li>  
+                            <li class="nav-item  col-md-2">
+                                <input name="To" value="@To?.ToString("yyyy-MM-dd")" class="form-control form-control-sm" type="date"/>
+                            </li>  
+                            <li class="nav-item  col-md-2">
+                                <button type="submit" class="btn btn-sm btn-primary col-md-12" asp-action="Filter"  formnovalidate="formnovalidate">Показать</button>
+                            </li>  
+                        </ul> 
+                    </div>
+                    <div class="d-flex flex-wrap justify-content-between align-items-center">
+                        <ul class="nav col-md-12 justify-content-start"> 
+                            <li class="nav-item col-md-2">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" id="active" class="form-check-input" name="Active" value="true" checked="@(StatusList.Contains(Status.Active))" />
+                                    <label for="active" class="form-check-label">Выданные</label>
+                                    <input type="hidden" name="Active" value="false"  />
+                                </div>
+                            </li>
+                            <li class="nav-item col-md-2">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" id="scheduled" class="form-check-input" name="Scheduled" value="true" checked="@(StatusList.Contains(Status.Scheduled))" />
+                                    <label for="scheduled" class="form-check-label">Брони</label>
+                                    <input type="hidden" name="Scheduled" value="false"  />
+                                </div>
+                            </li>
+                            <li class="nav-item col-md-2">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" id="closed" class="form-check-input" name="Closed" value="true" checked="@(StatusList.Contains(Status.Closed))" />
+                                    <label for="closed" class="form-check-label">Завершенные</label>
+                                    <input type="hidden" name="Closed" value="false"  />
+                                </div>
+                            </li>
+                            <li class="nav-item col-md-2">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" id="draft" class="form-check-input" name="Draft" value="true" checked="@(StatusList.Contains(Status.Draft))" />
+                                    <label for="draft" class="form-check-label">Черновики</label>
+                                    <input type="hidden" name="Draft" value="false"  />
+                                </div>
+                            </li>
+                        </ul>   
+                    </div>
                                 
-                        <div class="d-flex flex-wrap justify-content-between align-items-center">
-                            <ul class="nav col-md-12 justify-content-start"> 
-                                <li class="nav-item col-md-2">
-                                    <div class="form-check form-switch">
-                                        <input type="checkbox" id="service" class="form-check-input" name="Service" value="true" checked="@(Statuses.Contains(Status.Service))" />
-                                        <label for="service" class="form-check-label">Требуется ремонт</label>
-                                        <input type="hidden" name="Service" value="false"  />
-                                    </div>
-                                </li>
-                                <li class="nav-item col-md-2">
-                                    <div class="form-check form-switch">
-                                        <input type="checkbox" id="onService" class="form-check-input" name="OnService" value="true" checked="@(Statuses.Contains(Status.OnService))" />
-                                        <label for="onService" class="form-check-label">На ремонте</label>
-                                        <input type="hidden" name="OnService" value="false"  />
-                                    </div>
-                                </li>
-                                <li class="nav-item col-md-2">
-                                    <div class="form-check form-switch">
-                                        <input type="checkbox" id="fixed" class="form-check-input" name="Fixed" value="true" checked="@(Statuses.Contains(Status.Fixed))" />
-                                        <label for="fixed" class="form-check-label">Отремонтированные</label>
-                                        <input type="hidden" name="Fixed" value="false"  />
-                                    </div>
-                                </li>
-                            </ul>   
-                        </div>
+                    <div class="d-flex flex-wrap justify-content-between align-items-center">
+                        <ul class="nav col-md-12 justify-content-start"> 
+                            <li class="nav-item col-md-2">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" id="service" class="form-check-input" name="Service" value="true" checked="@(StatusList.Contains(Status.Service))" />
+                                    <label for="service" class="form-check-label">Требуется ремонт</label>
+                                    <input type="hidden" name="Service" value="false"  />
+                                </div>
+                            </li>
+                            <li class="nav-item col-md-2">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" id="onService" class="form-check-input" name="OnService" value="true" checked="@(StatusList.Contains(Status.OnService))" />
+                                    <label for="onService" class="form-check-label">На ремонте</label>
+                                    <input type="hidden" name="OnService" value="false"  />
+                                </div>
+                            </li>
+                            <li class="nav-item col-md-2">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" id="fixed" class="form-check-input" name="Fixed" value="true" checked="@(StatusList.Contains(Status.Fixed))" />
+                                    <label for="fixed" class="form-check-label">Отремонтированные</label>
+                                    <input type="hidden" name="Fixed" value="false"  />
+                                </div>
+                            </li>
+                        </ul>   
                     </div>
                 </div>
             </div>
         </div>
-    </form>
-
-
-    <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
-        <ul class="nav col-md-6 justify-content-start">  
-            @if (Statuses.Contains(Status.Service) || Statuses.Contains(Status.OnService) || Statuses.Contains(Status.Fixed))
-            {
-                <li class="nav-item">
-                    <a class="nav-link" asp-action="Service"><b>Назначить ремонт</b></a>
-                </li>
-            }  
-            @if (Statuses.Contains(Status.Active) || Statuses.Contains(Status.Scheduled) || Statuses.Contains(Status.Closed))
-            {
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Rental" asp-action="Index" asp-route-statuses="@(string.Join(",", Statuses.Where(status => status<=Status.Closed).ToList().Cast<int>() ))" asp-route-from="@(From?.ToString("yyyy-MM-dd"))" asp-route-to="@(To?.ToString("yyyy-MM-dd"))"><b>Журнал заказов</b></a>
-                </li>
-            }  
-        </ul>
-        <ul class="nav col-md-6 justify-content-end">  
-            <li class="nav-item">
-                @*<a class="nav-link" asp-action="Export" asp-route-statuses="@(string.Join(",", Statuses.Cast<int>() ))" asp-route-from="@(From?.ToString("yyyy-MM-dd"))" asp-route-to="@(To?.ToString("yyyy-MM-dd"))">Загрузить таблицу XLS</a>
-       *@
-                <a target="_blank" rel="noopener noreferrer" href="/Log/Export/?statuses=@(string.Join(",", Statuses.Cast<int>()))&from=@(From?.ToString("yyyy-MM-dd"))&to=@(To?.ToString("yyyy-MM-dd"))">Загрузить таблицу XLS</a>
-            </li>    
-        </ul> 
     </div>
+</form>
 
-} else
-{
-    <h3>Журнал</h3>
-    <h5>@ViewBag.LogName</h5>
-}
+<div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
+    <ul class="nav col-md-6 justify-content-start">  
+        @if (StatusList.Contains(Status.Service) || StatusList.Contains(Status.OnService) || StatusList.Contains(Status.Fixed))
+        {
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Service"><b>Назначить ремонт</b></a>
+            </li>
+        }  
+        @if (StatusList.Contains(Status.Active) || StatusList.Contains(Status.Scheduled) || StatusList.Contains(Status.Closed))
+        {
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Rental" asp-action="Index" asp-route-statuses="@Statuses" asp-route-from="@From?.ToString("yyyy-MM-dd")" asp-route-to="@To?.ToString("yyyy-MM-dd")"><b>Журнал заказов</b></a>
+            </li>
+        }  
+    </ul>
+    <ul class="nav col-md-6 justify-content-end">  
+        <li class="nav-item">
+            <a target="_blank" rel="noopener noreferrer" href="@ExportURL">Загрузить таблицу XLS</a>
+        </li>    
+    </ul> 
+</div>
+
 <hr/>
 
-<partial name="_Log" /> 
+<div id="content">
+    <partial name="_Log" /> 
+</div>
+<div id="page-selection">
+
+</div>
+
 
 @section Scripts {          
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="~/js/items.js"></script> 
-    <link href="~/css/rent-main.css" rel="stylesheet" asp-append-version="true" /> 
-    <script>
-        var error = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Error));  
-    </script>
+    <script src="~/lib/jquery-bootpag/jquery.bootpag.min.js"></script> 
+    <script src="~/js/log.js"></script> 
+    <link href="~/css/rent-main.css" rel="stylesheet" asp-append-version="true" />     
+    <script>   
+        var urlPageSelect = "@Url.Action("_Log", "log")";
+        var totalPages = @TotalPages;
+        var pageSize = @PageSize;
+        var statuses = "@Statuses";
+        var from = "@From?.ToString("yyyy-MM-dd")";
+        var to = "@To?.ToString("yyyy-MM-dd")";
+    </script>   
 }
 
