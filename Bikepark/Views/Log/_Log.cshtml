@@ -2,6 +2,7 @@
 
 @{
 }
+
 <table class="table">
     <thead>
         <tr>
@@ -32,26 +33,13 @@
     <tbody>
 @foreach (var item in Model) {            
             var alert = "";
-            if (item.Status == Status.Scheduled)
+            if (item.AttentionStatus == AttentionStatus.Attention)
             {
-                if (item.Start < DateTime.Now.AddMinutes(60))
-                    alert = "alert alert-warning";
-                if (item.Start < DateTime.Now)
                     alert = "alert alert-danger";
             }else 
-            if (item.Status == Status.Active)
+            if (item.AttentionStatus == AttentionStatus.Attention)
             {
-                if (item.End < DateTime.Now.AddMinutes(30))
-                    alert = "alert alert-warning";
-                if (item.End < DateTime.Now)
-                    alert = "alert alert-danger";                
-            }else 
-            if (item.Status >= Status.Service)
-            {
-                if (item.End < DateTime.Now.AddDays(1))
-                    alert = "alert alert-warning";
-                if (item.Status == Status.Service || (item.Status == Status.OnService && item.End < DateTime.Now ))
-                    alert = "alert alert-danger";                
+                    alert = "alert alert-warning";            
             }
             <tr class="@alert">
             <td>

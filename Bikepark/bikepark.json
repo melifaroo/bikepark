@@ -4,8 +4,10 @@
     "WorkingHoursEnd": "2022-06-09T19:00:00",
     "MinServiceDelayBetweenRentsMinutes": 0,
     "DefaultRentTimeHours": 2,
-    "ScheduleWarningTimeMinutes" : 60,
-    "GetBackWarningTimeMinutes" : 30,
-    "OnServiceWarningTimeHours":  24
+    "ScheduleWarningTimeMinutes": 60,
+    "GetBackWarningTimeMinutes": 30,
+    "OnServiceWarningTimeHours": 24,
+    "DefaultLogPageSize" :  10
+
   }
 }

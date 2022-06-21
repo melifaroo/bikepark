@@ -14,6 +14,8 @@ namespace Bikepark
         public int GetBackWarningTimeMinutes { get; set; }
         public int OnServiceWarningTimeHours { get; set; }
 
+        public int DefaultLogPageSize { get; set; }
+
         public static void AddOrUpdateAppSetting<T>(string key, T value)
         {
             try

@@ -79,41 +79,48 @@ namespace Bikepark.Controllers
             });
         }
 
-        private IActionResult Log(IEnumerable<Record> log, string logName, Status[]? statuses = null, DateTime? from = null, DateTime? to = null)
+        private async Task<IActionResult> Log(IQueryable<Record> log, string logName, string? statuses = null, DateTime? from = null, DateTime? to = null, int? pageSize = null, int page = 1)
         {
-            statuses = (statuses == null || statuses.Length == 0) ? AllStatuses : statuses;
+            var count = await log.CountAsync();
+            pageSize ??= _config.Value.DefaultLogPageSize;
             ViewData["LogName"] = logName;
-            ViewData["Statuses"] = statuses;
+            ViewData["Statuses"] = statuses;// != null?statuses.Cast<int>():null;
             ViewData["From"] = from;
             ViewData["To"] = to;
-            return View("Index", log);
+            ViewData["PageSize"] = pageSize;
+            ViewData["TotalPages"] = (int)Math.Ceiling(count / (double)pageSize);
+
+            return View("Index", await log.Skip((page - 1) * (int)pageSize).Take((int)pageSize).ToListAsync());
         }
 
-        // GET: Rental
-        public async Task<IActionResult> Index(string? statuses = null, DateTime? from = null, DateTime? to = null)
+        public async Task<IActionResult> _Log(string? statuses = null, DateTime? from = null, DateTime? to = null, int? pageSize = null, int page = 1)
+        {
+            pageSize ??= _config.Value.DefaultLogPageSize;
+            var log = await FilteredLog(statuses, from, to);
+            return PartialView("_Log", await log.Skip((page - 1) * (int)pageSize).Take((int)pageSize).ToListAsync());
+        }
+
+        private async Task<IQueryable<Record>> FilteredLog(string? statuses = null, DateTime? from = null, DateTime? to = null)
         {
             statuses = (statuses == null || statuses.Length == 0) ? (string.Join(",", AllStatuses.Cast<int>())) : statuses;
             var Statuses = statuses.Split(",").Select(Int32.Parse).Cast<Status>().ToArray();
-            var name = "Заказы" ;
-            await _context.Records
+            var log = _context.Records
                 .Where(record => Statuses.Contains(record.Status))
-                .Where(record => (to == null || record.Start <= ((DateTime)to).AddDays(1)) && (from == null || record.Start >= ((DateTime)from)))
-                .ForEachAsync( record => record.Attention(_config.Value.GetBackWarningTimeMinutes, _config.Value.ScheduleWarningTimeMinutes, _config.Value.OnServiceWarningTimeHours) );
+                .Where(record => (to == null || record.Start <= ((DateTime)to).AddDays(1)) && (from == null || record.Start >= ((DateTime)from)));
+
+            log.ForEach(record => record.Attention(_config.Value.GetBackWarningTimeMinutes, _config.Value.ScheduleWarningTimeMinutes, _config.Value.OnServiceWarningTimeHours));
             await _context.SaveChangesAsync();
-            var log = await _context.Records
-                .Where(record => Statuses.Contains(record.Status))
-                .Where(record => (to == null || record.Start <= ((DateTime)to).AddDays(1)) && (from == null || record.Start >= ((DateTime)from)))
+
+            return log
                 .OrderBy(record => record.AttentionStatus)
-                .ThenByDescending(record => record.Start)
-                .ToListAsync();
-            DateTime? oldest = null ;
-            DateTime? newest = null;
-            if (log.Count > 0)
-            {
-                oldest = log.LastOrDefault()?.Start;
-                newest = log.FirstOrDefault()?.End;
-            }
-            return Log(log, name, Statuses, from ?? oldest, to ?? newest);
+                .ThenByDescending(record => record.Start);
+        }
+
+        // GET: Rental
+        public async Task<IActionResult> Index(string? statuses = null, DateTime? from = null, DateTime? to = null, int? pageSize = null, int page = 1)
+        {
+            var log = await FilteredLog(statuses, from, to);
+            return await Log(log, "Заказы", statuses, from, to, pageSize, page);
         }
 
         // POST: Rental
@@ -121,7 +128,7 @@ namespace Bikepark.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Filter( [FromForm] DateTime From, DateTime To, bool Active, bool Scheduled, bool Closed, bool Draft)
+        public IActionResult Filter( [FromForm] bool Active, bool Scheduled, bool Closed, bool Draft, DateTime? From = null, DateTime? To = null )
         {
             var statuses = new List<Status>();
             if (Active) statuses.Add(Status.Active); 

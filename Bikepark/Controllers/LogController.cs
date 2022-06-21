@@ -24,55 +24,81 @@ namespace Bikepark.Controllers
             _config = config;
         }
 
-        private IActionResult Log(IEnumerable<ItemRecord> log, string logName, Status[]? statuses = null, DateTime? from = null, DateTime? to = null)
+        private async Task<IActionResult> Log(IQueryable<ItemRecord> log, string logName, string? statuses = null, DateTime? from = null, DateTime? to = null, int? pageSize = null, int page = 1)
         {
+            var count = await log.CountAsync();
+            pageSize ??= _config.Value.DefaultLogPageSize;
             ViewData["LogName"] = logName;
-            ViewData["Statuses"] = statuses != null?statuses.Cast<int>():null;
+            ViewData["Statuses"] = statuses;// != null?statuses.Cast<int>():null;
             ViewData["From"] = from;
             ViewData["To"] = to;
-            return View("Index", log);
+            ViewData["PageSize"] = pageSize;
+            ViewData["TotalPages"] = (int)Math.Ceiling(count / (double)pageSize);
+
+            return View("Index", await log.Skip((page - 1) * (int)pageSize).Take((int)pageSize).ToListAsync());
         }
 
-        private int statusOrder(Status status, DateTime? start, DateTime? end)
+        public async Task<IActionResult> _Log(string? statuses = null, DateTime? from = null, DateTime? to = null, int? pageSize = null, int page = 1)
         {
-            return (status == Status.Active && end < DateTime.Now) ? 0 :
-                    (status == Status.Scheduled && start < DateTime.Now) ? 1 :
-                    (status == Status.Service) ? 2 :
-                    (status == Status.OnService && end < DateTime.Now) ? 3 :
-                    (status == Status.Active && end < DateTime.Now.AddMinutes(_config.Value.ScheduleWarningTimeMinutes)) ? 4 :
-                    (status == Status.Scheduled && start < DateTime.Now.AddMinutes(_config.Value.ScheduleWarningTimeMinutes)) ? 5 :
-                    (status == Status.OnService && start < DateTime.Now.AddHours(_config.Value.OnServiceWarningTimeHours)) ? 6 :
-                    (status == Status.Draft) ? 7 :
-                    (status == Status.Active) ? 8 :
-                    (status == Status.Scheduled) ? 9 :
-                    (status == Status.OnService) ? 10 : 11;
+            pageSize ??= _config.Value.DefaultLogPageSize;
+            var log = await FilteredLog(statuses, from, to);
+            return PartialView("_Log", await log.Skip((page - 1) * (int)pageSize).Take((int)pageSize).ToListAsync());
         }
 
-        // GET: Log
-        public async Task<IActionResult> Index(string? statuses = null, DateTime? from = null, DateTime? to = null)
-        {
+        private async Task<IQueryable<ItemRecord>> FilteredLog(string? statuses = null, DateTime? from = null, DateTime? to = null) { 
             statuses = (statuses == null || statuses.Length==0) ? (string.Join(",", AllStatuses.Cast<int>())) : statuses;
             var Statuses = statuses.Split(",").Select(Int32.Parse).Cast<Status>().ToArray();
-            var name = "Записи";
-            await _context.ItemRecords
-                .Where(irecord => Statuses.Contains(irecord.Status) )
-                .Where(irecord => (to == null || irecord.Start <= ((DateTime)to).AddDays(1)) && (from == null || irecord.Start >= ((DateTime)from)))
-                .ForEachAsync(irecord => irecord.Attention(_config.Value.GetBackWarningTimeMinutes, _config.Value.ScheduleWarningTimeMinutes, _config.Value.OnServiceWarningTimeHours));
+            from ??= DateTime.MinValue;
+            to = (to == null) ? DateTime.MaxValue : ((DateTime)to).AddDays(1);
+
+            var log = _context.ItemRecords
+                .Where(irecord => Statuses.Contains(irecord.Status))
+                .Where(irecord => ( (irecord.Start??DateTime.MinValue) <= ((DateTime)to)) && ((irecord.End ?? DateTime.MaxValue) >= ((DateTime)from)));
+
+            log.ForEach(irecord => irecord.Attention(_config.Value.GetBackWarningTimeMinutes, _config.Value.ScheduleWarningTimeMinutes, _config.Value.OnServiceWarningTimeHours));
             await _context.SaveChangesAsync();
-            var log = await _context.ItemRecords
-                .Where(irecord => Statuses.Contains(irecord.Status) )
-                .Where(irecord => (to == null || irecord.Start <= ((DateTime)to).AddDays(1)) && (from == null || irecord.Start >= ((DateTime)from)))
+
+            return log
                 .OrderBy(irecord => irecord.AttentionStatus)
-                .ThenByDescending(irecord => irecord.End)
-                .ToListAsync();
-            DateTime? oldest = null;
-            DateTime? newest = null;
-            if (log.Count > 0)
-            {
-                oldest = log.LastOrDefault()?.Start;
-                newest = log.FirstOrDefault()?.End;
-            }
-            return Log( log, name, Statuses, from ?? oldest, to ?? newest );
+                .ThenByDescending(irecord => irecord.End);        
+        }
+
+
+        // GET: Log
+        public async Task<IActionResult> Index(string? statuses = null, DateTime? from = null, DateTime? to = null, int? pageSize = null, int page = 1)
+        {
+            var log = await FilteredLog(statuses, from, to);
+            return await Log( log, "Записи", statuses, from , to, pageSize, page );
+        }
+
+
+        public async Task<FileResult> Export(string? statuses = null, DateTime? from = null, DateTime? to = null)
+        {
+            var fileName = "Log";
+            var folderPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\Docs\Temp"));
+            var log = await (await FilteredLog(statuses, from, to)).ToListAsync();
+            var data = log//.Include(irecord => irecord.Item).ThenInclude(item => item.ItemType).ThenInclude(type => type.ItemCategory).Include(irecord => irecord.Pricing)
+                .Select(irecord => new ItemRecordExportModel
+                {
+                    ItemRecordID = irecord.ItemRecordID,
+                    ItemCategoryName = irecord.Item?.ItemType?.ItemCategory?.ItemCategoryName,
+                    ItemTypeName = irecord.Item?.ItemType?.ItemTypeName,
+                    ItemNumber = irecord.Item?.ItemNumber,
+                    Start = irecord.Start,
+                    End = irecord.End,
+                    Status = EnumHelper<Status>.GetDisplayValue(irecord.Status),
+                    PricingName = irecord.Pricing?.PricingName,
+                    Price = irecord.Pricing?.Price,
+                    PricingType = irecord.Pricing==null?null:EnumHelper<PricingType>.GetDisplayValue(irecord.Pricing.PricingType),
+                    RecordID = irecord.RecordID
+                })
+                .ToList();
+
+
+            var (fileFullName, fileNameWithExt) = ExcelTableHelper.CreateExcelFile<ItemRecordExportModel>(data, folderPath, fileName);
+
+            byte[] fileBytes = System.IO.File.ReadAllBytes(fileFullName);
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileNameWithExt);
         }
 
         // POST: Log
@@ -80,7 +106,7 @@ namespace Bikepark.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Filter( [FromForm] DateTime From, DateTime To, bool Active, bool Scheduled, bool Closed, bool Draft, bool Service, bool OnService, bool Fixed)
+        public IActionResult Filter( [FromForm] bool Active, bool Scheduled, bool Closed, bool Draft, bool Service, bool OnService, bool Fixed, DateTime? From = null, DateTime? To = null)
         {
             var statuses = new List<Status>();
             if (Active) statuses.Add(Status.Active);
@@ -108,11 +134,10 @@ namespace Bikepark.Controllers
                 return NotFound();
             }
             var name = type.ItemTypeName;
-            var log = await _context.ItemRecords
+            var log = _context.ItemRecords
                 .Where(irecord => irecord.Item.ItemTypeID == id)
-                .OrderByDescending(irecord => irecord.End)
-                .ToListAsync();
-            return Log(log, "Записи по модели " + name +" (#"+id+")" );
+                .OrderByDescending(irecord => irecord.End);
+            return await Log(log, "Записи по модели " + name +" (#"+id+")" );
         }
 
         // GET: Log/OfItem/5
@@ -128,11 +153,10 @@ namespace Bikepark.Controllers
                 return NotFound();
             }
             var number = item.ItemNumber;
-            var log = await _context.ItemRecords
+            var log = _context.ItemRecords
                 .Where(irecord => irecord.ItemID == id)
-                .OrderByDescending(record => record.End)
-                .ToListAsync();
-            return Log(log, "Записи по номеру #" + number );
+                .OrderByDescending(record => record.End);
+            return await Log(log, "Записи по номеру #" + number );
         }
 
         // GET: Log/WithPricing/5
@@ -148,11 +172,10 @@ namespace Bikepark.Controllers
                 return NotFound();
             }
             var name = pricing.PricingName;
-            var log = await _context.ItemRecords
+            var log = _context.ItemRecords
                 .Where(irecord => irecord.PricingID == id)
-                .OrderByDescending(record => record.End)
-                .ToListAsync();
-            return Log(log, "Записи по тарифу #" + name );
+                .OrderByDescending(record => record.End);
+            return await Log(log, "Записи по тарифу #" + name );
         }
 
 
@@ -313,6 +336,10 @@ namespace Bikepark.Controllers
         public async Task<IActionResult> DeleteItemRecordConfirmed(int id)
         {
             var rentalRecord = await _context.ItemRecords.FindAsync(id);
+            if (rentalRecord == null)
+            {
+                return NotFound();
+            }
             _context.ItemRecords.Remove(rentalRecord);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -400,7 +427,7 @@ namespace Bikepark.Controllers
             {
                 return NotFound();
             }
-            ItemRecord itemRecord = await _context.ItemRecords.FindAsync(id);
+            var itemRecord = await _context.ItemRecords.FindAsync(id);
 
             if (itemRecord == null)
             {
@@ -425,7 +452,7 @@ namespace Bikepark.Controllers
         {
             if (ModelState.IsValid)
             {
-                Item item = await _context.Items.FirstOrDefaultAsync(item => item.ItemNumber == number.ItemNumber);
+                var item = await _context.Items.FirstOrDefaultAsync(item => item.ItemNumber == number.ItemNumber);
                 if (item == null)
                 {
                     ViewData["Error"] = "номер не найден";
@@ -493,7 +520,7 @@ namespace Bikepark.Controllers
             {
                 return NotFound();
             }
-            ItemRecord irec = await _context.ItemRecords.FindAsync(id);
+            var irec = await _context.ItemRecords.FindAsync(id);
 
             if (irec == null)
             {
@@ -510,37 +537,6 @@ namespace Bikepark.Controllers
             return RedirectToAction(nameof(Index), new { statuses = string.Join(",", (new Status[] { Status.Service, Status.OnService }).Cast<int>()) });
         }
 
-        public async Task<FileResult> Export(string? statuses = null, DateTime? from = null, DateTime? to = null)
-        {
-            var fileName = "Log";
-            var folderPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\Docs\Temp"));    
-
-            statuses = (statuses == null || statuses.Length == 0) ? (string.Join(",", AllStatuses.Cast<int>())) : statuses;
-            var Statuses = statuses.Split(",").Select(Int32.Parse).Cast<Status>().ToArray();
-            var data = await _context.ItemRecords
-                .Where(irecord => Statuses.Contains(irecord.Status))
-                .Where(irecord => (to == null || irecord.Start <= ((DateTime)to).AddDays(1)) && (from == null || irecord.Start >= ((DateTime)from)))
-                .OrderByDescending(irecord => irecord.End)
-                .Select(irecord => new ItemRecordExportModel { 
-                    ItemRecordID = irecord.ItemRecordID,
-                    ItemCategoryName = irecord.Item.ItemType.ItemCategory.ItemCategoryName,
-                    ItemTypeName = irecord.Item.ItemType.ItemTypeName,
-                    ItemNumber = irecord.Item.ItemNumber,
-                    Start = irecord.Start,
-                    End = irecord.End,
-                    Status = EnumHelper<Status>.GetDisplayValue(irecord.Status),
-                    PricingName = irecord.Pricing.PricingName,
-                    Price = irecord.Pricing.Price,
-                    PricingType = EnumHelper<PricingType>.GetDisplayValue(irecord.Pricing.PricingType),
-                    RecordID = irecord.RecordID
-                })
-                .ToListAsync();
-
-            var (fileFullName, fileNameWithExt) = ExcelTableHelper.CreateExcelFile<ItemRecordExportModel>(data, folderPath, fileName);
-
-            byte[] fileBytes = System.IO.File.ReadAllBytes(fileFullName);
-            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileNameWithExt);
-        }
 
     }
 }

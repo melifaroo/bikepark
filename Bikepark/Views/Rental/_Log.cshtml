@@ -22,32 +22,24 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model) {  
             var alert = "";
-            var start = "";
-            var end = "";
-            if (item.Status == Status.Scheduled)
+            if (item.AttentionStatus == AttentionStatus.Attention)
             {
-                if (item.Start < DateTime.Now.AddMinutes(60))
-                    alert = "alert alert-warning";
-                if (item.Start < DateTime.Now)
                     alert = "alert alert-danger";
             }else 
-            if (item.Status == Status.Active)
+            if (item.AttentionStatus == AttentionStatus.Attention)
             {
-                if (item.End < DateTime.Now.AddMinutes(30))
-                    alert = "alert alert-warning";
-                if (item.End < DateTime.Now)
-                    alert = "alert alert-danger";                
+                    alert = "alert alert-warning";            
             }
-        <tr class="@alert">
+            <tr class="@alert">
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
-            <td style="@start">
+            <td>
                 @Html.DisplayFor(modelItem => item.Start)
             </td>
-            <td style="@end">
+            <td>
                 @Html.DisplayFor(modelItem => item.End)
             </td>
             <td>

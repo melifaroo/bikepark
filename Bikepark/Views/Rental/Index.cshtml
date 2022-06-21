@@ -2,92 +2,121 @@
 @{
     Layout = "_MainLayout";
     ViewData["Title"] = "Журнал";
-    var Number = ViewBag.Number;
-    var Error = ViewBag.Error;    
-    Status[] Statuses = ViewBag.Statuses;
-    var From    = ViewBag.From;
-    var To      = ViewBag.To;
+
+    string Statuses = ViewBag.Statuses;
+    DateTime? From    = ViewBag.From;
+    DateTime?  To      = ViewBag.To;
+    var TotalPages = ViewBag.TotalPages;
+    var PageSize = ViewBag.PageSize;
+    
+    Status[] StatusList = (Statuses!=null)?Statuses.Split(",").Select(Int32.Parse).Cast<Status>().ToArray():
+                            Enum.GetValues(typeof(Status)).Cast<Status>().ToArray();
+    string ExportURL = "/Log/Export/";
+    if (Statuses!=null || From!=null || To!=null) ExportURL += "?";
+    if (Statuses!=null) ExportURL += "statuses=" + Statuses;
+    if (From!=null) ExportURL += "&from=" + From?.ToString("yyyy-MM-dd");
+    if (To!=null) ExportURL += "&to=" + To?.ToString("yyyy-MM-dd");
 }
-    <form asp-controller="Rental">
-        <div class="accordion" id="index">   
-            <div class="accordion-item">
-                <h5 class="accordion-header" id="title">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filter" aria-expanded="true" aria-controls="filter">  
-                        <b>@ViewData["Title"]</b>   
-                        <span class="px-1"> </span>  
-                        <b>@ViewBag.LogName</b>                      
-                        <span class="px-1"></span>  
-                    </button>
-                </h5>
-                <div class="accordion-collapse collapse" aria-labelledby="title" data-bs-parent="#index" id="filter" >
-                    <div class="accordion-body">
-                        <div class="d-flex flex-wrap justify-content-between align-items-center">
-                            <ul class="nav col-md-12 justify-content-start">       
-                                <li class="nav-item col-md-2">                       
-                                    <input name="From" value="@(From?.ToString("yyyy-MM-dd"))" class="form-control form-control-sm" type="date"/> 
-                                </li>  
-                                <li class="nav-item col-md-2">
-                                    <input name="To" value="@(To?.ToString("yyyy-MM-dd"))" class="form-control form-control-sm" type="date"/>
-                                </li>  
-                                <li class="nav-item col-md-2">
-                                    <button type="submit" class="btn btn-sm btn-primary col-md-12" asp-action="Filter">Показать</button>
-                                </li>    
-                            </ul> 
-                        </div>
-                        <div class="d-flex flex-wrap justify-content-between align-items-center">
-                            <ul class="nav col-md-12 justify-content-start"> 
-                                <li class="nav-item col-md-2">
-                                    <div class="form-check form-switch">
-                                        <input type="checkbox" id="active" class="form-check-input" name="Active" value="true" checked="@(Statuses.Contains(Status.Active))" />
-                                        <label for="active" class="form-check-label">Выданные</label>
-                                        <input type="hidden" name="Active" value="false"  />
-                                    </div>
-                                </li>
-                                <li class="nav-item col-md-2">
-                                    <div class="form-check form-switch">
-                                        <input type="checkbox" id="scheduled" class="form-check-input" name="Scheduled" value="true" checked="@(Statuses.Contains(Status.Scheduled))" />
-                                        <label for="scheduled" class="form-check-label">Брони</label>
-                                        <input type="hidden" name="Scheduled" value="false"  />
-                                    </div>
-                                </li>
-                                <li class="nav-item  col-md-2">
-                                    <div class="form-check form-switch">
-                                        <input type="checkbox" id="closed" class="form-check-input" name="Closed" value="true" checked="@(Statuses.Contains(Status.Closed))" />
-                                        <label for="closed" class="form-check-label">Завершенные</label>
-                                        <input type="hidden" name="Closed" value="false"  />
-                                    </div>
-                                </li>
-                                <li class="nav-item col-md-2">
-                                    <div class="form-check form-switch">
-                                        <input type="checkbox" id="draft" class="form-check-input" name="Draft" value="true" checked="@(Statuses.Contains(Status.Draft))" />
-                                        <label for="draft" class="form-check-label">Черновики</label>
-                                        <input type="hidden" name="Draft" value="false"  />
-                                    </div>
-                                </li>
-                            </ul>   
-                        </div>                              
+<form asp-controller="Rental">
+    <div class="accordion" id="index">   
+        <div class="accordion-item">
+            <h5 class="accordion-header" id="title">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filter" aria-expanded="true" aria-controls="filter">  
+                    <b>@ViewData["Title"]</b>   
+                    <span class="px-1"> </span>  
+                    <b>@ViewBag.LogName</b>                      
+                    <span class="px-1"></span>  
+                </button>
+            </h5>
+            <div class="accordion-collapse collapse" aria-labelledby="title" data-bs-parent="#index" id="filter" >
+                <div class="accordion-body">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center">
+                        <ul class="nav col-md-12 justify-content-start">       
+                            <li class="nav-item col-md-2">                       
+                                <input name="From" value="@From?.ToString("yyyy-MM-dd")" class="form-control form-control-sm" type="date"/> 
+                            </li>  
+                            <li class="nav-item col-md-2">
+                                <input name="To" value="@To?.ToString("yyyy-MM-dd")" class="form-control form-control-sm" type="date"/>
+                            </li>  
+                            <li class="nav-item col-md-2">
+                                <button type="submit" class="btn btn-sm btn-primary col-md-12" asp-action="Filter">Показать</button>
+                            </li>    
+                        </ul> 
                     </div>
+                    <div class="d-flex flex-wrap justify-content-between align-items-center">
+                        <ul class="nav col-md-12 justify-content-start"> 
+                            <li class="nav-item col-md-2">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" id="active" class="form-check-input" name="Active" value="true" checked="@(StatusList.Contains(Status.Active))" />
+                                    <label for="active" class="form-check-label">Выданные</label>
+                                    <input type="hidden" name="Active" value="false"  />
+                                </div>
+                            </li>
+                            <li class="nav-item col-md-2">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" id="scheduled" class="form-check-input" name="Scheduled" value="true" checked="@(StatusList.Contains(Status.Scheduled))" />
+                                    <label for="scheduled" class="form-check-label">Брони</label>
+                                    <input type="hidden" name="Scheduled" value="false"  />
+                                </div>
+                            </li>
+                            <li class="nav-item  col-md-2">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" id="closed" class="form-check-input" name="Closed" value="true" checked="@(StatusList.Contains(Status.Closed))" />
+                                    <label for="closed" class="form-check-label">Завершенные</label>
+                                    <input type="hidden" name="Closed" value="false"  />
+                                </div>
+                            </li>
+                            <li class="nav-item col-md-2">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" id="draft" class="form-check-input" name="Draft" value="true" checked="@(StatusList.Contains(Status.Draft))" />
+                                    <label for="draft" class="form-check-label">Черновики</label>
+                                    <input type="hidden" name="Draft" value="false"  />
+                                </div>
+                            </li>
+                        </ul>   
+                    </div>                              
                 </div>
             </div>
         </div>
-    </form>
+    </div>
+</form>
+
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
     <ul class="nav col-md-6 justify-content-start">
         <li class="nav-item">
             <a class="nav-link" asp-action="Create"><b>Новый заказ</b></a>
         </li>  
         <li class="nav-item">
-            <a class="nav-link" asp-controller="Log" asp-action="Index" asp-route-statuses="@(string.Join(",", Statuses.Cast<int>() ))" asp-route-from="@(From?.ToString("yyyy-MM-dd"))" asp-route-to="@(To?.ToString("yyyy-MM-dd"))"><b>Журнал по номерам</b></a>
+            <a class="nav-link" asp-controller="Log" asp-action="Index" asp-route-statuses="@Statuses" asp-route-from="@From?.ToString("yyyy-MM-dd")" asp-route-to="@To?.ToString("yyyy-MM-dd")"><b>Журнал по номерам</b></a>
         </li> 
     </ul>
     <ul class="nav col-md-6 justify-content-end">  
         <li class="nav-item">
-            <a class="nav-link" asp-action="Export" asp-route-statuses="@(string.Join(",", Statuses.Cast<int>() ))" asp-route-from="@(From?.ToString("yyyy-MM-dd"))" asp-route-to="@(To?.ToString("yyyy-MM-dd"))">Загрузить таблицу XLS</a>
-        </li>    
+            <a target="_blank" rel="noopener noreferrer" href="@ExportURL">Загрузить таблицу XLS</a>
+        </li>       
     </ul> 
 </div>
-<partial name="_Log"  /> 
 
-@section Scripts {          
-    <link href="~/css/rent-main.css" rel="stylesheet" asp-append-version="true" /> 
+<hr/>
+
+<div id="content">
+    <partial name="_Log" /> 
+</div>
+<div id="page-selection">
+
+</div>
+
+@section Scripts {             
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/lib/jquery-bootpag/jquery.bootpag.min.js"></script> 
+    <script src="~/js/log.js"></script> 
+    <link href="~/css/rent-main.css" rel="stylesheet" asp-append-version="true" />     
+    <script>   
+        var urlPageSelect = "@Url.Action("_Log", "rental")";
+        var totalPages = @TotalPages;
+        var pageSize = @PageSize;
+        var statuses = "@Statuses";
+        var from = "@From?.ToString("yyyy-MM-dd")";
+        var to = "@To?.ToString("yyyy-MM-dd")";
+    </script>  
 }
