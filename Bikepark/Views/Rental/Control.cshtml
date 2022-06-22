@@ -9,11 +9,7 @@
 @{
     Layout = "_MainLayout";
     ViewData["Title"] = "Запись проката";
-    ViewData["menu"] = "";
 }
-       @* data-val="true"
-             data-val-email="The Email Address field is not a valid email address."
-             data-val-required="The Email Address field is required."*@
 
     <form  id="rental-control" asp-controller="Rental" style="display : none " class="container-sm" >
         <input name="RecordID"    value="@Model.RecordID" type="hidden"/> 
@@ -63,6 +59,9 @@
                     </button>
                     <button type="submit" asp-action="Cancel" id="btn-cancel" class="btn btn-warning col-sm-4 mx-0 text-truncate" formnovalidate="formnovalidate" style="display: inline;">
                         <i class="bi bi-calendar-minus"></i> Снять (<i id="scheduled-count">0</i>)
+                    </button>
+                    <button type="submit" asp-action="Cancel" id="btn-canceldraft" class="btn btn-secondary col-sm-4 mx-0 text-truncate" formnovalidate="formnovalidate" style="display: inline;">
+                        <i class="bi bi-calendar-minus"></i> Удалить
                     </button>
                     <button type="submit" asp-controller="Log" id="btn-service" class="btn btn-danger col-sm-4 mx-0 text-truncate" formnovalidate="formnovalidate" asp-action="ControlRecordService" asp-route-id="@Model?.RecordID" style="display: inline;">
                         <i class="bi bi-wrench-adjustable"></i> Ремонт (<i id="serviced-count">0</i>)

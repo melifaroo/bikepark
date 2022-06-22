@@ -3,50 +3,78 @@
 @{
 }
 
-<h1>Настройки</h1>
+<h3>Настройки</h3>
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom" id="storage-title">
-    <ul class="nav col-md-6 justify-content-start">        
+    <ul class="nav col-sm-6 justify-content-start">        
     </ul>
 
-    <ul class="nav  col-md-6 justify-content-end">  
+    <ul class="nav  col-sm-6 justify-content-end">  
         <li class="nav-item"> 
             <a class="nav-link" asp-action="Main" >Управление</a> 
         </li>    
     </ul>  
 </div>
 
-
 <div class="container-sm">  
     <form asp-controller="Storage">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-sm-12">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-                <div class="form-group">
-                    <label for="WorkingHoursStart" class="control-label">Время открытия велоцентра</label>
-                    <input id="WorkingHoursStart" name="WorkingHoursStart" value="@Model.WorkingHoursStart.ToString("HH:mm")" type="time" class="form-control" required/>
+                <div class="form-group input-group">
+                    <div class="input-group-prepend col-sm-8">
+                        <label for="WorkingHoursStart" class="control-label">Время открытия велоцентра</label>
+                    </div>
+                    <input id="WorkingHoursStart" name="WorkingHoursStart" value="@Model.WorkingHoursStart.ToString("HH:mm")" type="time" class="form-control" required/>              
                 </div>
-                <div class="form-group">
-                    <label for="WorkingHoursEnd" class="control-label">Время закрытия велоцентра</label>
+                <div class="form-group input-group">
+                    <div class="input-group-prepend col-sm-8">
+                        <label for="WorkingHoursEnd" class="control-label">Время закрытия велоцентра</label>
+                    </div>
                     <input id="WorkingHoursEnd" name="WorkingHoursEnd" value="@Model.WorkingHoursEnd.ToString("HH:mm")" type="time" class="form-control" required/>
-
                 </div>
-
-                <div class="form-group" id="duration">
-                    <label for="MinServiceDelayBetweenRentsMinutes" class="control-label">Минимальное время между прокатами одного велосипеда (минут)</label>
+                <div class="form-group input-group" id="duration">
+                    <div class="input-group-prepend col-sm-8">
+                        <label for="MinServiceDelayBetweenRentsMinutes" class="control-label">Минимальное время между прокатами одного велосипеда (минут)</label>
+                    </div>
                     <input id="MinServiceDelayBetweenRentsMinutes" name="MinServiceDelayBetweenRentsMinutes" value="@Model.MinServiceDelayBetweenRentsMinutes" type="number" step="15" min="0"  class="form-control" required/>
                 </div>
-                <div class="form-group">
-                    <label for="DefaultRentTimeHours" class="control-label">Продолжительность проката по умолчанию (часов)</label>
+                <div class="form-group input-group">
+                    <div class="input-group-prepend col-sm-8">
+                        <label for="DefaultRentTimeHours" class="control-label">Продолжительность проката по умолчанию (часов)</label>
+                    </div>
                     <input id="DefaultRentTimeHours" name="DefaultRentTimeHours" value="@Model.DefaultRentTimeHours" type="number" step="1" min="0" max="8" class="form-control" required/>
+                </div>                
+                <div class="form-group input-group">
+                    <div class="input-group-prepend col-sm-8">
+                        <label for="GetBackWarningTimeMinutes" class="control-label">Предупреждение о завершении проката (за X минут)</label>
+                    </div>
+                    <input id="GetBackWarningTimeMinutes" name="GetBackWarningTimeMinutes" value="@Model.GetBackWarningTimeMinutes" type="number" step="10" min="0" max="60" class="form-control" required/>
+                </div>
+                <div class="form-group input-group">
+                    <div class="input-group-prepend col-sm-8">
+                        <label for="ScheduleWarningTimeMinutes" class="control-label">Предупреждение о назначенном бронировании (за X минут)</label>
+                    </div>
+                    <input id="ScheduleWarningTimeMinutes" name="ScheduleWarningTimeMinutes" value="@Model.ScheduleWarningTimeMinutes" type="number" step="10" min="0" max="180" class="form-control" required/>
+                </div>
+                <div class="form-group input-group">
+                    <div class="input-group-prepend col-sm-8">
+                        <label for="OnServiceWarningTimeHours" class="control-label">Предупреждение о завершающемся ремонте (за X часов)</label>
+                    </div>
+                    <input id="OnServiceWarningTimeHours" name="OnServiceWarningTimeHours" value="@Model.OnServiceWarningTimeHours" type="number" step="1" min="0" max="24" class="form-control" required/>
+                </div>
+                <div class="form-group input-group">
+                    <div class="input-group-prepend col-sm-8">
+                        <label for="DefaultLogPageSize" class="control-label">Число записей на странице журнала</label>
+                    </div>
+                    <input id="DefaultLogPageSize" name="DefaultLogPageSize" value="@Model.DefaultLogPageSize" type="number" step="5" min="5" max="100" class="form-control" required/>
                 </div>
             </div>
         </div>
         
         <div class="flex-row justify-content-start">
             <div class="row ">   
-                <div class="form-group col-md-4 ">
-                    <button type="submit"  asp-action="SettingsUpdate" class="btn btn-primary col-md-12">Сохранить настройки</button> 
+                <div class="form-group col-sm-4 ">
+                    <button type="submit"  asp-action="SettingsUpdate" class="btn btn-primary col-sm-12">Сохранить настройки</button> 
                 </div>
             </div>
         </div>

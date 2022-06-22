@@ -7,13 +7,17 @@
     Layout = "_MainLayout";
 }
 
-<h1>Учетные записи администраторов велопарка</h1>
+<h3>Учетные записи администраторов велопарка</h3>
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
-    <ul class="nav  col-md-6 justify-content-end">
+    
+    <ul class="nav  col-sm-6 justify-content-start">  
+    </ul>  
+    <ul class="nav  col-sm-6 justify-content-end">  
         <li class="nav-item"> 
-            <a class="nav-link" asp-action="Main" asp-controller="Storage">Управление</a> 
+            <a class="nav-link" asp-controller="Storage" asp-action="Main" >Управление</a> 
         </li>    
     </ul>  
+
 </div>
 
 <table class="table">
@@ -24,6 +28,8 @@
             </th>
             <th>
                 Роль
+            </th>
+            <th>
             </th>
         </tr>
     </thead>

@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bikepark.Models
 {
-    public class Number
+    public class Number : ReponseModel
     {
-        [Required]
         [Display(Name = "Номер")]
+        [Required(ErrorMessage = "Укажите номер велосипеда")]
         public string ItemNumber { get; set; }
     }
 }

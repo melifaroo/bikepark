@@ -2,7 +2,7 @@
 
 namespace Bikepark.Models
 {
-    public class ItemRecordExportModel
+    public class LogExportModel
     {
         [Display(Name = "#")]
         public int? ItemRecordID { get; set; }

@@ -71,14 +71,13 @@ namespace Bikepark.Controllers
             return await Log( log, "Записи", statuses, from , to, pageSize, page );
         }
 
-
         public async Task<FileResult> Export(string? statuses = null, DateTime? from = null, DateTime? to = null)
         {
             var fileName = "Log";
             var folderPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\Docs\Temp"));
             var log = await (await FilteredLog(statuses, from, to)).ToListAsync();
             var data = log//.Include(irecord => irecord.Item).ThenInclude(item => item.ItemType).ThenInclude(type => type.ItemCategory).Include(irecord => irecord.Pricing)
-                .Select(irecord => new ItemRecordExportModel
+                .Select(irecord => new LogExportModel
                 {
                     ItemRecordID = irecord.ItemRecordID,
                     ItemCategoryName = irecord.Item?.ItemType?.ItemCategory?.ItemCategoryName,
@@ -95,7 +94,7 @@ namespace Bikepark.Controllers
                 .ToList();
 
 
-            var (fileFullName, fileNameWithExt) = ExcelTableHelper.CreateExcelFile<ItemRecordExportModel>(data, folderPath, fileName);
+            var (fileFullName, fileNameWithExt) = ExcelTableHelper.CreateExcelFile<LogExportModel>(data, folderPath, fileName);
 
             byte[] fileBytes = System.IO.File.ReadAllBytes(fileFullName);
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileNameWithExt);
@@ -369,7 +368,7 @@ namespace Bikepark.Controllers
             return View(itemRecord);
         }
 
-        // GET: Rental/ItemDetails/5
+        // GET: Log/ItemRentalDetails/5
         public async Task<IActionResult> ItemRentalDetails(int? id)
         {
             if (id == null)
@@ -399,7 +398,6 @@ namespace Bikepark.Controllers
         {
             ViewData["Pricings"] = _context.Pricings;
             ViewData["ArchivalPricings"] = await _context.Pricings.IgnoreQueryFilters().ToListAsync();
-            ViewData["Availability"] = _context.GetAvailability(null, 0);
             return View("ControlService", itemRecords);
         }
 
@@ -443,23 +441,28 @@ namespace Bikepark.Controllers
         // GET: Log/Service
         public IActionResult Service()
         {
-            return View();
+            var number = new Number();
+            return View(number);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ControlNumberService(Number number)
         {
+            number.IsResponse = true;
             if (ModelState.IsValid)
             {
                 var item = await _context.Items.FirstOrDefaultAsync(item => item.ItemNumber == number.ItemNumber);
                 if (item == null)
                 {
-                    ViewData["Error"] = "номер не найден";
+                    number.IsSuccess = false;
+                    number.Message = "Номер не найден";
                     return View("Service", number);
                 }
                 return await ControlService(new List<ItemRecord>() { new ItemRecord { ItemID = item.ItemID, Item = item, Start = DateTime.Now, End = DateTime.Now.AddDays(1), Status = Status.Service } });
             }
+            number.IsSuccess = false;
+            number.Message = "Что-то пошло не так";
             return View("Service", number);
         }
 

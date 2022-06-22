@@ -27,7 +27,7 @@ $(window).resize(function () {
 });
 
 function resizeStorage() {
-    var height = window.innerHeight - 60 - $("header").height() - $("footer").height() - $("#storage thead").height() - $("#storage-title").height();
+    var height = window.innerHeight - 80 - $("header").height() - $("footer").height() - $("#storage thead").height() - $("#storage-title").height();
     height = Math.max(100, height);
     $("#storage tbody").height(height);
 }

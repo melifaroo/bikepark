@@ -301,5 +301,33 @@ namespace Bikepark.Controllers
         {
           return _context.Pricings.Any(e => e.PricingID == id);
         }
+
+        public async Task<FileResult> Export()
+        {
+            var fileName = "Pricings";
+            var folderPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\Docs\Temp"));
+            var pricing = await _context.Pricings.ToListAsync();
+            var data = pricing//.Include(irecord => irecord.Item).ThenInclude(item => item.ItemType).ThenInclude(type => type.ItemCategory).Include(irecord => irecord.Pricing)
+                .Select(price => new PriceExportModel
+                {
+                    PricingID = price.PricingID,
+                    PricingName = price.PricingName,
+                    PricingCategoryName = price.PricingCategory?.PricingCategoryName,
+                    PricingType = EnumHelper<PricingType>.GetDisplayValue(price.PricingType),
+                    DaysOfWeek = String.Join(",", price.DaysOfWeek.Select(day => DayOfWeekRu.ForDay(day).ShortRuName).ToArray()),
+                    IsHoliday = price.IsHoliday ? "Да" : "",
+                    IsReduced = price.IsReduced ? "Да" : "",
+                    MinDuration = price.MinDuration,
+                    Price = price.Price
+                })
+                .ToList();
+
+
+            var (fileFullName, fileNameWithExt) = ExcelTableHelper.CreateExcelFile<PriceExportModel>(data, folderPath, fileName);
+
+            byte[] fileBytes = System.IO.File.ReadAllBytes(fileFullName);
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileNameWithExt);
+        }
+
     }
 }

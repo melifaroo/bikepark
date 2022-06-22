@@ -10,8 +10,8 @@
 
 }
 
-    <h1>Удалить</h1>
-    <h3>Вы действительно хотите освободить номер #@Model.ItemNumber?</h3>
+    <h3>Удалить</h3>
+    <h4>Вы действительно хотите освободить номер #@Model.ItemNumber?</h4>
     @if (hasRecords)
     { 
         <h5 style="display:inline">В журнале есть записи о выдаче этого номера</h5>  
@@ -36,7 +36,7 @@
                     @Html.DisplayFor(model => model.ItemNumber)
                 </dd>
             </dl>
-        /div>
+        </div>
     </div>
 
     <form asp-action="Delete">
