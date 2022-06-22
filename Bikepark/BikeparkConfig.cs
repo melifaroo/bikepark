@@ -6,6 +6,11 @@ namespace Bikepark
     {
         public static readonly string ManagersRole = "BikeparkManagers";
         public static readonly string AdministratorsRole = "BikeparkAdministrators";
+        public static readonly string ConractFormFileName = "RentalContractForm.xlsx";
+        public static readonly string FormsRelativePath = @"..\Docs\Forms";
+        public static readonly string TemporaryRelativePath = @"..\Docs\Temp";
+        public static readonly string DataRelativePath = @"..\Data";
+        public static readonly string DataBackupRelativePath = @"..\Data\Backup";
         public DateTime WorkingHoursStart { get; set; }
         public  DateTime WorkingHoursEnd{ get; set; }
         public int MinServiceDelayBetweenRentsMinutes { get; set; }
@@ -13,7 +18,6 @@ namespace Bikepark
         public int ScheduleWarningTimeMinutes { get; set; }
         public int GetBackWarningTimeMinutes { get; set; }
         public int OnServiceWarningTimeHours { get; set; }
-
         public int DefaultLogPageSize { get; set; }
 
         public static void AddOrUpdateAppSetting<T>(string key, T value)

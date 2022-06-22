@@ -173,7 +173,7 @@ namespace Bikepark.Controllers
             ViewData["Prepared"] = await _context.Prepared.Select(prep=> prep.ItemID).ToListAsync();
 
             ViewData["ArchivalPricings"] = await _context.Pricings.IgnoreQueryFilters().ToListAsync();
-            ViewData["Availability"] = _context.GetAvailability(rentalRecord.RecordID, _config.Value.MinServiceDelayBetweenRentsMinutes);
+            ViewData["Availability"] = _context.GetAvailability(rentalRecord.RecordID );
 
             ViewData["WorkingHoursStart"] = _config.Value.WorkingHoursStart;
             ViewData["WorkingHoursEnd"] = _config.Value.WorkingHoursEnd;
@@ -188,10 +188,10 @@ namespace Bikepark.Controllers
         }
 
         public bool CheckAvailability(Record rentalRecord, Status Action, DateTime ActionTime) {
-            var availability = _context.GetAvailability( rentalRecord.RecordID, _config.Value.MinServiceDelayBetweenRentsMinutes ) ;
+            var availability = _context.GetAvailability( rentalRecord.RecordID ) ;
             var record = new ItemRecord {
                 Start = (rentalRecord.Status < Status.Active ? rentalRecord.Start : ActionTime) ?? DateTime.Now,
-                End = rentalRecord.End ?? DateTime.Now,
+                End = (DateTime.Now < rentalRecord.End ? rentalRecord.End : DateTime.Now) ?? DateTime.Now,
                 Status = Status.Draft
             };
             foreach (ItemRecord itemRecord in rentalRecord.ItemRecords.Where(ir => ir.Status < Status.Active)) {
@@ -206,7 +206,7 @@ namespace Bikepark.Controllers
         {
             foreach (var record1 in periods)
             {
-                if (RecordInfo.Overlap(record1, record2) && record1.ItemRecordID != itemRecordID)
+                if (RecordInfo.Overlap(record1, record2, _config.Value.MinServiceDelayBetweenRentsMinutes) && record1.ItemRecordID != itemRecordID)
                     return true;
             }
             return false;
@@ -374,9 +374,9 @@ namespace Bikepark.Controllers
                 if (CheckAvailability(rentalRecord, Action, ActionTime))
                 {
 
-                    var form = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\Docs\Forms", "RentalContractForm.xlsx"));
+                    var form = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, BikeparkConfig.FormsRelativePath, BikeparkConfig.ConractFormFileName));
                     var fileName = "Contract";
-                    var folderPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\Docs\Temp"));
+                    var folderPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, BikeparkConfig.TemporaryRelativePath));
 
                     foreach (var irec in rentalRecord.ItemRecords)
                         if (irec.Item == null && irec.ItemID != null)
@@ -441,23 +441,28 @@ namespace Bikepark.Controllers
         // GET: Rental/GetBack
         public IActionResult GetBack()
         {
-            return View();
+            var number = new Number();
+            return View(number);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Control(Number number) {
-
+        public async Task<IActionResult> ControlNumber(Number number) 
+        {
+            number.IsResponse = true;
             if (ModelState.IsValid)
             {
                 var itemRec = await _context.ItemRecords.FirstOrDefaultAsync(irec => irec.Item.ItemNumber == number.ItemNumber && irec.Status == Status.Active);
                 if (itemRec == null || itemRec.Record==null) {
-                    ViewData["Error"] = "запись не найдена";
+                    number.IsSuccess = false;
+                    number.Message = "Запись не найдена";
                     return View("GetBack", number);
                 }
                 
                 return RedirectToAction(nameof(Control), new { id = itemRec.Record.RecordID });
             }
+            number.IsSuccess = false;
+            number.Message = "Что-то пошло не так";
             return View("GetBack", number);
         }
 

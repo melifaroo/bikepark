@@ -1,13 +1,11 @@
 ﻿@model IEnumerable<Bikepark.Models.Item>
 
 @{
-    ViewData["Title"] = "Единицы";
-    ViewData["menu"] = "items";
-    ViewData["Route"] = "";
+    ViewData["Title"] = "Велосипеды";
     Layout = "_MainLayout";
 }
 
-<h1>Велосипеды и амуниция</h1>
+<h3>Велосипеды и амуниция</h3>
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
     <ul class="nav col-md-6 justify-content-start">
         <li class="nav-item">
@@ -20,7 +18,7 @@
 
     <ul class="nav  col-md-6 justify-content-end">
         <li class="nav-item">
-            <a class="nav-link" asp-action="Export" style="display: none">Загрузить таблицу XLS</a>
+            <a class="nav-link" asp-action="Export" asp-controller="Storage" >Загрузить таблицу XLS</a>
         </li>    
         <li class="nav-item"> 
             <a class="nav-link" asp-action="Main" asp-controller="Storage">Управление</a> 

@@ -21,27 +21,29 @@ $("#rental-control").on("keyup keypress", function (e) {
 
 function overlap(periods, s, e) {
     var overlap = false;
-    var self = false;
     var status = -1;
     var BreakException = {};
+    e.setTime(e.getTime() + minServiceDelayBetweenRentsMinutes * 60 * 1000);
     try {
         periods.forEach(period => {
             s1 = new Date(period["Start"]);
             e1 = new Date(period["End"]);
+            e1.setTime(e1.getTime() + minServiceDelayBetweenRentsMinutes * 60 * 1000);
             status = period["Status"];
-            //self = period["Item4"] == record.RecordID;// $("#record-id").val();
-            overlap = (s <= e1) && (e >= s1);// && (!self);
+            overlap = (s <= e1) && (e >= s1);
             if (overlap) throw BreakException;
         });
-    } catch (e) {
-        if (e !== BreakException) throw e;
+    } catch (ex) {
+        if (ex !== BreakException) throw ex;
     }
     return { overlap: overlap, status: status };
 }
 
 function checkAvailability() {
+    now = new Date();
     s = (record.Status < 2) ? new Date($("#time-start").val()) : new Date($("#time-action").val());
     e = new Date($("#time-end").val());
+    e = (e < now) ? now : e;
     var selfitems = [];
     $("#itemrecords-list .item-record:not([status=Closed])").each(function (i, tr) {
         key = $(tr).data("itemid");
@@ -336,6 +338,7 @@ function change_action() {
     $("#btn-service").toggle(serviced_count > 0 && record.Status > 1).prop("disabled", serviced_count == 0 || record.Status < 2);
     $("#btn-contract").toggle(giveout || (serviced_count > 0 && record.Status > 1)).prop("disabled", !giveout && !(serviced_count > 0 && record.Status > 1));
 
+    $("#btn-canceldraft").toggle(draft_mode && record.Status == 0).prop("disabled", !(draft_mode && record.Status == 0));
     $("#btn-cancel").toggle(schedule_mode && record.Status == 1).prop("disabled", !(scheduled_count > 0));
     $("#btn-getbackall").toggle(record.Status == 2).prop("disabled", !(givenout_count>0));
 

@@ -10,8 +10,8 @@
 
 }
 
-    <h1>Удалить</h1>
-    <h3>Вы дейсвительно хотите удалить модель #@Model.ItemTypeID?</h3>
+    <h3>Удалить</h3>
+    <h4>Вы дейсвительно хотите удалить модель #@Model.ItemTypeID?</h4>
     @if(itemsCount==0 ){
         <h5>Номеров велосипедам/амуниции этой модели не присвоено</h5>
     }
@@ -25,7 +25,7 @@
             <hr />
         }
         <h5 style="display:inline">Число велосипедов/амуниции этой модели:</h5>  
-        <h3 style="display:inline">@itemsCount</h3>
+        <h4 style="display:inline">@itemsCount</h4>
         <p><a target="_blank" rel="noopener noreferrer" href="/Items/OfType/?id=@Model.ItemTypeID">Просмотреть в новой вкладке?</a></p>
         <p>Если @action модель, выдать эти номера будет нельзя, но можно будет присвоить их другой модели</p>   
     }

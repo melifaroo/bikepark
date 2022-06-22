@@ -10,6 +10,7 @@ namespace Bikepark.Models
         [Column(TypeName = "nvarchar(255)")]
         [Display(Name = "Категория")]
         public string? ItemCategoryName { get; set; }
+        [Display(Name = "Аксессуар")]
         public bool Accessories { get; set; } = false;
 
     }

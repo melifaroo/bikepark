@@ -13,6 +13,62 @@ namespace Bikepark.Models
     public class ExcelTableHelper
     {
 
+        public static string ValidateContractForm(string ContractFormFile) 
+        {
+            List<string> missedFields = new List<string>();
+            using (var workbook = new XLWorkbook(ContractFormFile))
+            {
+                var worksheet = workbook.Worksheets.FirstOrDefault();
+
+                if (!workbook.NamedRanges.Contains("CustomerFullName"))
+                    missedFields.Add("[CustomerFullName] для ФИО клиента");
+
+                if (!workbook.NamedRanges.Contains("CustomerPhoneNumber"))
+                    missedFields.Add("[CustomerPhoneNumber] для телефона клиента");
+
+                if (!workbook.NamedRanges.Contains("CustomerDocumentType"))
+                    missedFields.Add("[CustomerDocumentType] для вида документа клиента");
+
+                if (!workbook.NamedRanges.Contains("CustomerDocumentSeries"))
+                    missedFields.Add("[CustomerDocumentSeries] для серии документа клиента");
+
+                if (!workbook.NamedRanges.Contains("CustomerDocumentNumber"))
+                    missedFields.Add("[CustomerDocumentNumber] для номера документа клиента");
+
+                if (!workbook.NamedRanges.Contains("EndHours"))
+                    missedFields.Add("[EndHours] для времени окончания проката (часов)");
+
+                if (!workbook.NamedRanges.Contains("EndMinutes"))
+                    missedFields.Add("[EndMinutes] для времени окончания проката (минут)");
+
+                if (!workbook.NamedRanges.Contains("EndDay"))
+                    missedFields.Add("[EndDay] для даты проката (день)");
+
+                if (!workbook.NamedRanges.Contains("EndMonth"))
+                    missedFields.Add("[EndMonth] для даты проката (месяц)");
+
+                if (!workbook.NamedRanges.Contains("EndYear"))
+                    missedFields.Add("[EndYear] для даты проката (год)");
+
+                if (!workbook.NamedRanges.Contains("Price"))
+                    missedFields.Add("[Price] для стоимости услуг проката");
+
+                if (!workbook.NamedRanges.Contains("DateDay"))
+                    missedFields.Add("[DateDay] для даты договора (день)");
+
+                if (!workbook.NamedRanges.Contains("DateMonth"))
+                    missedFields.Add("[DateMonth] для даты договора (месяц)");
+
+                if (!workbook.NamedRanges.Contains("DateYear"))
+                    missedFields.Add("[DateYear] для даты договора (год)");
+
+                if (!workbook.NamedRanges.Contains("RentalItems"))
+                    missedFields.Add("[RentalItems] для списка велосипедов выдаваемых в прокат");
+
+            }
+            return string.Join("; ", missedFields);
+        }
+
         public static (string, string) UpdateContractForRecord(Record record, string ContractFormFile, string OutPutFileDirectory, string fileName)
         {
             var datetime = DateTime.Now.ToString().Replace("/", "_").Replace(":", "_");

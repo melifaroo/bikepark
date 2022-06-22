@@ -49,7 +49,7 @@
             <td>
                 <a asp-action="Control" asp-route-id="@item.RecordID">Управление</a>
                 @if ( User.Identity.IsAuthenticated ){
-                    if ( User.IsInRole(BikeparkConfig.ManagersRole) ){  <span>|</span>
+                    if ( User.IsInRole(BikeparkConfig.ManagersRole) || item.Status == Status.Draft ){  <span>|</span>
                         <a asp-action="Delete" asp-route-id="@item.RecordID">Удалить</a> 
                     }
                 }

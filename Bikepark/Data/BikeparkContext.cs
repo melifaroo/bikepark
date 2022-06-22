@@ -357,7 +357,7 @@ namespace Bikepark.Data
             }        
         }
 
-        public Dictionary<int, List<ItemRecord>> GetAvailability(int? RecordID, int minutesDelay)
+        public Dictionary<int, List<ItemRecord>> GetAvailability(int? RecordID)
         {
             var availability = ItemRecords.Where(renteditem =>
                     renteditem.RecordID != RecordID &&
@@ -372,8 +372,7 @@ namespace Bikepark.Data
                                     ((renteditem.Status == Status.Active || renteditem.Status == Status.OnService
                                     && (renteditem.End ?? renteditem.Record.End ?? DateTime.MinValue) < DateTime.Now) ?
                                     DateTime.Now :
-                                    (renteditem.End ?? renteditem.Record.End ?? DateTime.MinValue))
-                                    .AddMinutes(minutesDelay),
+                                    (renteditem.End ?? renteditem.Record.End ?? DateTime.MinValue)),
                                 Status = renteditem.Status,
                                 ItemRecordID = renteditem.ItemRecordID
                             }

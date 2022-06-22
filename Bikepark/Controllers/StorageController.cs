@@ -37,6 +37,7 @@ namespace Bikepark.Controllers
             return View(_config.Value);
         }
 
+
         // POST: Storage/SettingsUpdate
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -44,15 +45,24 @@ namespace Bikepark.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SettingsUpdate(BikeparkConfig config)
         {
-                BikeparkConfig.AddOrUpdateAppSetting("Bikepark:WorkingHoursEnd", config.WorkingHoursEnd);
-                BikeparkConfig.AddOrUpdateAppSetting("Bikepark:WorkingHoursStart", config.WorkingHoursStart);
-                BikeparkConfig.AddOrUpdateAppSetting("Bikepark:MinServiceDelayBetweenRentsMinutes", config.MinServiceDelayBetweenRentsMinutes);
-                BikeparkConfig.AddOrUpdateAppSetting("Bikepark:DefaultRentTimeHours", config.DefaultRentTimeHours);
-                _config.Value.WorkingHoursEnd = config.WorkingHoursEnd;
-                _config.Value.WorkingHoursStart = config.WorkingHoursStart;
-                _config.Value.MinServiceDelayBetweenRentsMinutes = config.MinServiceDelayBetweenRentsMinutes;
-                _config.Value.DefaultRentTimeHours = config.DefaultRentTimeHours;
-          
+            BikeparkConfig.AddOrUpdateAppSetting("Bikepark:WorkingHoursEnd", config.WorkingHoursEnd);
+            BikeparkConfig.AddOrUpdateAppSetting("Bikepark:WorkingHoursStart", config.WorkingHoursStart);
+            BikeparkConfig.AddOrUpdateAppSetting("Bikepark:MinServiceDelayBetweenRentsMinutes", config.MinServiceDelayBetweenRentsMinutes);
+            BikeparkConfig.AddOrUpdateAppSetting("Bikepark:DefaultRentTimeHours", config.DefaultRentTimeHours);
+            BikeparkConfig.AddOrUpdateAppSetting("Bikepark:GetBackWarningTimeMinutes", config.GetBackWarningTimeMinutes);
+            BikeparkConfig.AddOrUpdateAppSetting("Bikepark:ScheduleWarningTimeMinutes", config.ScheduleWarningTimeMinutes);
+            BikeparkConfig.AddOrUpdateAppSetting("Bikepark:OnServiceWarningTimeHours", config.OnServiceWarningTimeHours);
+            BikeparkConfig.AddOrUpdateAppSetting("Bikepark:DefaultLogPageSize", config.DefaultLogPageSize); 
+
+            _config.Value.WorkingHoursEnd = config.WorkingHoursEnd;
+            _config.Value.WorkingHoursStart = config.WorkingHoursStart;
+            _config.Value.MinServiceDelayBetweenRentsMinutes = config.MinServiceDelayBetweenRentsMinutes;
+            _config.Value.DefaultRentTimeHours = config.DefaultRentTimeHours;
+            _config.Value.GetBackWarningTimeMinutes = config.GetBackWarningTimeMinutes;
+            _config.Value.ScheduleWarningTimeMinutes = config.ScheduleWarningTimeMinutes;
+            _config.Value.OnServiceWarningTimeHours = config.OnServiceWarningTimeHours;
+            _config.Value.DefaultLogPageSize = config.DefaultLogPageSize;
+            
             return RedirectToAction("Settings");
         }
 
@@ -434,6 +444,91 @@ namespace Bikepark.Controllers
                     Message = "Значения должны быть целочисленными"
                 });            
             }
+        }
+
+
+        // GET: Rental/Contract
+        public IActionResult Contract()
+        {
+            var model = new UploadFile();
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult ContractDownload()
+        {
+            var form = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, BikeparkConfig.FormsRelativePath, BikeparkConfig.ConractFormFileName));
+            var fileName = BikeparkConfig.ConractFormFileName;
+            byte[] fileBytes = System.IO.File.ReadAllBytes(form);
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ContractUpload(UploadFile model)
+        {
+            model.IsResponse = true;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    string path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, BikeparkConfig.FormsRelativePath));
+
+                    if (!Directory.Exists(path))
+                        Directory.CreateDirectory(path);
+
+                    path = Path.Combine(path, BikeparkConfig.ConractFormFileName);
+                    using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
+                    {
+                        await model.File.CopyToAsync(fileStream);
+                    }
+
+
+                    var warningMessage = ExcelTableHelper.ValidateContractForm(path);
+                    model.IsSuccess = true;
+                    model.HasWarnings = warningMessage.Length>0;
+                    model.Message = "Форма успешно обновлена";
+                    if (model.HasWarnings) model.Message = model.Message + "; В форме отсутствуют именованные диапазоны (ячейки): " + warningMessage;
+                    return View("Contract", model);
+                }
+                catch
+                {
+                    model.Message = "Не удалось загрузить форму";
+                    return View("Contract", model);
+                }
+            }
+            model.Message = "Не удалось загрузить форму";
+            return View("Contract", model);
+
+        }
+
+        public async Task<FileResult> Export()
+        {
+            var fileName = "Storage";
+            var folderPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\Docs\Temp"));
+            var storage = await _context.Items.ToListAsync();
+            var data = storage//.Include(irecord => irecord.Item).ThenInclude(item => item.ItemType).ThenInclude(type => type.ItemCategory).Include(irecord => irecord.Pricing)
+                .Select(item => new StorageExportModel
+                {
+                    ItemID = item.ItemID,
+                    ItemNumber = item.ItemNumber,
+                    ItemTypeName = item.ItemType?.ItemTypeName,
+                    ItemCategoryName = item.ItemType?.ItemCategory?.ItemCategoryName,
+                    PricingCategoryName = item.ItemType?.PricingCategory?.PricingCategoryName,
+                    ItemAge = item.ItemType == null ? null : item.ItemType.ItemAge == null ? null : EnumHelper<ItemAge>.GetDisplayValue((ItemAge)(item.ItemType.ItemAge)),
+                    ItemGender = item.ItemType == null ? null : item.ItemType.ItemGender == null ? null : EnumHelper<ItemGender>.GetDisplayValue((ItemGender)(item.ItemType.ItemGender)),
+                    ItemSize = item.ItemType == null ? null : item.ItemType.ItemSize == null ? null : EnumHelper<ItemSize>.GetDisplayValue((ItemSize)(item.ItemType.ItemSize)),
+                    ItemWheelSize = item.ItemType?.ItemWheelSize,
+                    ItemColor = item.ItemType?.ItemColor,
+                    ItemDescription = item.ItemType?.ItemDescription,
+                    ItemExternalURL = item.ItemType?.ItemExternalURL,
+                })
+                .ToList();
+
+            var (fileFullName, fileNameWithExt) = ExcelTableHelper.CreateExcelFile<StorageExportModel>(data, folderPath, fileName);
+
+            byte[] fileBytes = System.IO.File.ReadAllBytes(fileFullName);
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileNameWithExt);
         }
 
 

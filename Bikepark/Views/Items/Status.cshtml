@@ -10,7 +10,7 @@
     DbSet<ItemRecord> ItemRecs = ViewBag.ItemRecs;
 }
 
-<h1>Велопарк</h1>
+<h3>Велопарк</h3>
 
 @if ( User.Identity.IsAuthenticated ){
     if ( User.IsInRole(BikeparkConfig.ManagersRole) ){  

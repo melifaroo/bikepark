@@ -8,9 +8,9 @@
     int pricingsCount = ViewBag.PricingsCount;
 }
 
-<h1>Удалить</h1>
+<h3>Удалить</h3>
 
-<h3>Вы дейсвительно хотите удалить категорию тарификации?</h3>
+<h4>Вы дейсвительно хотите удалить категорию тарификации?</h4>
 <div>
     @if(typesCount==0 && pricingsCount==0 ){
         <h5>В категории ничего нет</h5>
@@ -19,7 +19,7 @@
     {
         if (typesCount > 0)
         {
-            <h5 style="display:inline">Число моделей (велосипедов/амуниции) тарифицируемых по этой категории:</h5>  
+            <h4 style="display:inline">Число моделей (велосипедов/амуниции) тарифицируемых по этой категории:</h4>  
             <h3 style="display:inline">@typesCount</h3>
             <p><a target="_blank" rel="noopener noreferrer" href="/Storage/WithPricingCategory/?id=@Model.PricingCategoryID">Просмотреть в новой вкладке?</a></p>
             <p>Если удалить категорию тарификации, велосипеды этих моделей можно будет выдать в прокат с любым тарифом</p>        
@@ -27,7 +27,7 @@
         }
         if (pricingsCount > 0)
         {
-            <h5 style="display:inline">Число тарифов в этой категории:</h5>  
+            <h4 style="display:inline">Число тарифов в этой категории:</h4>  
             <h3 style="display:inline">@pricingsCount</h3>
             <p><a target="_blank" rel="noopener noreferrer" href="/Pricings/InCategory/?id=@Model.PricingCategoryID">Просмотреть в новой вкладке?</a></p>
             <p>Если удалить категорию тарификации, эти тарифы можно будет назначать при выдаче любого велосипеда или амуниции </p>
