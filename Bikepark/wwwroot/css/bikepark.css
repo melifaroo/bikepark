@@ -43,6 +43,7 @@ table.tablealign td {
 
     table.tablealign td.td-buttons {
         overflow: hidden;
+        overflow-x: auto;
         text-overflow: ellipsis;
         white-space: nowrap;
     }

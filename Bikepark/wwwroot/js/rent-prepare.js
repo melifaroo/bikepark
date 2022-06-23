@@ -9,7 +9,7 @@ $(window).resize(function () {
 });
 
 function resizeStorage(){
-    var height = window.innerHeight - 120 - $("header").height() - $("footer").height() - $("#storage thead").height() - $("#prepared-title").height();
+    var height = window.innerHeight - 180 - $("header").height() - $("footer").height() - $("#storage thead").height() - $("#prepared-title").height();
     height = Math.max(100, height);
     $("#storage tbody").height(height);
 }

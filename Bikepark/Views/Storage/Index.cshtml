@@ -20,7 +20,7 @@
     List<SelectListItem> Ages = Model.DistinctBy(x => x.ItemAge).Select(x => new SelectListItem { Value =  EnumHelper<ItemAge>.GetDisplayValue(x.ItemAge ?? ItemAge.Adult), Text =  EnumHelper<ItemAge>.GetDisplayValue(x.ItemAge ?? ItemAge.Adult) }).ToList();
     List<SelectListItem> Genders = Model.DistinctBy(x => x.ItemGender).Select(x => new SelectListItem { Value = EnumHelper<ItemGender>.GetDisplayValue(x.ItemGender ?? ItemGender.Unisex), Text =  EnumHelper<ItemGender>.GetDisplayValue(x.ItemGender ?? ItemGender.Unisex) }).ToList();
 }
-<h3>Велопарк</h3>
+<h3>Склад</h3>
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom" id="storage-title">
     <ul class="nav col-md-8 justify-content-start">
         <li class="nav-item">
@@ -50,13 +50,13 @@
 <table id="storage" class="tablealign scroll-table" >
     <thead>
         <tr>
-            <th style="width: 5%">
+            <th style="width: 10%">
                 <div class="row-cols-1">
                     @Html.DisplayNameFor(model => someItemType.ItemCategory)
                     <select class="chooser-filter form-control form-control-sm" asp-items="@Cats" data-field="cat"><option value="All" label="Все" selected></option></select>
                 </div>
             </th>
-            <th style="width: 5%">
+            <th style="width: 10%">
                 <div class="row-cols-1">
                     Кат.Тарифа
                     <select class="chooser-filter form-control form-control-sm" asp-items="@PriceCats" data-field="pricingcat"><option value="All" label="Все" selected></option></select>
@@ -74,27 +74,30 @@
                     <select class="chooser-filter form-control form-control-sm" asp-items="@Wheels" data-field="wheel"><option  value="All" label="Все" selected></option></select>
                 </div>
             </th>
-            <th style="width: 10%">
+            <th style="width: 5%; display: none" class="chooser-filter-optional ">
                 <div class="row-cols-1">
                     @Html.DisplayNameFor(model => someItemType.ItemColor)
                     <select class="chooser-filter form-control form-control-sm" asp-items="@Colors" data-field="color"><option  value="All" label="Все" selected></option></select>
                 </div>
             </th>
-            <th style="width: 10%">
+            <th style="width: 5%; display: none" class="chooser-filter-optional ">
                 <div class="row-cols-1">
                     @Html.DisplayNameFor(model => someItemType.ItemAge)
                     <select class="chooser-filter form-control form-control-sm" asp-items="@Ages" data-field="age"><option  value="All" label="Все" selected></option></select>
                 </div>
             </th>
-            <th style="width: 5%">
+            <th style="width: 5%; display: none" class="chooser-filter-optional ">
                 <div class="row-cols-1">
                     @Html.DisplayNameFor(model => someItemType.ItemGender)
                     <select class="chooser-filter form-control form-control-sm" asp-items="@Genders" data-field="gender"><option  value="All" label="Все" selected></option></select>
                 </div>
             </th>
             <th style="width: 20%; vertical-align: text-top">
-                <div>
+                <div class="col">
                     @Html.DisplayNameFor(model => someItemType.ItemTypeName)
+                    <div class="row">
+                        <button type="button" id="btn-toggle-filters" class="btn btn-sm btn-light col-10">дополнительно</button>
+                    </div>
                 </div>
             </th>
             <th style="width: 15%; vertical-align: text-top">
@@ -109,10 +112,10 @@
     <tbody > 
         @foreach (var type in Model) {
             <tr>
-                <td style="width: 5%" data-field='cat'>
+                <td style="width: 10%" data-field='cat'>
                     @Html.DisplayFor(m => type.ItemCategory.ItemCategoryName)
                 </td>
-                <td style="width: 5%" data-field='pricingcat'>
+                <td style="width: 10%" data-field='pricingcat'>
                     @Html.DisplayFor(m => type.PricingCategory.PricingCategoryName)
                 </td>
                 <td style="width: 5%" data-field='size'>
@@ -121,13 +124,13 @@
                 <td style="width: 5%" data-field='wheel'>
                     @Html.DisplayFor(m => type.ItemWheelSize)
                 </td>
-                <td style="width: 10%" data-field='color'>
+                <td style="width: 5%; display: none" data-field='color' class="chooser-filter-optional ">
                     @Html.DisplayFor(m => type.ItemColor)
                 </td> 
-                <td style="width: 10%" data-field='age'>
+                <td style="width: 5%; display: none" data-field='age' class="chooser-filter-optional ">
                     @Html.DisplayFor(m => type.ItemAge)
                 </td>
-                <td style="width: 5%" data-field='gender'>
+                <td style="width: 5%; display: none" data-field='gender' class="chooser-filter-optional ">
                     @Html.DisplayFor(m => type.ItemGender)
                 </td>
                 <td class="" style="width: 20%">

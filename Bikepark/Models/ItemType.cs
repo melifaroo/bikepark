@@ -6,7 +6,8 @@ namespace Bikepark.Models
     public class ItemType 
     {
         public int? ItemTypeID { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Укажите наименование")]
         [Display(Name = "Наименование")]
         public string? ItemTypeName { get; set; }
         [Display(Name = "Категория")]

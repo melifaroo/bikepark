@@ -17,6 +17,9 @@ $(document).on("change", ".chooser-filter", function () {
     });
 });
 
+$("#btn-toggle-filters").on("click", function () {
+    $(".chooser-filter-optional").toggle();
+});
 
 $(document).ready(function () {
     resizeStorage();
