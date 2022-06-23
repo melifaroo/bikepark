@@ -40,7 +40,7 @@ else
                 </div>
                 <div class="form-group">
                     <label asp-for="PricingCategoryID" class="control-label"></label>
-                    <select asp-for="PricingCategoryID" class="form-control" asp-items="ViewBag.PricingCategoryID" required>
+                    <select asp-for="PricingCategoryID" class="form-control" asp-items="ViewBag.PricingCategoryID">
                         <option value="">Не указана</option>
                     </select>
                     <span asp-validation-for="PricingCategoryID" class="text-danger"></span>
@@ -90,16 +90,19 @@ else
             </div>
         
 
-            <div class="col-md-6">
-                <row >
+            <div class="col-md-6">                
+                @if (Model.ItemTypeID != null)
+                {
+                    <row >
                         Номера (@itemsCount) |  
                         <a asp-action="Numbers" asp-route-id="@Model?.ItemTypeID">Изменить</a>
                         @*| 
-                        <button type="button" class="btn btn-link" id="btn-item-numbers-view" data-typeid="@Model?.ItemTypeID">Показать</button>   *@             
-                </row>
-                <div id = "item-numbers-preview">
+                            <button type="button" class="btn btn-link" id="btn-item-numbers-view" data-typeid="@Model?.ItemTypeID">Показать</button>   *@             
+                    </row>
+                    <div id = "item-numbers-preview">
 
-                </div>
+                    </div>
+                }
             </div>
         </div>
 

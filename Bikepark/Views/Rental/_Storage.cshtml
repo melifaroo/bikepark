@@ -99,7 +99,7 @@
                     @Html.DisplayFor(m => type.ItemTypeName)
                 </td>
                 <td class="td-buttons" style="min-width: 100px; "> 
-                    <div class="flex justify-content-start btn-group" > 
+                    <div class="flex justify-content-start btn-group " > 
                         @foreach (var item in await Items.Where(i => i.ItemTypeID==type.ItemTypeID).ToListAsync() ){       
                             <input type="checkbox" id="number-check-@item.ItemID"  class="btn-check number-check" data-itemid="@item.ItemID"/>  
                             <label id="number-@item.ItemID" for="number-check-@item.ItemID" class="btn btn-sm btn-outline-success number" data-itemid="@item.ItemID">   
