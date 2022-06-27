@@ -1,16 +1,16 @@
 ﻿@model IEnumerable<Bikepark.Models.PricingCategory>
 
 @{
-    ViewData["Title"] = "Категории тарификации";
+    ViewData["Title"] = "Категории тарифов";
     ViewData["menu"] = "pricing-categories";
     Layout = "_MainLayout";
 }
 
-<h3>Категории тарификации</h3>
+<h3>Категории тарифов</h3>
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
     <ul class="nav col-md-6 justify-content-start">
         <li class="nav-item">
-            <a class="nav-link" asp-action="Create">Создать новую</a>
+            <a class="nav-link" asp-action="Create">Добавить</a>
         </li> 
         <li class="nav-item">
             <a class="nav-link" asp-action="Index" asp-controller="Pricings" >Тарифы</a>
@@ -46,7 +46,6 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.PricingCategoryID">Изменить</a> |
-                <a asp-action="Details" asp-route-id="@item.PricingCategoryID">Просмотр</a> |
                 <a asp-action="Delete" asp-route-id="@item.PricingCategoryID">Удалить</a>
             </td>
         </tr>

@@ -1,7 +1,7 @@
 ﻿@model Bikepark.Models.ItemCategory
 
 @{
-    ViewData["Title"] = "Удалить категорию прокатных единиц";
+    ViewData["Title"] = "Удалить категорию арендуемых единиц";
     ViewData["menu"] = "storage";
     Layout = "_MainLayout";
     int typesCount = ViewBag.ItemTypesCount;
@@ -11,15 +11,18 @@
 
 <h4>Вы дейсвительно хотите удалить категорию?</h4>
 <div>
+    
+<div class="col-md-4">  
     @if(typesCount==0){
         <h5>В категории ничего нет</h5>
     }
     else
     {
-        <h5 style="display:inline">Число моделей (велосипедов/амуниции) в этой категории:</h5>  <h3 style="display:inline">@typesCount</h3>
+        <h5 style="display:inline">Число моделей (велосипедов/аксессуаров) в этой категории:</h5>  <h3 style="display:inline">@typesCount</h3>
         <p><a target="_blank" rel="noopener noreferrer" href="/Storage/InCategory/?id=@Model.ItemCategoryID">Просмотреть в новой вкладке?</a></p>
         <p>Если удалить категорию модели остануться в базе склада, но без присвоенной категории</p>
     }
+</div>
 
         <hr />
     
@@ -40,7 +43,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="ItemCategoryID" />
-        <input type="submit" value="Удалить" class="btn btn-danger" /> |
+        <input type="submit" value="Удалить" class="btn btn-danger" />
         <a asp-action="Index">Отмена</a>
     </form>
 </div>

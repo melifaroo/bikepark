@@ -8,6 +8,7 @@
     var hasRecords = ViewBag.HasRecords;
     string archival = Model.Archival ? "(Архив)" : "";
 }
+<div class="col-md-6">  
 @if (Model.ItemTypeID != null)
 {
     <h3>Редактировать</h3>
@@ -18,6 +19,7 @@ else
     <h3>Добавить</h3>
     <h4>Модель</h4>    
 }
+</div>
 <hr />
  <div class="container-sm">  
     <form asp-controller="Storage">
@@ -144,6 +146,34 @@ else
             </div>
         </div>
     </form>
+</div>
+
+<div class="col-md-6">  
+@if (Model.ItemTypeID != null)
+{
+    @if (hasRecords)
+    { 
+        <h5 style="display:inline">В журнале есть записи о выдаче номеров этой модели</h5>  
+        <p><a target="_blank" rel="noopener noreferrer" href="/Log/OfType/?id=@Model.ItemTypeID">Просмотреть в новой вкладке?</a></p>
+        
+        <h5 style="display:inline">Число велосипедов этой модели (или аксессуаров этого типа):</h5>  
+        <h4 style="display:inline">@itemsCount</h4>
+        <p><a target="_blank" rel="noopener noreferrer" href="/Items/OfType/?id=@Model.ItemTypeID">Просмотреть в новой вкладке?</a></p>
+
+        <p>Если ее исправить - это изменение отразится на всех записях журнала </p>
+        <p>Если ее заменить - данная модель будет заархивирована (в записях журнала будет отображаться прежняя модель), вместо нее будет создана новая</p>
+        <p>Если ее скопировать - данная модель останется без изменений, но на ее основе будет создана новая без присвоенных номеров </p>
+    } 
+    else
+    {
+        <h5 style="display:inline">Число велосипедов этой модели (или аксессуаров этого типа):</h5>  
+        <h4 style="display:inline">@itemsCount</h4>
+        <p><a target="_blank" rel="noopener noreferrer" href="/Items/OfType/?id=@Model.ItemTypeID">Просмотреть в новой вкладке?</a></p>
+
+        <p>Если ее исправить - это изменение отразится на всех номерах </p>
+        <p>Если ее скопировать - данная модель останется без изменений, но на ее основе будет создана новая без присвоенных номеров </p>        
+    }
+}
 </div>
 
 @section Scripts {          

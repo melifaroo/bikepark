@@ -1,7 +1,7 @@
 ﻿@model Bikepark.Models.PricingCategory
 
 @{
-    ViewData["Title"] = "Удалить категорию тарификации";
+    ViewData["Title"] = "Удалить категорию тарифов";
     ViewData["menu"] = "pricing-categories";
     Layout = "_MainLayout";
     int typesCount = ViewBag.ItemTypesCount;
@@ -10,7 +10,7 @@
 
 <h3>Удалить</h3>
 
-<h4>Вы дейсвительно хотите удалить категорию тарификации?</h4>
+<h4>Вы дейсвительно хотите удалить категорию тарифов?</h4>
 <div>
     @if(typesCount==0 && pricingsCount==0 ){
         <h5>В категории ничего нет</h5>
@@ -45,7 +45,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="PricingCategoryID" />
-        <input type="submit" value="Удалтить" class="btn btn-danger" /> |
+        <input type="submit" value="Удалить" class="btn btn-danger" />
         <a asp-action="Index">Отмена</a>
     </form>
 </div>

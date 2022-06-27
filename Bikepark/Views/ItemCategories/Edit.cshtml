@@ -1,14 +1,14 @@
 ﻿@model Bikepark.Models.ItemCategory
 
 @{
-    ViewData["Title"] = "Редактирование категории прокатных единиц";
+    ViewData["Title"] = "Редактирование категории арендуемых единиц";
     ViewData["menu"] = "storage";
     Layout = "_MainLayout";
 }
 
-<h3>Редактировать</h1>
+<h3>Редактировать</h3>
 
-<h4>Категория прокатных единиц</h4>
+<h4>Категория арендуемых единиц</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -20,10 +20,10 @@
                 <input asp-for="ItemCategoryName" class="form-control" />
                 <span asp-validation-for="ItemCategoryName" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Accessories" class="control-label"></label>
-                <input asp-for="Accessories" class="form-control" />
-                <span asp-validation-for="Accessories" class="text-danger"></span>
+            <div class="form-group">                
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Accessories" /> @Html.DisplayNameFor(model => model.Accessories)
+                </label>
             </div>
             <div class="form-group">
                 <input type="submit" value="Сохранить" class="btn btn-primary" />

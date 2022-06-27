@@ -10,6 +10,7 @@
 
 }
 
+<div class="col-md-6">  
     <h3>Удалить</h3>
     <h4>Вы действительно хотите освободить номер #@Model.ItemNumber?</h4>
     @if (hasRecords)
@@ -17,7 +18,8 @@
         <h5 style="display:inline">В журнале есть записи о выдаче этого номера</h5>  
         <p><a target="_blank" rel="noopener noreferrer" href="/Log/OfItem/?id=@Model.ItemID">Просмотреть в новой вкладке?</a></p>
         <p>Поэтому номер будет заархивирован (для журнала), при этом он освободится для присвоения </p>
-    } 
+    }     
+</div>  
 <hr />
 <div class="container-sm">  
     <div class="row">
