@@ -11,7 +11,7 @@ using Bikepark.Models;
 
 namespace Bikepark.Controllers
 {
-    [Authorize(Roles = "BikeparkManagers")]
+    [Authorize(Roles = "BikeparkAdministrators,BikeparkManagers")]
     public class PricingsController : Controller
     {
         private readonly BikeparkContext _context;
@@ -21,18 +21,21 @@ namespace Bikepark.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "BikeparkManagers")]
         // GET: Pricings
         public async Task<IActionResult> Index()
         {
             return View(await _context.Pricings.ToListAsync());//.Where(x => !x.Archival)
         }
 
+        [Authorize(Roles = "BikeparkManagers")]
         // GET: Pricings/Holidays
         public async Task<IActionResult> Holidays()
         {
             return View(await _context.Holidays.ToListAsync());
         }
 
+        [Authorize(Roles = "BikeparkManagers")]
         // POST: Pricings/AddHoliday
         public async Task<IActionResult> AddHoliday(Holiday holiday)
         {
@@ -45,6 +48,7 @@ namespace Bikepark.Controllers
             return RedirectToAction(nameof(Holidays));
         }
 
+        [Authorize(Roles = "BikeparkManagers")]
         // Get: Pricings/DeleteHoliday
         public async Task<IActionResult> DeleteHoliday(int? id)
         {
@@ -65,6 +69,7 @@ namespace Bikepark.Controllers
             return RedirectToAction(nameof(Holidays));
         }
 
+        [Authorize(Roles = "BikeparkManagers")]
         // GET: Pricings/InCategory/5
         public async Task<IActionResult> InCategory(int? id)
         {
@@ -75,6 +80,7 @@ namespace Bikepark.Controllers
             return View("Index", await _context.Pricings.Where(type => type.PricingCategoryID == id).ToListAsync());//.Where(x => !x.Archival)
         }
 
+        [Authorize(Roles = "BikeparkManagers")]
         // GET: Pricings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -93,12 +99,14 @@ namespace Bikepark.Controllers
             return View(pricing);
         }
 
+        [Authorize(Roles = "BikeparkManagers")]
         // GET: Pricings/Create
         public async Task<IActionResult> Create()
         {
             return await EditForm(new Pricing());
         }
 
+        [Authorize(Roles = "BikeparkManagers")]
         // GET: Pricings/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -123,6 +131,7 @@ namespace Bikepark.Controllers
             return View("Edit", pricing);
         }
 
+        [Authorize(Roles = "BikeparkManagers")]
         // POST: Pricings/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -154,6 +163,7 @@ namespace Bikepark.Controllers
             return await EditForm(pricing);
         }
 
+        [Authorize(Roles = "BikeparkManagers")]
         // POST: Pricings/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -201,6 +211,7 @@ namespace Bikepark.Controllers
             return await EditForm(pricing);
         }
 
+        [Authorize(Roles = "BikeparkManagers")]
         // POST: Pricings/Replace/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -254,6 +265,7 @@ namespace Bikepark.Controllers
             return await EditForm(pricing);
         }
 
+        [Authorize(Roles = "BikeparkManagers")]
         // GET: Pricings/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -273,6 +285,7 @@ namespace Bikepark.Controllers
             return View(pricing);
         }
 
+        [Authorize(Roles = "BikeparkManagers")]
         // POST: Pricings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -302,6 +315,7 @@ namespace Bikepark.Controllers
           return _context.Pricings.Any(e => e.PricingID == id);
         }
 
+        [Authorize(Roles = "BikeparkAdministrators,BikeparkManagers")]
         public async Task<FileResult> Export()
         {
             var fileName = "Pricings";

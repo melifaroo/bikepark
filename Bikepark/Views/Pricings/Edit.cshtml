@@ -8,6 +8,8 @@
     var hasRecords = ViewBag.HasRecords;
     string archival = Model.Archival ? "(Архив)" : "";
 }
+
+<div class="col-md-6">  
 @if (Model.PricingID != null)
 {
     <h3>Редактировать</h3>
@@ -18,6 +20,7 @@ else
     <h3>Добавить</h3>
     <h4>Тариф</h4>    
 }
+</div>  
 <hr />
 <div class="container-sm">  
     <form asp-controller="Pricing">
@@ -107,6 +110,19 @@ else
             </div>
         </div>
     </form>
+</div>
+<div class="col-md-6">  
+@if (Model.PricingID != null)
+{
+    @if (hasRecords)
+    { 
+        <h5 style="display:inline">В журнале есть записи выданные с этим тарифом</h5>  
+        <p><a target="_blank" rel="noopener noreferrer" href="/Log/WithPricing/?id=@Model.PricingID">Просмотреть в новой вкладке?</a></p>
+        <p>Если его исправить - это изменение отразится на всех записях журнала </p>
+        <p>Если его заменить - данный тариф будет заархивирован (в записях журнала будет отображаться прежний тариф), вместо него будет создан новый </p>
+        <p>Если его скопировать - данный тариф останется без изменений, но на его основе будет создан новый </p>
+    } 
+}
 </div>
 
 

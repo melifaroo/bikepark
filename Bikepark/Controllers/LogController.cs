@@ -9,9 +9,11 @@ using Bikepark.Data;
 using Bikepark.Models;
 using System.Text;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bikepark.Controllers
 {
+    [Authorize(Roles = "BikeparkAdministrators,BikeparkManagers")]
     public class LogController : Controller
     {
         private readonly BikeparkContext _context;
