@@ -233,9 +233,9 @@ function setupInterface() {
 
     switch (record.Status) {
         case 1://scheduled
-            $("#time-start-label").val("К выдаче");
-            $("#time-end-label").val("К возврату");
-            $("#duration-label").val("На время [час]");
+            $("#time-start-label").html("К выдаче");
+            $("#time-end-label").html("К возврату");
+            $("#duration-label").html("На время [час]");
             break;
         case 2://active
             $("#time-start-label").html("Выдан");
@@ -306,18 +306,46 @@ function change_action() {
     var getback = record.Status == 2 && getback_count > 0;
     var service = record.Status == 2 && service_count > 0;
     var repeal = record.Status == 1 && schedule_mode && repeal_count > 0;
-
+    pass = false;
     var draft = draft_mode;
 
+    $('#customer-num').rules('add', {
+        required: giveout_mode || schedule_mode   // overwrite an existing rule
+    });
+    $('#customer-name').rules('add', {
+        required: giveout_mode    // overwrite an existing rule
+    });
+    $('#customer-doc').rules('add', {
+        required: giveout_mode    // overwrite an existing rule
+    });
+    $('#customer-docnum').rules('add', {
+        required: giveout_mode    // overwrite an existing rule
+    });
+
+    if (record.Status < 2) {
+        if (giveout_mode) {
+            if (start_now)
+                $("#time-start-label").html("К выдаче сейчас");
+            else 
+                $("#time-start-label").html("К выдаче");
+            $("#time-end-label").html("К возврату");
+            $("#duration-label").html("На время [час]");
+
+        } else if (schedule_mode || draft_mode) {
+            $("#time-start-label").html("К выдаче");
+            $("#time-end-label").html("К возврату");
+            $("#duration-label").html("На время [час]");
+        }
+    }
     $("#label-action-giveout").toggle(giveout);
     $("#label-action-pass").toggle(pass);
     $("#label-action-schedule").toggle(schedule);
     $("#label-action-repeal").toggle(repeal);
     $("#label-action-getback").toggle(getback);
     $("#label-action-service").toggle(service);
-    $("#label-action-extend").toggle(extend);
-    $("#label-action-reduce").toggle(reduce);
-    $("#label-action-price").toggle(price_change);
+    $("#label-action-extend").toggle(extend && record.RecordID != null);
+    $("#label-action-reduce").toggle(reduce && record.RecordID != null);
+    $("#label-action-price").toggle(price_change && record.RecordID != null);
     $("#label-action-schedule-time").toggle(record.Status == 1 && time_change);
 
     $("#giveout-count").html(giveout_count);
@@ -336,9 +364,9 @@ function change_action() {
     $("#btn-update").attr('formnovalidate', draft?'formnovalidate':null);
     $("#btn-update").toggleClass("btn-primary", pass || getback || service || giveout || repeal || schedule || extend || reduce || price_change);
     $("#btn-service").toggle(serviced_count > 0 && record.Status > 1).prop("disabled", serviced_count == 0 || record.Status < 2);
-    $("#btn-contract").toggle(giveout || (serviced_count > 0 && record.Status > 1)).prop("disabled", !giveout && !(serviced_count > 0 && record.Status > 1));
+    $("#btn-contract").toggle(giveout || ((serviced_count > 0 || giveout_count > 0) && record.Status > 1)).prop("disabled", !giveout && !((serviced_count > 0 || giveout_count > 0) && record.Status > 1));
 
-    $("#btn-canceldraft").toggle(draft_mode && record.Status == 0).prop("disabled", !(draft_mode && record.Status == 0));
+    $("#btn-canceldraft").toggle(draft_mode && record.Status == 0 && record.RecordID!=null).prop("disabled", !(draft_mode && record.Status == 0));
     $("#btn-cancel").toggle(schedule_mode && record.Status == 1).prop("disabled", !(scheduled_count > 0));
     $("#btn-getbackall").toggle(record.Status == 2).prop("disabled", !(givenout_count>0));
 
@@ -385,19 +413,3 @@ function change_action() {
 }
 
 
-$("#btn-contract").on("click", function () {
-    //if (validator.form()) {
-    //    try {
-    //        $.post(url_contract)
-    //            .done(function (data) {
-
-    //            })
-    //            .fail(function () {
-    //                alert("error");
-    //            });
-    //    } catch (err) {
-    //        console.log(err);
-    //    }
-    //}
-
-})
