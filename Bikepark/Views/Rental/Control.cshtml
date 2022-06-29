@@ -127,12 +127,15 @@
                         <input name="Customer.CustomerID" value="@Model.Customer?.CustomerID"  id="customer-id" type="hidden"/> 
                         <div class="row row-cols-sm-3 mx-0">               
                             <div class="form-group">  
+
                                 <label for="customer-num" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerPhoneNumber)</label>
-                                <input  id="customer-num" class="form-control customer-input" name="Customer.CustomerPhoneNumber" value="@Model.Customer?.CustomerPhoneNumber" type="tel" placeholder="" autocomplete="none"/>
+                                <input  id="customer-num" class="form-control customer-input" name="Customer.CustomerPhoneNumber" value="@Model.Customer?.CustomerPhoneNumber" type="tel" placeholder="" autocomplete="none" data-val="true" data-val-required="Укажите контактный номер телефона"/>
+                                <span class="text-danger field-validation-valid"  data-valmsg-for="Customer.CustomerPhoneNumber" data-valmsg-replace="true"></span>
                             </div>     
                             <div class="form-group">
                                 <label for="customer-name" class="control-label  text-truncate ">@Html.DisplayNameFor(x => Model.Customer.CustomerFullName)</label>
-                                <input  id="customer-name" class="form-control customer-input" name="Customer.CustomerFullName" value="@Model.Customer?.CustomerFullName" autocomplete="none" />
+                                <input  id="customer-name" class="form-control customer-input" name="Customer.CustomerFullName" value="@Model.Customer?.CustomerFullName" autocomplete="none" data-val="true" data-val-required="Укажите имя клиента"/>
+                                <span class="text-danger field-validation-valid"  data-valmsg-for="Customer.CustomerFullName" data-valmsg-replace="true"></span>
                             </div>           
                             <div class="col">                     
                                 <div class="row row-cols-3 mx-0 mt-4" >
@@ -157,7 +160,8 @@
                             <div  class=" row row-cols-sm-2 mx-0">      
                                 <div class="form-group mx-0">  
                                     <label for="customer-doc" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerDocumentType)</label>
-                                    <input  id="customer-doc" class="form-control customer-input" name="Customer.CustomerDocumentType" value="@Model.Customer?.CustomerDocumentType" type="tel" placeholder="" />
+                                    <input  id="customer-doc" class="form-control customer-input" name="Customer.CustomerDocumentType" value="@Model.Customer?.CustomerDocumentType" type="tel" placeholder=""  data-val="true" data-val-required="Укажите документ клиента"/>
+                                    <span class="text-danger field-validation-valid"  data-valmsg-for="Customer.CustomerDocumentType" data-valmsg-replace="true"></span>
                                 </div >      
                                 <div class="form-group mx-0">  
                                     <label for="customer-docseries" class="control-label text-truncate" >@Html.DisplayNameFor(x => Model.Customer.CustomerDocumentSeries)</label>
@@ -166,7 +170,8 @@
                             </div> 
                             <div class="form-group">  
                                 <label for="customer-docnum" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerDocumentNumber)</label>
-                                <input  id="customer-docnum" class="form-control customer-input" name="Customer.CustomerDocumentNumber" value="@Model.Customer?.CustomerDocumentNumber" type="tel" placeholder="" autocomplete="none"/>
+                                <input  id="customer-docnum" class="form-control customer-input" name="Customer.CustomerDocumentNumber" value="@Model.Customer?.CustomerDocumentNumber" type="tel" placeholder="" autocomplete="none"  data-val="true" data-val-required="Укажите номер документа"/>
+                                <span class="text-danger field-validation-valid"  data-valmsg-for="Customer.CustomerDocumentNumber" data-valmsg-replace="true"></span>
                             </div> 
                             <div>
 
