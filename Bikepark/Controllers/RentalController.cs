@@ -466,9 +466,8 @@ namespace Bikepark.Controllers
             return View("GetBack", number);
         }
 
+
         // GET: Rental/Cancel/5
-        [HttpGet]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Cancel(int? id)
         {
             if ((id ?? 0) <= 0)
@@ -484,12 +483,20 @@ namespace Bikepark.Controllers
         }
 
         // POST: Rental/Cancel/5
-        [HttpPost, ActionName("Cancel")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CancelConfirm(int id)
+        public async Task<IActionResult> CancelConfirm(int? id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
             var rentalRecord = await _context.Records.FindAsync(id);
-            if (rentalRecord.Status == Status.Scheduled)
+            if (rentalRecord == null)
+            {
+                return NotFound();
+            }
+            if (rentalRecord.Status == Status.Scheduled )
             {
                 foreach (ItemRecord itemRecord in rentalRecord.ItemRecords)
                     _context.ItemRecords.Remove(itemRecord);
@@ -503,9 +510,35 @@ namespace Bikepark.Controllers
             }
         }
 
-        // GET: Rental/Delete/5
-        [HttpGet]
+        // POST: Rental/Cancel/5
+        [HttpPost]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveDraft(Record rentalRecord)
+        {
+            if (rentalRecord == null)
+            {
+                return NotFound();
+            }
+            if (rentalRecord.RecordID == null)
+            {
+                return NotFound();
+            }
+            if (rentalRecord.Status == Status.Draft)
+            {
+                foreach (ItemRecord itemRecord in rentalRecord.ItemRecords)
+                    _context.ItemRecords.Remove(itemRecord);
+                _context.Records.Remove(rentalRecord);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+        // GET: Rental/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
