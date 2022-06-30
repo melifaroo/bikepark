@@ -218,7 +218,7 @@ function setupInterface() {
     var end = new Date(record.End);
 
     $("#time-start").val(time2str(record.Status == 0 ? now : start));
-    $("#time-end").val(time2str(record.Status == 0 ? timeAfterHours(now, 1) : end ));
+    $("#time-end").val(time2str(record.Status == 0 ? timeAfterHours(now, defaultRentTimeHours) : end ));
     $("#duration").val(record.Status == 0 ? defaultRentTimeHours : durationHours(start, end) );
     $("#time-action").val(time2str(now)).addClass("timer-active");
     if (record.Status == 2) {

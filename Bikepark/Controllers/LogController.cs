@@ -274,51 +274,8 @@ namespace Bikepark.Controllers
           return (_context.ItemRecords?.Any(e => e.ItemRecordID == id)).GetValueOrDefault();
         }
 
-        // GET: Log/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.ItemRecords == null)
-            {
-                return NotFound();
-            }
-
-            var itemRecord = await _context.ItemRecords
-                .Include(i => i.Item)
-                .Include(i => i.Pricing)
-                .Include(i => i.Record)
-                .Include(i => i.User)
-                .FirstOrDefaultAsync(m => m.ItemRecordID == id);
-            if (itemRecord == null)
-            {
-                return NotFound();
-            }
-
-            return View(itemRecord);
-        }
-
-        // POST: Log/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
-        {
-            if (_context.ItemRecords == null)
-            {
-                return Problem("Entity set 'BikeparkContext.ItemRecords'  is null.");
-            }
-            var itemRecord = await _context.ItemRecords.FindAsync(id);
-            if (itemRecord != null)
-            {
-                _context.ItemRecords.Remove(itemRecord);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-
-        public async Task<IActionResult> DeleteItemRecord(int? id)
-        {
-            Console.WriteLine(Request.RouteValues);
             if (id == null)
             {
                 return NotFound();
@@ -331,43 +288,23 @@ namespace Bikepark.Controllers
             return View(rentalRecord);
         }
 
+
         // POST: Rental/Delete/5
-        [HttpPost, ActionName("DeleteItemRecord")]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteItemRecordConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            var rentalRecord = await _context.ItemRecords.FindAsync(id);
-            if (rentalRecord == null)
+            if (_context.ItemRecords == null)
             {
-                return NotFound();
+                return Problem("Entity set 'BikeparkContext.ItemRecords'  is null.");
             }
-            _context.ItemRecords.Remove(rentalRecord);
+            var rentalRecord = await _context.ItemRecords.FindAsync(id);
+            if (rentalRecord != null)
+            {
+                _context.ItemRecords.Remove(rentalRecord);
+            }
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-
-
-        // GET: Log/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.ItemRecords == null)
-            {
-                return NotFound();
-            }
-
-            var itemRecord = await _context.ItemRecords
-                .Include(i => i.Item)
-                .Include(i => i.Pricing)
-                .Include(i => i.Record)
-                .Include(i => i.User)
-                .FirstOrDefaultAsync(m => m.ItemRecordID == id);
-            if (itemRecord == null)
-            {
-                return NotFound();
-            }
-
-            return View(itemRecord);
         }
 
         // GET: Log/ItemRentalDetails/5

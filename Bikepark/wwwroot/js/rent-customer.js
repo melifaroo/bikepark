@@ -26,9 +26,9 @@ $(document).on("click", ".btn-select-customer", function () {
             $("#customer-num").val(result.customerPhoneNumber);
             $("#customer-email").val(result.customerEMail);
             $("#customer-doc").val(result.customerDocumentType);
-            $("#customer-docseries").val(result.CustomerDocumentSeries);
-            $("#customer-docnum").val(result.CustomerDocumentNumber);
-            $("#customer-info").val(result.CustomerInformation);
+            $("#customer-docseries").val(result.customerDocumentSeries);
+            $("#customer-docnum").val(result.customerDocumentNumber);
+            $("#customer-info").val(result.customerInformation);
             $("#customer-id").val(result.customerID);
             $("#chk-new-customer").prop("checked", false).prop("disabled", true);
             $("#chk-upd-customer").prop("checked", false).prop("disabled", true);

@@ -13,7 +13,7 @@
     var End = Model.End ?? (Model.Start ?? DateTime.Now).AddDays(1);
 }
 <tr class="item-record" data-itemid="@Model.ItemID" data-id="@Model.GetHashCode()" data-recid="@Model.ItemRecordID">
-    <input name="ItemRecords.index" autocomplete="off" value="@Model.GetHashCode()" type="hidden" />
+    <input name="ItemRecords.index" autocomplete="nope" value="@Model.GetHashCode()" type="hidden" />
     <input name="ItemRecords[@Model.GetHashCode()].ItemRecordID" value="@Model.ItemRecordID" class="itemrecordid" type="hidden" />
     <input name="ItemRecords[@Model.GetHashCode()].RecordID" value="@Model.RecordID" class="recordid" type="hidden" />
     <input name="ItemRecords[@Model.GetHashCode()].ItemID" value="@Model.ItemID" class="itemid" type="hidden" />

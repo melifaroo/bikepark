@@ -38,7 +38,7 @@ namespace Bikepark.Data
                 await EnsureRole(serviceProvider, managerID, BikeparkConfig.ManagersRole);
 
                 // allowed user can create and edit contacts that they create
-                var rootID = await EnsureUser(serviceProvider, rootPw, "root");
+                var rootID = await EnsureUser(serviceProvider, rootPw, "root@sevbike.ru");
                 await EnsureRole(serviceProvider, rootID, BikeparkConfig.ManagersRole);
             }
         }
@@ -370,9 +370,9 @@ namespace Bikepark.Data
                                 Start = renteditem.Start ?? renteditem.Record.Start ?? DateTime.MaxValue,
                                 End =
                                     ((renteditem.Status == Status.Active || renteditem.Status == Status.OnService
-                                    && (renteditem.End ?? renteditem.Record.End ?? DateTime.MinValue) < DateTime.Now) ?
+                                    && (renteditem.End ?? renteditem.Record.End ?? DateTime.MinValue) < DateTime.Now)) ?
                                     DateTime.Now :
-                                    (renteditem.End ?? renteditem.Record.End ?? DateTime.MinValue)),
+                                    (renteditem.End ?? renteditem.Record.End ?? DateTime.MinValue),
                                 Status = renteditem.Status,
                                 ItemRecordID = renteditem.ItemRecordID
                             }
