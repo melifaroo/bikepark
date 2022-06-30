@@ -37,7 +37,7 @@
             {
                     alert = "alert alert-danger";
             }else 
-            if (item.AttentionStatus == AttentionStatus.Attention)
+            if (item.AttentionStatus == AttentionStatus.Warning)
             {
                     alert = "alert alert-warning";            
             }
@@ -80,7 +80,7 @@
                     <a asp-action="ControlItemService" asp-route-id="@item.ItemRecordID">Управление</a>
                 }
                 @if( @item.Status==Status.OnService ){
-                    <a asp-action="UpdateServiceFixed" asp-route-id="@item.ItemRecordID">Отремонтирован</a>
+                    <a asp-action="UpdateServiceFixed" asp-route-id="@item.ItemRecordID">Завершить</a>
                 }
                 @if ( User.Identity.IsAuthenticated ){
                     if ( User.IsInRole(BikeparkConfig.ManagersRole) ){  
