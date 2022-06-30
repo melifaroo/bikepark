@@ -34,7 +34,7 @@
     </dl>
     
     <form asp-action="CancelConfirm" asp-route-id="@Model.RecordID" >
-        <input type="submit" value="Снять бронь" class="btn btn-danger" /> |
-        <a asp-action="Control" asp-route-id="@Model.RecordID">Оставить как есть</a>
+        <a asp-action="Control" asp-route-id="@Model.RecordID" class="btn btn-secondary">Отмента</a>
+        <input type="submit" value="Снять бронь" class="btn btn-danger" />
     </form>
 </div>

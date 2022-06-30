@@ -10,7 +10,7 @@
             var check = Model.Contains(day);
             var name = check ? "DaysOfWeek["+num+"]" : null;
             if (check){
-                <input type="hidden" name="DaysOfWeek.index" autocomplete="off" value="@num" class="idx-dayofweek"/>
+                <input type="hidden" name="DaysOfWeek.index" autocomplete="nope" value="@num" class="idx-dayofweek"/>
             }
             num += check ? 1 : 0;
         <input id="day-@day"  class="btn-check chk-dayofweek"  name="@name" value="@day" type="checkbox" checked="@check"/>
