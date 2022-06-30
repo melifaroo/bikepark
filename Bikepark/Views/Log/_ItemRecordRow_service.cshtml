@@ -1,0 +1,59 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model Bikepark.Models.ItemRecord
+@using Bikepark.Models
+@using Microsoft.EntityFrameworkCore;
+@using HtmlHelpers.BeginCollectionItemCore
+@{
+    DbSet<Pricing> prices = ViewBag.Pricings;
+    IEnumerable<Pricing> serviceprices = await PricingFilter.ServicePricing(prices, Model.Item.ItemType.PricingCategoryID);
+    var Start = Model.Start ?? DateTime.Now;
+    var End = Model.End ?? (Model.Start ?? DateTime.Now).AddDays(1);
+}
+<tr class="item-record" data-itemid="@Model.ItemID" data-id="@Model.GetHashCode()" data-recid="@Model.ItemRecordID">
+    <input name="ItemRecords.index" autocomplete="off" value="@Model.GetHashCode()" type="hidden" />
+    <input name="ItemRecords[@Model.GetHashCode()].ItemRecordID" value="@Model.ItemRecordID" class="itemrecordid" type="hidden" />
+    <input name="ItemRecords[@Model.GetHashCode()].RecordID" value="@Model.RecordID" class="recordid" type="hidden" />
+    <input name="ItemRecords[@Model.GetHashCode()].ItemID" value="@Model.ItemID" class="itemid" type="hidden" />
+    <td class="td-buttons" style="width : 150px">
+        <select  name="ItemRecords[@Model.GetHashCode()].Status" class="form-control form-control-sm status">
+            @foreach (Status status in Enum.GetValues(typeof(Status)).Cast<Status>().ToList().Where(sli => ((int)sli) > 3))
+            {
+                var selected = status == Model.Status;
+                var name = EnumHelper<Status>.GetDisplayValue(status);
+                <option value="@status" selected="@selected">@name</option>
+            }
+        </select>
+    </td>
+    <td style="width : 5%; font-weight: bold">
+        <a target="_blank" rel="noopener noreferrer" href="/Rental/ItemRentalDetails?id=@Model.ItemID">
+            #@Html.DisplayFor(m => Model.Item.ItemNumber)
+        </a>
+    </td>
+    <td style="width : 15%">
+        <input name="ItemRecords[@Model.GetHashCode()].Start" value="@Start.ToString("yyyy-MM-ddTHH:mm")" class="form-control form-control-sm start" type="datetime-local"  data-id="@Model.GetHashCode()"/>
+    </td>
+    <td style="width : 15%">
+        <input name="ItemRecords[@Model.GetHashCode()].End" value="@End.ToString("yyyy-MM-ddTHH:mm")" class="form-control form-control-sm end" type="datetime-local"  data-id="@Model.GetHashCode()"/>
+    </td>
+    <td style="width : 15%">
+        <select name="ItemRecords[@Model.GetHashCode()].PricingID" class="form-control form-control-sm pricing" title="">
+            <option selected></option>
+            @foreach (var price in serviceprices)
+            {
+                var selected = Model.PricingID == price.PricingID;
+                <option value="@price.PricingID" selected="@selected">@price.PricingName</option>
+            }
+        </select>
+    </td>
+    <td style="width : 5%" class="pricing-info">
+        @Html.DisplayFor(m => Model.Pricing.Price)
+    </td>
+    <td style="width : 150px">
+        <button type="button" class="btn btn-link btn-remove" data-id="@Model.GetHashCode()">Удалить</button>
+        <button type="button" class="btn btn-link btn-restore" data-id="@Model.GetHashCode()" style="display: none">Восстановить</button>
+        <button type="button" class="btn btn-link btn-add"  data-id="@Model.GetHashCode()">Добавить</button>
+    </td>
+</tr>
