@@ -2,10 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.EntityFrameworkCore.Proxies;
 using Bikepark.Data;
-var builder = WebApplication.CreateBuilder(args);
 
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
             .SetBasePath(Environment.CurrentDirectory)
@@ -13,12 +12,14 @@ builder.Configuration
             .AddJsonFile("bikepark.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables(); ;
 
-var baseConnectionString = builder.Configuration.GetConnectionString("SQLiteConnection");
+//var ConnectionString = builder.Configuration.GetConnectionString("SQLiteConnection");
+var ConnectionString = builder.Configuration.GetConnectionString("MySQLConnection");
+var MySQLServerVersion = builder.Configuration.GetValue<string>("MySQLServerVersion");
 
 builder.Services.AddDbContext<BikeparkContext>(options => options
                                                 .UseLazyLoadingProxies()
-                                                .UseSqlite(baseConnectionString)
-                                                //.UseMySql("server=localhost;database=bikepark;user=root;password=Passw0rd!", new MySqlServerVersion(new Version(8, 0, 28)))
+                                                //.UseSqlite(ConnectionString)
+                                                .UseMySql(ConnectionString, new MySqlServerVersion(new Version(MySQLServerVersion)))
                                                 ); 
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -53,17 +54,6 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//Authorization handlers.
-// builder.Services.AddScoped<IAuthorizationHandler,
-//                       ContactIsOwnerAuthorizationHandler>();
-
-//builder.Services.AddSingleton<IAuthorizationHandler,
-//                      BikeparkAdministratorsAuthorizationHandler>();
-
-//builder.Services.AddSingleton<IAuthorizationHandler,
-//                      BikeparkManagerAuthorizationHandler>();
-
-
 var supportedCultures = new[] { "ru-RU", "ru" };
 var localizationOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0])
     .AddSupportedCultures(supportedCultures)
@@ -85,7 +75,6 @@ using (var scope = app.Services.CreateScope())
     await BikeparkContext.Initialize(services, testUserPw, rootPw);
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
