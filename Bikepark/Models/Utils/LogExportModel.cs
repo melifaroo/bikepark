@@ -7,34 +7,34 @@ namespace Bikepark.Models
         [Display(Name = "#")]
         public int? ItemRecordID { get; set; }
 
-        [Display(Name = "Категория ТС")]
+        [Display(Name = "Item Category")]
         public string? ItemCategoryName { get; set; }
 
-        [Display(Name = "Модель")]
+        [Display(Name = "Item Type")]
         public string? ItemTypeName { get; set; }
 
-        [Display(Name = "Номер")]
+        [Display(Name = "Item Number")]
         public string? ItemNumber { get; set; }
 
-        [Display(Name = "Начало проката")]
+        [Display(Name = "Start")]
         public DateTime? Start { get; set; }
 
-        [Display(Name = "Конец проката")]
+        [Display(Name = "End")]
         public DateTime? End { get; set; }
 
-        [Display(Name = "Статус")]
+        [Display(Name = "Status")]
         public string? Status { get; set; }
 
-        [Display(Name = "Тариф")]
+        [Display(Name = "Billing Plan")]
         public string? PricingName { get; set; }
 
-        [Display(Name = "Цена")]
+        [Display(Name = "Price")]
         public double? Price { get; set; }
 
-        [Display(Name = "Тарификация")]
+        [Display(Name = "Billing Model")]
         public string? PricingType { get; set; }
 
-        [Display(Name = "#Заказ")]
+        [Display(Name = "Record")]
         public int? RecordID { get; set; }
     }
 }

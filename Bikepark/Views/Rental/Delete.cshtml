@@ -2,20 +2,20 @@
 
 @{
     Layout = "_MainLayout";
-    ViewData["Title"] = "Прокат";
+    ViewData["Title"] = "Delete Record";
 }
 
-<h1>Удалить</h1>
-<h3>Вы уверены?</h3>
+<h1>Delete</h1>
+<h3>Are you sure?</h3>
 <div>
-    <h4>Запись #@Model.RecordID</h4>
+    <h4>Record #@Model.RecordID</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Customer)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Customer.CustomerID)
+            @Html.DisplayFor(model => model.Customer!.CustomerID)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Status)
@@ -39,7 +39,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="RecordID" />
-        <a asp-action="Index" class="btn btn-secondary" >Отмена</a>
-        <input type="submit" value="Удалить" class="btn btn-danger" /> 
+        <a asp-action="Index" class="btn btn-secondary" >Cancel</a>
+        <input type="submit" value="Delete" class="btn btn-danger" /> 
     </form>
 </div>

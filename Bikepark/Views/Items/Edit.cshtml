@@ -1,23 +1,23 @@
 ﻿@model Bikepark.Models.Item
 
 @{
-    ViewData["Title"] = "Редактирование номера";
+    ViewData["Title"] = "Edit Item";
     ViewData["menu"] = "items";
     Layout = "_MainLayout";    
     var Error = ViewBag.Error;
     var hasRecords = ViewBag.HasRecords;
-    string archival = Model.Archival ? "(Архив)" : "";
+    string archival = Model.Archival ? "(archival)" : "";
 }
 <div class="col-md-6">  
 @if (Model.ItemID != null)
 {
-    <h3>Редактировать</h3>
-    <h4>Номер #@Model.ItemNumber @archival</h4>
+    <h3>Edit Item</h3>
+    <h4>Item Number #@Model.ItemNumber @archival</h4>
 }
 else
 {
-    <h3>Добавить</h3>
-    <h4>Номер</h4>    
+    <h3>Add Item</h3>
+    <h4>Item with New Number</h4>    
 }
 </div>
 <hr />
@@ -44,17 +44,17 @@ else
         <div class="flex-row justify-content-start">
             <div class="row row-cols-4 col-md-8 ">
                 <div class="form-group col-md-2 ">  
-                    <a asp-action="Index" class="btn btn-secondary col-md-12">Отмена</a>
+                    <a asp-action="Index" class="btn btn-secondary col-md-12">Cancel</a>
                 </div>
                 @if (Model.ItemTypeID != null)
                 {
                     <div class="form-group col-md-2 ">
-                        <button type="submit" asp-action="Edit" class="btn btn-dark col-md-12">Исправить</button>
+                        <button type="submit" asp-action="Edit" class="btn btn-dark col-md-12">Change</button>
                     </div>
                     @if (hasRecords)
                     {
                         <div class="form-group col-md-2 ">
-                            <button type="submit"  asp-action="Replace" class="btn btn-primary col-md-12"  title="Заменить, старый номер будет заархивирован">Заменить</button>
+                            <button type="submit"  asp-action="Replace" class="btn btn-primary col-md-12"  title="Replace, The old Number will be archived.">Replace</button>
                         </div>
                     }
                     else
@@ -66,7 +66,7 @@ else
                 else
                 {
                     <div class="form-group col-md-2 ">
-                        <button type="submit"  asp-action="Create" class="btn btn-primary col-md-12">Создать</button>
+                        <button type="submit"  asp-action="Create" class="btn btn-primary col-md-12">Create</button>
                     </div>
                     <div class="col-md-2 ">
                     </div>
@@ -80,10 +80,10 @@ else
 {
     @if (hasRecords)
     { 
-        <h5 style="display:inline">В журнале есть записи о выдаче этого номера</h5>  
-        <p><a target="_blank" rel="noopener noreferrer" href="/Log/OfItem/?id=@Model.ItemID">Просмотреть в новой вкладке?</a></p>
-        <p>Если его исправить - это изменение отразится на всех записях журнала </p>
-        <p>Если его заменить - данный номер будет заархивирован (в записях журнала будет отображаться прежний номер с прежней моделью), вместо него будет создан новый </p>
+        <h5 style="display:inline">The log contains records regarding the rental of Items of this Item.</h5>  
+        <p><a target="_blank" rel="noopener noreferrer" href="/Log/OfItem/?id=@Model.ItemID">View all in a new tab?</a></p>
+        <p>If you CHANGE it, this affect all existing log Records.</p>
+        <p>If you REPLACE it, this Number will be archived (and will appear in the existing log Records of its old Type), and a new one will be created.</p>
     } 
 }
 </div>

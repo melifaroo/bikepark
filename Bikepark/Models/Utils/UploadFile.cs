@@ -5,7 +5,7 @@ namespace Bikepark.Models
 {
     public class UploadFile : ReponseModel
     {
-        [Required(ErrorMessage = "Выберете файл формы")]
-        public IFormFile File { get; set; }
+        [Required(ErrorMessage = "Choose Form File ")]
+        public IFormFile? File { get; set; }
     }
 }

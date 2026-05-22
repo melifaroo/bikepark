@@ -71,5 +71,3 @@ _[Ss]cripts
 *.exe
 *.dll
 *.nupkg
-*.ncrunchsolution
-*.dot[Cc]over

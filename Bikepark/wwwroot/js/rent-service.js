@@ -20,7 +20,7 @@ $(document).on("change", "#itemrecords-list .start", function () {
     var enddate = $("#itemrecords-list tr.item-record[data-id=" + id + "]").find(".end").val();
     var end = new Date(enddate);
     if (start.getTime() > end.getTime()) {
-        alert("Укажите начало ремонта не позже планируемой даты его окончания");
+        alert("Specify the maintenance start date no later than its planned completion date.");
         $(this).val(enddate);
     }
 });
@@ -32,7 +32,7 @@ $(document).on("change", "#itemrecords-list .end", function () {
     var startdate = $("#itemrecords-list tr.item-record[data-id=" + id + "]").find(".start").val();
     var start = new Date(startdate);
     if (start.getTime() > end.getTime()) {
-        alert("Укажите плаинруемую дату завершения ремонта не ранее даты его начала");
+        alert("Specify the maintenance planned completion date no earlier than its start date.");
         $(this).val(startdate);
     }
 

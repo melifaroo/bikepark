@@ -37,7 +37,7 @@ function update_duration() {
 function update_duration_actual() {
     d1 = new Date($("#time-start").val());
     d2 = new Date();
-    $("#duration-current").html("в прокате: " + duration2str(durationHours(d1, d2)));
+    $("#duration-current").html("been out on rental: " + duration2str(durationHours(d1, d2)));
 }
 
 $("#duration").on("change", function () {
@@ -73,7 +73,7 @@ $("#time-start-now").on("change", function () {
 function duration2str(t) {
     var h = Math.floor(t)
     var m = Math.floor((t - h) * 60);
-    return ((h > 0) ? (h + " час ") : "") + ((m > 0) ? (m + " мин") : "")
+    return ((h > 0) ? (h + " h ") : "") + ((m > 0) ? (m + " m") : "")
 }
 
 function durationHours(d1, d2) {

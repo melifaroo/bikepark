@@ -26,7 +26,9 @@ namespace Bikepark
             {
                 var filePath = Path.Combine(Environment.CurrentDirectory, "bikepark.json");//AppContext.BaseDirectory
                 string json = File.ReadAllText(filePath);
-                dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+                var rawObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json) 
+                                    ?? throw new ConfigurationErrorsException();
+                dynamic jsonObj = rawObj;
 
                 var sectionPath = key.Split(":")[0];
 

@@ -9,7 +9,7 @@ namespace Bikepark.Models
     public static class AttributeHelper
     {
 
-        public static T GetAttribute<T>(this MemberInfo member, bool isRequired)  where T : Attribute
+        public static T? GetAttribute<T>(this MemberInfo member, bool isRequired)  where T : Attribute
         {
             var attribute = member.GetCustomAttributes(typeof(T), false).SingleOrDefault();
 
@@ -23,7 +23,7 @@ namespace Bikepark.Models
                         member.Name));
             }
 
-            return (T)attribute;
+            return (T?)attribute;
         }
 
         public static string GetPropertyDisplayName<T>(Expression<Func<T, object>> propertyExpression)
@@ -45,14 +45,13 @@ namespace Bikepark.Models
             return attr.DisplayName;
         }
 
-        public static MemberInfo GetPropertyInformation(Expression propertyExpression)
+        public static MemberInfo? GetPropertyInformation(Expression propertyExpression)
         {
             //Debug.Assert(propertyExpression != null, "propertyExpression != null");
-            MemberExpression memberExpr = propertyExpression as MemberExpression;
+            MemberExpression? memberExpr = propertyExpression as MemberExpression;
             if (memberExpr == null)
             {
-                UnaryExpression unaryExpr = propertyExpression as UnaryExpression;
-                if (unaryExpr != null && unaryExpr.NodeType == ExpressionType.Convert)
+                if (propertyExpression is UnaryExpression unaryExpr && unaryExpr.NodeType == ExpressionType.Convert)
                 {
                     memberExpr = unaryExpr.Operand as MemberExpression;
                 }

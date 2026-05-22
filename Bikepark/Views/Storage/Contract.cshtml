@@ -2,10 +2,10 @@
 
 @{
     Layout = "_MainLayout";
-    ViewData["Title"] = "Форма договора";
+    ViewData["Title"] = "Agreement Form";
 }
 
-<h3>Форма договора</h3>
+<h3>Agreement Form</h3>
 
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
     
@@ -13,7 +13,7 @@
     </ul>  
     <ul class="nav  col-sm-6 justify-content-end">  
         <li class="nav-item"> 
-            <a class="nav-link" asp-controller="Storage" asp-action="Main" >Управление</a> 
+            <a class="nav-link" asp-controller="Storage" asp-action="Main" >Management</a> 
         </li>    
     </ul>  
 
@@ -21,11 +21,11 @@
 <div class="container-sm">
     <hr />    
     <div class="form-group mt-3">
-        <a asp-action="ContractDownload" class="btn btn-secondary col-md-6">Скачать текущую форму</a>
+        <a asp-action="ContractDownload" class="btn btn-secondary col-md-6">Download Agreement Form</a>
     </div>
     <form asp-action="ContractUpload" enctype = "multipart/form-data">
         <div class="form-group mt-3">
-            <input type="submit" class="btn btn-primary col-md-6" value="Загрузить новую форму"/>
+            <input type="submit" class="btn btn-primary col-md-6" value="Upload Agreement Form"/>
         </div>
         <div class="form-group mt-3 col-md-6">
             <input asp-for="File" class="form-control" >

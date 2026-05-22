@@ -6,15 +6,20 @@ namespace Bikepark.Models
     public class Pricing
     {
         public int? PricingID { get; set; }
-        [Display(Name = "Тариф")]
+
+        [Display(Name = "Billing Plan")]
         public string? PricingName { get; set; }
-        [Display(Name = "Категория тарифа")]
+
+        [Display(Name = "Pricing Category")]
         public int? PricingCategoryID { get; set; }
-        [Display(Name = "Категория тарифа")]
+
+        [Display(Name = "Pricing Category")]
         public virtual PricingCategory? PricingCategory { get; set; }
-        [Display(Name = "Тарификация")]
+
+        [Display(Name = "Billing Model")]
         public PricingType PricingType { get; set; } = PricingType.Hourly;
-        [Display(Name = "Дни недели")]
+
+        [Display(Name = "Days Of Week")]
         public List<DayOfWeek> DaysOfWeek { get; set; } = new List<DayOfWeek> {
                     DayOfWeek.Monday,
                     DayOfWeek.Tuesday,
@@ -24,15 +29,19 @@ namespace Bikepark.Models
                     DayOfWeek.Saturday,
                     DayOfWeek.Sunday,
             };
-        [Display(Name = "Праздничный")]
+
+        [Display(Name = "Holiday")]
         public Boolean IsHoliday { get; set; }
-        [Display(Name = "Льготный")]
+
+        [Display(Name = "Concessional")]
         public Boolean IsReduced { get; set; }
-        [Display(Name = "Минимум времени")]
+
+        [Display(Name = "Minimal Rental Period (hours)")]
         public int MinDuration { get; set; } = 1;
-        [Display(Name = "Цена")]
+
+        [Display(Name = "Price")]
         public double Price { get; set; } = 1;
-        
+                
         public bool Archival { get; set; } = false;
     }
 }

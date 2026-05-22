@@ -2,19 +2,19 @@
 @model IEnumerable<UserRole>
 
 @{
-    ViewData["Title"] = "Единицы";
+    ViewData["Title"] = "Receptionists";
     ViewData["menu"] = "items";
     Layout = "_MainLayout";
 }
 
-<h3>Учетные записи администраторов велопарка</h3>
+<h3>Bikepark Receptionist (Administrator) Accounts</h3>
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
     
     <ul class="nav  col-sm-6 justify-content-start">  
     </ul>  
     <ul class="nav  col-sm-6 justify-content-end">  
         <li class="nav-item"> 
-            <a class="nav-link" asp-controller="Storage" asp-action="Main" >Управление</a> 
+            <a class="nav-link" asp-controller="Storage" asp-action="Main" >Management</a> 
         </li>    
     </ul>  
 
@@ -24,10 +24,10 @@
     <thead>
         <tr>
             <th>
-                Пользователь
+                User
             </th>
             <th>
-                Роль
+                Role
             </th>
             <th>
             </th>
@@ -37,21 +37,21 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.User.NormalizedUserName)
+                @Html.DisplayFor(modelItem => item.User!.NormalizedUserName)
             </td>
             <td>
-                @if (  item.IsAdmin ){   
-                    <i>Администратор</i>
+                @if ( item.IsAdmin ){   
+                    <i>Receptionist</i>
                 }
             </td>
             <td>
-                <a asp-action="Delete" asp-route-id="@item.User.Id">Удалить</a> |
+                <a asp-action="Delete" asp-route-id="@item.User!.Id">Delete</a> |
                 @if ( item.IsAdmin ){  
-                        <a asp-action="WithdrawAdminRole" asp-route-id="@item.User.Id">Снять</a>                       
+                        <a asp-action="WithdrawAdminRole" asp-route-id="@item.User.Id">Dissmis</a>                       
                     }
                     else
                     {                  
-                        <a asp-action="AssignAdminRole" asp-route-id="@item.User.Id">Назначить администратором</a>    
+                        <a asp-action="AssignAdminRole" asp-route-id="@item.User.Id">Assign as Receptionist</a>    
                     }
             </td>
         </tr>

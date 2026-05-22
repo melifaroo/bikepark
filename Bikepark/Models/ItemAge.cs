@@ -7,9 +7,11 @@ namespace Bikepark.Models
     {
         [Display(Name = "")]
         Adult,
-        [Display(Name = "Подросток")]
+
+        [Display(Name = "Teenage")]
         Teen,
-        [Display(Name = "Ребенок")]
+
+        [Display(Name = "Children's")]
         Kid,
     }
 }

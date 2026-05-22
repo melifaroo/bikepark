@@ -1,33 +1,25 @@
 ﻿@model Bikepark.Models.Item
 
-@using Bikepark.Models
-@using Microsoft.EntityFrameworkCore
-@using Bikepark.Views.Helpers
-
 @{
     Layout = "_MainLayout";
-    ViewData["Title"] = "Данные об инвентаре";
+    ViewData["Title"] = "Item Details";
     IEnumerable<Bikepark.Models.ItemRecord> ItemRecs = ViewBag.ItemRecs;
 
-    string archival = Model.Archival ? "(Архив)" : "";
+    string archival = Model.Archival ? "(archival)" : "";
 }
-
-
-
-
-    <h3>Просмотр</h3>
-    <h4>Номер #@Model.ItemID @archival</h4>
+    <h3>Item Details</h3>
+    <h4>Item #@Model.ItemID @archival</h4>
 
 <hr />
 
 <div  class="row-cols-1">
     <dl class="row">
         <dt class = "col-sm-4" >
-            @Html.DisplayNameFor(model => model.ItemType.ItemTypeName)
+            @Html.DisplayNameFor(model => model.ItemType!.ItemTypeName)
         </dt>
         <dd class = "col-sm-8">
-            @Html.DisplayFor(model => model.ItemType.ItemCategory.ItemCategoryName)
-            @Html.DisplayFor(model => model.ItemType.ItemTypeName)
+            @Html.DisplayFor(model => model.ItemType!.ItemCategory!.ItemCategoryName)
+            @Html.DisplayFor(model => model.ItemType!.ItemTypeName)
         </dd>
         <dt class = "col-sm-4">
             @Html.DisplayNameFor(model => model.ItemNumber)
@@ -36,31 +28,31 @@
             @Html.DisplayFor(model => model.ItemNumber)
         </dd>
         <dt class = "col-sm-4">
-            @Html.DisplayNameFor(model => model.ItemType.PricingCategory)
+            @Html.DisplayNameFor(model => model.ItemType!.PricingCategory)
         </dt>
         <dd class = "col-sm-8">
-            @Html.DisplayFor(model => model.ItemType.PricingCategory.PricingCategoryName)
+            @Html.DisplayFor(model => model.ItemType!.PricingCategory!.PricingCategoryName)
         </dd>
     </dl>
     
     <dl class="row" style="display: none">
         <dt class = "col-sm-4" >
-            @Html.DisplayNameFor(model => model.ItemType.ItemSize)
+            @Html.DisplayNameFor(model => model.ItemType!.ItemSize)
         </dt>
         <dd class = "col-sm-8">
-            @Html.DisplayFor(model => model.ItemType.ItemSize)
+            @Html.DisplayFor(model => model.ItemType!.ItemSize)
         </dd>
         <dt class = "col-sm-4">
-            @Html.DisplayNameFor(model => model.ItemType.ItemAge)
+            @Html.DisplayNameFor(model => model.ItemType!.ItemAge)
         </dt>
         <dd class = "col-sm-8">
-            @Html.DisplayFor(model => model.ItemType.ItemAge)
+            @Html.DisplayFor(model => model.ItemType!.ItemAge)
         </dd>
         <dt class = "col-sm-4">
-            @Html.DisplayNameFor(model => model.ItemType.ItemGender)
+            @Html.DisplayNameFor(model => model.ItemType!.ItemGender)
         </dt>
         <dd class = "col-sm-8">
-            @Html.DisplayFor(model => model.ItemType.ItemGender)
+            @Html.DisplayFor(model => model.ItemType!.ItemGender)
         </dd>
     </dl>
 

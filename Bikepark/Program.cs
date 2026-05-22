@@ -13,13 +13,15 @@ builder.Configuration
                 .AddEnvironmentVariables(); ;
 
 //var ConnectionString = builder.Configuration.GetConnectionString("SQLiteConnection");
-var ConnectionString = builder.Configuration.GetConnectionString("MySQLConnection");
-var MySQLServerVersion = builder.Configuration.GetValue<string>("MySQLServerVersion");
+// var ConnectionString = builder.Configuration.GetConnectionString("MySQLConnection");
+// var MySQLServerVersion = builder.Configuration.GetValue<string>("MySQLServerVersion");
+var connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection");
 
 builder.Services.AddDbContext<BikeparkContext>(options => options
                                                 .UseLazyLoadingProxies()
+                                                .UseNpgsql(connectionString)
                                                 //.UseSqlite(ConnectionString)
-                                                .UseMySql(ConnectionString, new MySqlServerVersion(new Version(MySQLServerVersion)))
+                                                // .UseMySql(ConnectionString, new MySqlServerVersion(new Version(MySQLServerVersion)))
                                                 ); 
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();

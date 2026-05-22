@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Bikepark.Models.ItemRecord>
 @{
     Layout = "_MainLayout";
-    ViewData["Title"] = "Журнал";
+    ViewData["Title"] = "Log";
 
     string Statuses = ViewBag.Statuses;
     DateTime? From    = ViewBag.From;
@@ -38,7 +38,7 @@
                                 <input name="To" value="@To?.ToString("yyyy-MM-dd")" class="form-control form-control-sm" type="date"/>
                             </li>  
                             <li class="nav-item  col-md-2">
-                                <button type="submit" class="btn btn-sm btn-primary col-md-12" asp-action="Filter"  formnovalidate="formnovalidate">Показать</button>
+                                <button type="submit" class="btn btn-sm btn-primary col-md-12" asp-action="Filter"  formnovalidate="formnovalidate">Show</button>
                             </li>  
                         </ul> 
                     </div>
@@ -47,28 +47,28 @@
                             <li class="nav-item col-md-2">
                                 <div class="form-check form-switch">
                                     <input type="checkbox" id="active" class="form-check-input" name="Active" value="true" checked="@(StatusList.Contains(Status.Active))" />
-                                    <label for="active" class="form-check-label">Выданные</label>
+                                    <label for="active" class="form-check-label">Currently Rented</label>
                                     <input type="hidden" name="Active" value="false"  />
                                 </div>
                             </li>
                             <li class="nav-item col-md-2">
                                 <div class="form-check form-switch">
                                     <input type="checkbox" id="scheduled" class="form-check-input" name="Scheduled" value="true" checked="@(StatusList.Contains(Status.Scheduled))" />
-                                    <label for="scheduled" class="form-check-label">Брони</label>
+                                    <label for="scheduled" class="form-check-label">Scheduled Reservations</label>
                                     <input type="hidden" name="Scheduled" value="false"  />
                                 </div>
                             </li>
                             <li class="nav-item col-md-2">
                                 <div class="form-check form-switch">
                                     <input type="checkbox" id="closed" class="form-check-input" name="Closed" value="true" checked="@(StatusList.Contains(Status.Closed))" />
-                                    <label for="closed" class="form-check-label">Завершенные</label>
+                                    <label for="closed" class="form-check-label">Completed</label>
                                     <input type="hidden" name="Closed" value="false"  />
                                 </div>
                             </li>
                             <li class="nav-item col-md-2">
                                 <div class="form-check form-switch">
                                     <input type="checkbox" id="draft" class="form-check-input" name="Draft" value="true" checked="@(StatusList.Contains(Status.Draft))" />
-                                    <label for="draft" class="form-check-label">Черновики</label>
+                                    <label for="draft" class="form-check-label">Drafts</label>
                                     <input type="hidden" name="Draft" value="false"  />
                                 </div>
                             </li>
@@ -80,21 +80,21 @@
                             <li class="nav-item col-md-2">
                                 <div class="form-check form-switch">
                                     <input type="checkbox" id="service" class="form-check-input" name="Service" value="true" checked="@(StatusList.Contains(Status.Service))" />
-                                    <label for="service" class="form-check-label">Требуется ремонт</label>
+                                    <label for="service" class="form-check-label">Maintenance Required</label>
                                     <input type="hidden" name="Service" value="false"  />
                                 </div>
                             </li>
                             <li class="nav-item col-md-2">
                                 <div class="form-check form-switch">
                                     <input type="checkbox" id="onService" class="form-check-input" name="OnService" value="true" checked="@(StatusList.Contains(Status.OnService))" />
-                                    <label for="onService" class="form-check-label">На ремонте</label>
+                                    <label for="onService" class="form-check-label">On Maintenance</label>
                                     <input type="hidden" name="OnService" value="false"  />
                                 </div>
                             </li>
                             <li class="nav-item col-md-2">
                                 <div class="form-check form-switch">
                                     <input type="checkbox" id="fixed" class="form-check-input" name="Fixed" value="true" checked="@(StatusList.Contains(Status.Fixed))" />
-                                    <label for="fixed" class="form-check-label">Отремонтированные</label>
+                                    <label for="fixed" class="form-check-label">Maintenance Completed</label>
                                     <input type="hidden" name="Fixed" value="false"  />
                                 </div>
                             </li>
@@ -111,19 +111,19 @@
         @if (StatusList.Contains(Status.Service) || StatusList.Contains(Status.OnService) || StatusList.Contains(Status.Fixed))
         {
             <li class="nav-item">
-                <a class="nav-link" asp-action="Service"><b>Назначить ремонт</b></a>
+                <a class="nav-link" asp-action="Service"><b>Schedule Maintenance</b></a>
             </li>
         }  
         @if (StatusList.Contains(Status.Active) || StatusList.Contains(Status.Scheduled) || StatusList.Contains(Status.Closed))
         {
             <li class="nav-item">
-                <a class="nav-link" asp-controller="Rental" asp-action="Index" asp-route-statuses="@Statuses" asp-route-from="@From?.ToString("yyyy-MM-dd")" asp-route-to="@To?.ToString("yyyy-MM-dd")"><b>Журнал заказов</b></a>
+                <a class="nav-link" asp-controller="Rental" asp-action="Index" asp-route-statuses="@Statuses" asp-route-from="@From?.ToString("yyyy-MM-dd")" asp-route-to="@To?.ToString("yyyy-MM-dd")"><b>Log</b></a>
             </li>
         }  
     </ul>
     <ul class="nav col-md-6 justify-content-end">  
         <li class="nav-item">
-            <a target="_blank" rel="noopener noreferrer" href="@ExportURL">Загрузить таблицу XLS</a>
+            <a target="_blank" rel="noopener noreferrer" href="@ExportURL">Download the XLS</a>
         </li>    
     </ul> 
 </div>

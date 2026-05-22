@@ -8,7 +8,7 @@
 
 @{
     Layout = "_MainLayout";
-    ViewData["Title"] = "Запись проката";
+    ViewData["Title"] = "Rental Record";
 }
 
     <form  id="rental-control" asp-controller="Rental" style="display : none " class="container-sm" >
@@ -19,7 +19,7 @@
             <div class="row justify-content-center mx-0" >  
                 <div class="col-12 align-self-baseline"> 
                     <div class="row"> 
-                        <h5 class="col-2">Заказ: </h5> 
+                        <h5 class="col-2">Rental Order (Record): </h5> 
                         <h5 class="col-4">#                  
                         <span>@Html.DisplayFor(m => m.RecordID) - @Html.DisplayFor(m => m.Status)</span>
                         <span style="white-space: nowrap"> ( 
@@ -45,69 +45,69 @@
                 <div class="d-flex justify-content-start col-sm-9">
                     <button type="submit" asp-action="UpdateOrCreate" id="btn-update" class="btn btn-primary  col-sm-4 mx-0 text-truncate" style="display: inline;" >        
                         <i class="bi bi-save"></i>                          
-                        Сохранить
+                        Save
                     </button>                 
                     <div class="col-sm-4 mx-0 ">  
                         <select name="StatusAction" value="@Status.Active" id="status-action" class="text-truncate form-control" >
-                            <option value="@Status.Scheduled">Бронь</option>
-                            <option value="@Status.Active" selected>Выдача</option>
-                            <option value="@Status.Draft">Черновик</option>
+                            <option value="@Status.Scheduled">Schedule</option>
+                            <option value="@Status.Active" selected>Rent</option>
+                            <option value="@Status.Draft">Draft</option>
                         </select>
                     </div>
                     <button type="submit" asp-action="Contract" id="btn-contract" class="btn btn-dark col-sm-4 mx-0 text-truncate" style="display: inline;">
-                        <i class="bi bi-pencil-square"></i>Договор
+                        <i class="bi bi-pencil-square"></i>Agreement
                     </button>
                     <a asp-action="Cancel" asp-route-id="@Model.RecordID" id="btn-cancel" class="btn btn-warning col-sm-4 mx-0 text-truncate" formnovalidate="formnovalidate" style="display: inline;">
-                        <i class="bi bi-calendar-minus"></i> Снять (<i id="scheduled-count">0</i>)
+                        <i class="bi bi-calendar-minus"></i> Anull (<i id="scheduled-count">0</i>)
                     </a>
                     <button type="submit" asp-action="RemoveDraft" id="btn-canceldraft" class="btn btn-secondary col-sm-4 mx-0 text-truncate" formnovalidate="formnovalidate" style="display: inline;">
-                        <i class="bi bi-calendar-minus"></i> Удалить
+                        <i class="bi bi-calendar-minus"></i> Delete
                     </button>
                     <button type="submit" asp-controller="Log" id="btn-service" class="btn btn-danger col-sm-4 mx-0 text-truncate" formnovalidate="formnovalidate" asp-action="ControlRecordService" asp-route-id="@Model?.RecordID" style="display: inline;">
-                        <i class="bi bi-wrench-adjustable"></i> Ремонт (<i id="serviced-count">0</i>)
+                        <i class="bi bi-wrench-adjustable"></i> Maintenance (<i id="serviced-count">0</i>)
                     </button>
                 </div>
 
                 <div class="d-flex justify-content-end col-sm-3">
                     <button type="submit" asp-action="Index" class="btn btn-secondary col-sm-12 " id="btn-discard" formnovalidate="formnovalidate" >
-                        <i class="bi bi-arrow-return-left"></i>Выход
+                        <i class="bi bi-arrow-return-left"></i>Exit
                     </button>
                 </div>
             </div>
              
             <div class="flex-row justify-content-start mx-0"  style="display: inline;">   
                     <label class="ms-3 mx-0 text-truncate" style="display: inline;"> 
-                        Изменения:
+                        Changes:
                     </label>      
                     <label id="label-action-getback" class="mx-0 text-truncate" style="display: inline;"> 
-                        <i class="bi bi-hand-thumbs-up"></i> Принять (<i id="getback-count">0</i>)
+                        <i class="bi bi-hand-thumbs-up"></i> Accept (<i id="getback-count">0</i>)
                     </label>      
                     <label id="label-action-service" class="mx-0 text-truncate" style="display: inline;" > 
-                        <i class="bi bi-wrench-adjustable"></i> Ремонт (<i id="service-count">0</i>)
+                        <i class="bi bi-wrench-adjustable"></i> Maintenance (<i id="service-count">0</i>)
                     </label>
                     <label id="label-action-giveout" class="mx-0 text-truncate" style="display: inline;">
-                        <i class="bi bi-bicycle"></i> Выдать (<i id="giveout-count">0</i>)                  
+                        <i class="bi bi-bicycle"></i> Rent (<i id="giveout-count">0</i>)                  
                     </label> 
                     <label id="label-action-pass" class="mx-0 text-truncate" style="display: inline;">
-                        </><i class="bi bi-ticket"></i> Посещение без проката                   
+                        </><i class="bi bi-ticket"></i> Visit (without items rental)
                     </label> 
                     <label id="label-action-schedule" class="mx-0 text-truncate" style="display: inline;">
-                        <i class="bi bi-calendar-plus"></i> Бронь (<i id="schedule-count">0</i>)
+                        <i class="bi bi-calendar-plus"></i> Schedule (<i id="schedule-count">0</i>)
                     </label>
                     <label id="label-action-repeal" class="mx-0 text-truncate" style="display: inline;">
-                        <i class="bi bi-calendar-minus"></i> Отмена (<i id="repeal-count">0</i>)
+                        <i class="bi bi-calendar-minus"></i> Annul (<i id="repeal-count">0</i>)
                     </label>
                     <label id="label-action-price" class="mx-0 text-truncate" style="display: inline;">
-                        <i class="bi bi-cash-coin"></i> Изменить тариф
+                        <i class="bi bi-cash-coin"></i> Billing Plan
                     </label>
                     <label id="label-action-extend" class="mx-0 text-truncate" style="display: inline;">
-                        <i class="bi bi-clock-history"></i> Продлить (<i id="extend-time">0</i>)
+                        <i class="bi bi-clock-history"></i> Extend (<i id="extend-time">0</i>)
                     </label>
                     <label id="label-action-reduce" class="mx-0 text-truncate" style="display: inline;">
-                        <i class="bi bi-clock-history"></i> Сократить (<i id="reduce-time">0</i>)
+                        <i class="bi bi-clock-history"></i> Reduce (<i id="reduce-time">0</i>)
                     </label>
                     <label id="label-action-schedule-time" class="mx-0 text-truncate" style="display: inline;">
-                        <i class="bi bi-clock-history"></i> Изменить время
+                        <i class="bi bi-clock-history"></i> Change Time
                     </label> 
             </div>             
         </div>
@@ -116,25 +116,25 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="customer-info">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#customer-details" aria-expanded="true" aria-controls="customer-details">
-                        <span class="px-1"><b>Клиент:</b></span>
-                        <span class="px-1">@Html.DisplayFor(m => Model.Customer.CustomerFullName)</span>  
-                        <span class="px-1">@Html.DisplayFor(m => Model.Customer.CustomerPhoneNumber)</span>     
+                        <span class="px-1"><b>Customer:</b></span>
+                        <span class="px-1">@Html.DisplayFor(m => Model!.Customer!.CustomerFullName)</span>  
+                        <span class="px-1">@Html.DisplayFor(m => Model!.Customer!.CustomerPhoneNumber)</span>     
                     </button>
                 </h2>
                 <div id="customer-details" class="accordion-collapse collapse show" aria-labelledby="customer-info" data-bs-parent="#details">
                     <div class="accordion-body">
-                        <input name="CustomerID"          value="@Model.CustomerID"                            type="hidden"/> 
-                        <input name="Customer.CustomerID" value="@Model.Customer?.CustomerID"  id="customer-id" type="hidden"/> 
+                        <input name="CustomerID"          value="@Model?.CustomerID"                            type="hidden"/> 
+                        <input name="Customer.CustomerID" value="@Model?.Customer?.CustomerID"  id="customer-id" type="hidden"/> 
                         <div class="row row-cols-sm-3 mx-0">               
                             <div class="form-group">  
 
-                                <label for="customer-num" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerPhoneNumber)</label>
-                                <input  id="customer-num" class="form-control customer-input" name="Customer.CustomerPhoneNumber" value="@Model.Customer?.CustomerPhoneNumber" type="tel" placeholder="" autocomplete="nope" data-val="true" data-val-required="Укажите контактный номер телефона"/>
+                                <label for="customer-num" class="control-label text-truncate">@Html.DisplayNameFor(x => Model!.Customer!.CustomerPhoneNumber)</label>
+                                <input  id="customer-num" class="form-control customer-input" name="Customer.CustomerPhoneNumber" value="@Model?.Customer?.CustomerPhoneNumber" type="tel" placeholder="" autocomplete="nope" data-val="true" data-val-required="Specify the customer's phone number."/>
                                 <span class="text-danger field-validation-valid"  data-valmsg-for="Customer.CustomerPhoneNumber" data-valmsg-replace="true"></span>
                             </div>     
                             <div class="form-group">
-                                <label for="customer-name" class="control-label  text-truncate ">@Html.DisplayNameFor(x => Model.Customer.CustomerFullName)</label>
-                                <input  id="customer-name" class="form-control customer-input" name="Customer.CustomerFullName" value="@Model.Customer?.CustomerFullName" autocomplete="nope" data-val="true" data-val-required="Укажите имя клиента"/>
+                                <label for="customer-name" class="control-label  text-truncate ">@Html.DisplayNameFor(x => Model!.Customer!.CustomerFullName)</label>
+                                <input  id="customer-name" class="form-control customer-input" name="Customer.CustomerFullName" value="@Model?.Customer?.CustomerFullName" autocomplete="nope" data-val="true" data-val-required="Specify the customer's name."/>
                                 <span class="text-danger field-validation-valid"  data-valmsg-for="Customer.CustomerFullName" data-valmsg-replace="true"></span>
                             </div>           
                             <div class="col">                     
@@ -144,13 +144,13 @@
                                         <i class="bi bi-person-check"></i>                           
                                     </label>   
                                     <input  id="chk-new-customer"   class="btn-check" type="checkbox" name="CustomerForceCreate" checked disabled>
-                                    <label  for="chk-new-customer"  class="btn col-4 btn-check-label btn-outline-primary" title="Создать запись о новом клиент">
+                                    <label  for="chk-new-customer"  class="btn col-4 btn-check-label btn-outline-primary" title="Create a record for a new Customer.">
                                         <i class="bi bi-person-plus"></i>                           
                                     </label> 
-                                    <button type="button"  id="btn-search-customer" class="btn col-4 btn-outline-secondary text-truncate" title="Найти по номеру телефона">
+                                    <button type="button"  id="btn-search-customer" class="btn col-4 btn-outline-secondary text-truncate" title="Find by phone number">
                                         <i class="bi bi-search"></i><i class="bi bi-people"></i>
                                     </button> 
-                                    <button type="button"  id="btn-more-customer-detail" class="btn col-4 btn-outline-secondary" title="Показать доп. данные">
+                                    <button type="button"  id="btn-more-customer-detail" class="btn col-4 btn-outline-secondary" title="Show additional info">
                                         <i class="bi bi-person-lines-fill"> </i>
                                     </button> 
                                 </div>         
@@ -159,18 +159,18 @@
                         <div class="row row-cols-sm-3 mx-0" >   
                             <div  class=" row row-cols-sm-2 mx-0">      
                                 <div class="form-group mx-0">  
-                                    <label for="customer-doc" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerDocumentType)</label>
-                                    <input  id="customer-doc" class="form-control customer-input" name="Customer.CustomerDocumentType" value="@Model.Customer?.CustomerDocumentType" type="tel" placeholder=""  data-val="true" data-val-required="Укажите документ клиента"/>
+                                    <label for="customer-doc" class="control-label text-truncate">@Html.DisplayNameFor(x => Model!.Customer!.CustomerDocumentType)</label>
+                                    <input  id="customer-doc" class="form-control customer-input" name="Customer.CustomerDocumentType" value="@Model?.Customer?.CustomerDocumentType" type="tel" placeholder=""  data-val="true" data-val-required="Specify the client's ID Type."/>
                                     <span class="text-danger field-validation-valid"  data-valmsg-for="Customer.CustomerDocumentType" data-valmsg-replace="true"></span>
                                 </div >      
                                 <div class="form-group mx-0">  
-                                    <label for="customer-docseries" class="control-label text-truncate" >@Html.DisplayNameFor(x => Model.Customer.CustomerDocumentSeries)</label>
-                                    <input  id="customer-docseries" class="form-control customer-input" name="Customer.CustomerDocumentSeries" value="@Model.Customer?.CustomerDocumentSeries" type="tel" placeholder="" autocomplete="nope"/>
+                                    <label for="customer-docseries" class="control-label text-truncate" >@Html.DisplayNameFor(x => Model!.Customer!.CustomerDocumentSeries)</label>
+                                    <input  id="customer-docseries" class="form-control customer-input" name="Customer.CustomerDocumentSeries" value="@Model?.Customer?.CustomerDocumentSeries" type="tel" placeholder="" autocomplete="nope"/>
                                 </div>  
                             </div> 
                             <div class="form-group">  
-                                <label for="customer-docnum" class="control-label text-truncate">@Html.DisplayNameFor(x => Model.Customer.CustomerDocumentNumber)</label>
-                                <input  id="customer-docnum" class="form-control customer-input" name="Customer.CustomerDocumentNumber" value="@Model.Customer?.CustomerDocumentNumber" type="tel" placeholder="" autocomplete="nope"  data-val="true" data-val-required="Укажите номер документа"/>
+                                <label for="customer-docnum" class="control-label text-truncate">@Html.DisplayNameFor(x => Model!.Customer!.CustomerDocumentNumber)</label>
+                                <input  id="customer-docnum" class="form-control customer-input" name="Customer.CustomerDocumentNumber" value="@Model?.Customer?.CustomerDocumentNumber" type="tel" placeholder="" autocomplete="nope"  data-val="true" data-val-required="Enter the ID number."/>
                                 <span class="text-danger field-validation-valid"  data-valmsg-for="Customer.CustomerDocumentNumber" data-valmsg-replace="true"></span>
                             </div> 
                             <div>
@@ -181,21 +181,21 @@
                         <div class="row row-cols-sm-3 mx-0 customer-more-detail" style="display: none">   
                             <div class="col mx-0" >       
                                 <div class="form-group">
-                                    <label for="customer-email" class="control-label">@Html.DisplayNameFor(x => Model.Customer.CustomerEMail)</label>
-                                    <input  id="customer-email" class="form-control customer-input" name="Customer.CustomerEMail" value="@Model.Customer?.CustomerEMail"  type="email"  autocomplete="nope"/>
+                                    <label for="customer-email" class="control-label">@Html.DisplayNameFor(x => Model!.Customer!.CustomerEMail)</label>
+                                    <input  id="customer-email" class="form-control customer-input" name="Customer.CustomerEMail" value="@Model?.Customer?.CustomerEMail"  type="email"  autocomplete="nope"/>
                                 </div>                  
                             </div>
                             <div  class="col mx-0">  
                                 <div  class="form-group">
-                                    <label for="customer-info" class="control-label">@Html.DisplayNameFor(x => Model.Customer.CustomerInformation)</label>
-                                    <input  id="customer-info" class="form-control customer-input" name="Customer.CustomerInformation" value="@Model.Customer?.CustomerInformation"  autocomplete="nope" />
+                                    <label for="customer-info" class="control-label">@Html.DisplayNameFor(x => Model!.Customer!.CustomerInformation)</label>
+                                    <input  id="customer-info" class="form-control customer-input" name="Customer.CustomerInformation" value="@Model?.Customer?.CustomerInformation"  autocomplete="nope" />
                                 </div>
                             </div >    
                             <div>
                             </div> 
                         </div> 
 
-                        <div id="сustomer-search-results" style="display: none">
+                        <div id="customer-search-results" style="display: none">
                         </div>  
                     </div>
                 </div>
@@ -204,15 +204,15 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="terms-info">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#terms-details" aria-expanded="true" aria-controls="terms-details">
-                        <span class="px-1"><b>Время:</b></span>   
-                        <span class="px-1">@Html.DisplayFor(m => Model.Status)</span>   
-                        @if (Model.Start != null)
+                        <span class="px-1"><b>Time:</b></span>   
+                        <span class="px-1">@Html.DisplayFor(m => Model!.Status)</span>   
+                        @if (Model?.Start != null)
                         {
-                            <span class="px-1">c @Html.DisplayFor(m => Model.Start)</span>
+                            <span class="px-1">from @Html.DisplayFor(m => Model.Start)</span>
                         }
-                        @if (Model.End != null) 
+                        @if (Model?.End != null) 
                         {
-                            <span class="px-1">по @Html.DisplayFor(m => Model.End),</span>    
+                            <span class="px-1">to @Html.DisplayFor(m => Model.End),</span>    
                         }
                         <span class="px-1" id="time-change"></span> 
                         <span class="px-1" id="time-excess"></span> 
@@ -248,13 +248,13 @@
          
             <div class="accordion-item">
                 <h2 class="accordion-header" id="items-info">                
-                    <input  id="price-account" name="Price" value="@Model.Price" type="hidden"/>
+                    <input  id="price-account" name="Price" value="@Model?.Price" type="hidden"/>
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#items-details" aria-expanded="true" aria-controls="items-details">
-                       <span class="px-1"><b>Состав:</b></span> 
-                       <span class="px-1">Позиций</span> 
+                       <span class="px-1"><b>Order Details:</b></span> 
+                       <span class="px-1">Items</span> 
                        <span class="px-1" id="items"></span>
                        <span class="px-1" id="items-change"></span>
-                       <span class="px-1">Стоимость</span>
+                       <span class="px-1">Price</span>
                        <span class="px-1" id="price"></span>
                        <span class="px-1" id="price-change"></span>
                     </button>
@@ -265,15 +265,15 @@
                         <div class="d-flex flex-row pt-1 justify-content-between">
                             <div>
                                 <button type="button" id="btn-getbackall" class="btn btn-sm btn-primary" style="width: 150px">
-                                    <i class="bi bi-hand-thumbs-up-fill"></i>Принять все(<i id="givenout-count">0</i>)
+                                    <i class="bi bi-hand-thumbs-up-fill"></i>Accept Return of All Items (<i id="givenout-count">0</i>)
                                 </button>    
                                 <button type="button" id="btn-show-items-chooser" class="btn btn-sm btn-success" style="width: 150px">
-                                    <i class="bi bi-plus-lg"></i>Добавить
+                                    <i class="bi bi-plus-lg"></i>Add
                                 </button>                                
                             </div>
                             <div id="time-action-info" class="align-content-end">
                                 <div class="form-group input-group  input-group-sm">
-                                    <div class="input-group-text"> Уточнить время </div>
+                                    <div class="input-group-text"> Clarify the Time </div>
                                     <input  id="time-action"  class="form-control form-control-sm"  name="TimeAction"  type="datetime-local" value="" readonly/>
                                     <div class="input-group-append" id="time-action-now-option">
                                         <input  id="time-action-now" class="btn-check" type="checkbox" checked />
@@ -325,6 +325,6 @@
         var url_rental_additem = "@Url.Action("AddRentalItemRecord", "rental")";
         var url_rental_searchcustomer = "@Url.Action("SearchCustomerByNumber", "rental")";
         var url_contract = "@Url.Action("Contract", "rental")";
-        var pricingTypes = [ "сутки",  "час",  "разовая", "ремонт" ]; 
+        var pricingTypes = [ "day",  "hour",  "one-time", "maintenance" ]; 
     </script>
 }

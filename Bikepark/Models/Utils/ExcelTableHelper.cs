@@ -15,55 +15,55 @@ namespace Bikepark.Models
 
         public static string ValidateContractForm(string ContractFormFile) 
         {
-            List<string> missedFields = new List<string>();
+            List<string> missedFields = new();
             using (var workbook = new XLWorkbook(ContractFormFile))
             {
                 var worksheet = workbook.Worksheets.FirstOrDefault();
 
                 if (!workbook.NamedRanges.Contains("CustomerFullName"))
-                    missedFields.Add("[CustomerFullName] для ФИО клиента");
+                    missedFields.Add("[CustomerFullName]");
 
                 if (!workbook.NamedRanges.Contains("CustomerPhoneNumber"))
-                    missedFields.Add("[CustomerPhoneNumber] для телефона клиента");
+                    missedFields.Add("[CustomerPhoneNumber]");
 
                 if (!workbook.NamedRanges.Contains("CustomerDocumentType"))
-                    missedFields.Add("[CustomerDocumentType] для вида документа клиента");
+                    missedFields.Add("[CustomerDocumentType]");
 
                 if (!workbook.NamedRanges.Contains("CustomerDocumentSeries"))
-                    missedFields.Add("[CustomerDocumentSeries] для серии документа клиента");
+                    missedFields.Add("[CustomerDocumentSeries]");
 
                 if (!workbook.NamedRanges.Contains("CustomerDocumentNumber"))
-                    missedFields.Add("[CustomerDocumentNumber] для номера документа клиента");
+                    missedFields.Add("[CustomerDocumentNumber]");
 
                 if (!workbook.NamedRanges.Contains("EndHours"))
-                    missedFields.Add("[EndHours] для времени окончания проката (часов)");
+                    missedFields.Add("[EndHours]");
 
                 if (!workbook.NamedRanges.Contains("EndMinutes"))
-                    missedFields.Add("[EndMinutes] для времени окончания проката (минут)");
+                    missedFields.Add("[EndMinutes]");
 
                 if (!workbook.NamedRanges.Contains("EndDay"))
-                    missedFields.Add("[EndDay] для даты проката (день)");
+                    missedFields.Add("[EndDay]");
 
                 if (!workbook.NamedRanges.Contains("EndMonth"))
-                    missedFields.Add("[EndMonth] для даты проката (месяц)");
+                    missedFields.Add("[EndMonth]");
 
                 if (!workbook.NamedRanges.Contains("EndYear"))
-                    missedFields.Add("[EndYear] для даты проката (год)");
+                    missedFields.Add("[EndYear]");
 
                 if (!workbook.NamedRanges.Contains("Price"))
-                    missedFields.Add("[Price] для стоимости услуг проката");
+                    missedFields.Add("[Price]");
 
                 if (!workbook.NamedRanges.Contains("DateDay"))
-                    missedFields.Add("[DateDay] для даты договора (день)");
+                    missedFields.Add("[DateDay]");
 
                 if (!workbook.NamedRanges.Contains("DateMonth"))
-                    missedFields.Add("[DateMonth] для даты договора (месяц)");
+                    missedFields.Add("[DateMonth]");
 
                 if (!workbook.NamedRanges.Contains("DateYear"))
-                    missedFields.Add("[DateYear] для даты договора (год)");
+                    missedFields.Add("[DateYear]");
 
                 if (!workbook.NamedRanges.Contains("RentalItems"))
-                    missedFields.Add("[RentalItems] для списка велосипедов выдаваемых в прокат");
+                    missedFields.Add("[RentalItems]");
 
             }
             return string.Join("; ", missedFields);
@@ -129,21 +129,21 @@ namespace Bikepark.Models
                     {
                         IXLCell cell = workbook.Cell("RentalItems");
                         int i = 0;
-                        foreach (var icat in record.ItemRecords.DistinctBy(irec => irec.Item.ItemType.ItemCategory).Select(irec => irec.Item.ItemType.ItemCategory) )
+                        foreach (var icat in record.ItemRecords.DistinctBy(irec => irec?.Item?.ItemType?.ItemCategory).Select(irec => irec?.Item?.ItemType?.ItemCategory) )
                         {
                             i++;
                             if (icat==null || !icat.Accessories)
                             {
-                                var count = record.ItemRecords.Count(irec => irec.Item.ItemType.ItemCategoryID == icat?.ItemCategoryID);
-                                var numbers = string.Join(", ", record.ItemRecords.Where(irec => irec.Item.ItemType.ItemCategoryID == icat?.ItemCategoryID).Select(irec => irec.Item.ItemNumber).ToList());
-                                cell.Value = "\t" + i + ". " + icat?.ItemCategoryName + " в количестве " + count + " шт., номера: " + numbers;
+                                var count = record.ItemRecords.Count(irec => irec?.Item?.ItemType?.ItemCategoryID == icat?.ItemCategoryID);
+                                var numbers = string.Join(", ", record.ItemRecords.Where(irec => irec?.Item?.ItemType?.ItemCategoryID == icat?.ItemCategoryID).Select(irec => irec?.Item?.ItemNumber).ToList());
+                                cell.Value = "\t" + i + ". " + icat?.ItemCategoryName + " - " + count + " items in total, with Numbers: " + numbers;
                             }
                             else 
                             {
                                 cell.Value = "\t" + i +". " + icat?.ItemCategoryName + ": ";
-                                foreach (var itype in record.ItemRecords.Where(irec => irec.Item.ItemType.ItemCategoryID == icat?.ItemCategoryID).DistinctBy(irec => irec.Item.ItemType).Select(irec => irec.Item.ItemType)) { 
-                                    var count = record.ItemRecords.Count(irec => irec.Item.ItemTypeID == itype?.ItemTypeID);
-                                    cell.Value = cell.Value + itype?.ItemTypeName +" (" + count + "шт.) ";
+                                foreach (var itype in record.ItemRecords.Where(irec => irec?.Item?.ItemType?.ItemCategoryID == icat?.ItemCategoryID).DistinctBy(irec => irec?.Item?.ItemType).Select(irec => irec?.Item?.ItemType)) { 
+                                    var count = record.ItemRecords.Count(irec => irec?.Item?.ItemTypeID == itype?.ItemTypeID);
+                                    cell.Value = cell.Value + itype?.ItemTypeName +" (" + count + " items) ";
                                 }
                             }
                             cell = cell.WorksheetRow().InsertRowsBelow(1).Cells().First();
@@ -218,10 +218,10 @@ namespace Bikepark.Models
 
         private static Row CreateHeaderRowForExcel<T>()
         {
-            Row tRow = new Row();
+            Row tRow = new();
             foreach (PropertyInfo prop in typeof(T).GetProperties())
             {
-                tRow.Append(CreateCell( prop.GetAttribute<DisplayAttribute>(false).Name, 2U));
+                tRow.Append(CreateCell( prop.GetAttribute<DisplayAttribute>(false)?.Name, 2U));
             }
             return tRow;
         }
@@ -245,20 +245,20 @@ namespace Bikepark.Models
             return cell;
         }
 
-        private static Cell CreateCell(string text, uint styleIndex)
+        private static Cell CreateCell(string? text, uint styleIndex)
         {
-            Cell cell = new Cell();
-            cell.StyleIndex = styleIndex;
-            cell.DataType = ResolveCellDataTypeOnValue(text);
-            cell.CellValue = new CellValue(text??"");
+            Cell cell = new()
+            {
+                StyleIndex = styleIndex,
+                DataType = ResolveCellDataTypeOnValue(text),
+                CellValue = new CellValue(text ?? "")
+            };
             return cell;
         }
 
         private static EnumValue<CellValues> ResolveCellDataTypeOnValue(string? text)
         {
-            int intVal;
-            double doubleVal;
-            if (int.TryParse(text, out intVal) || double.TryParse(text, out doubleVal))
+            if (int.TryParse(text, out int intVal) || double.TryParse(text, out double doubleVal))
             {
                 return CellValues.Number;
             }
@@ -270,23 +270,23 @@ namespace Bikepark.Models
 
         private static void GenerateWorksheetPartContent(WorksheetPart worksheetPart1, SheetData sheetData1)
         {
-            Worksheet worksheet1 = new Worksheet() { MCAttributes = new MarkupCompatibilityAttributes() { Ignorable = "x14ac" } };
+            Worksheet worksheet1 = new() { MCAttributes = new MarkupCompatibilityAttributes() { Ignorable = "x14ac" } };
             worksheet1.AddNamespaceDeclaration("r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships");
             worksheet1.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
             worksheet1.AddNamespaceDeclaration("x14ac", "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac");
-            SheetDimension sheetDimension1 = new SheetDimension() { Reference = "A1" };
+            SheetDimension sheetDimension1 = new() { Reference = "A1" };
 
-            SheetViews sheetViews1 = new SheetViews();
+            SheetViews sheetViews1 = new();
 
-            SheetView sheetView1 = new SheetView() { TabSelected = true, WorkbookViewId = (UInt32Value)0U };
-            Selection selection1 = new Selection() { ActiveCell = "A1", SequenceOfReferences = new ListValue<StringValue>() { InnerText = "A1" } };
+            SheetView sheetView1 = new() { TabSelected = true, WorkbookViewId = (UInt32Value)0U };
+            Selection selection1 = new() { ActiveCell = "A1", SequenceOfReferences = new ListValue<StringValue>() { InnerText = "A1" } };
 
             sheetView1.Append(selection1);
 
             sheetViews1.Append(sheetView1);
-            SheetFormatProperties sheetFormatProperties1 = new SheetFormatProperties() { DefaultRowHeight = 15D, DyDescent = 0.25D };
+            SheetFormatProperties sheetFormatProperties1 = new() { DefaultRowHeight = 15D, DyDescent = 0.25D };
 
-            PageMargins pageMargins1 = new PageMargins() { Left = 0.7D, Right = 0.7D, Top = 0.75D, Bottom = 0.75D, Header = 0.3D, Footer = 0.3D };
+            PageMargins pageMargins1 = new() { Left = 0.7D, Right = 0.7D, Top = 0.75D, Bottom = 0.75D, Header = 0.3D, Footer = 0.3D };
             worksheet1.Append(sheetDimension1);
             worksheet1.Append(sheetViews1);
             worksheet1.Append(sheetFormatProperties1);

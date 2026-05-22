@@ -233,25 +233,25 @@ function setupInterface() {
 
     switch (record.Status) {
         case 1://scheduled
-            $("#time-start-label").html("К выдаче");
-            $("#time-end-label").html("К возврату");
-            $("#duration-label").html("На время [час]");
+            $("#time-start-label").html("to rent out at");
+            $("#time-end-label").html("to be returned at");
+            $("#duration-label").html("for a period [hour]");
             break;
         case 2://active
-            $("#time-start-label").html("Выдан");
-            $("#time-end-label").html("К возврату (продлить)");
-            $("#duration-label").html("Выдан на время (продлить)");
+            $("#time-start-label").html("rented at");
+            $("#time-end-label").html("to be returned at (extend)");
+            $("#duration-label").html("for a period (extend)");
             break;
         case 3://closed
-            $("#time-start-label").html("Выдан");
-            $("#time-end-label").html("Принят");
-            $("#duration-label").html("Продолжительность [час]");
+            $("#time-start-label").html("rented at");
+            $("#time-end-label").html("returned at");
+            $("#duration-label").html("duration [hours]");
             break;
         case 0:
         default:
-            $("#time-start-label").html("К выдаче сейчас");
-            $("#time-end-label").html("К возврату");
-            $("#duration-label").html("На время [час]");
+            $("#time-start-label").html("to rent out now");
+            $("#time-end-label").html("to be returned at");
+            $("#duration-label").html("for a period [hour]");
     }
     change_action()
     $("#rental-control").show();
@@ -325,16 +325,16 @@ function change_action() {
     if (record.Status < 2) {
         if (giveout_mode) {
             if (start_now)
-                $("#time-start-label").html("К выдаче сейчас");
+                $("#time-start-label").html("to rent out now");
             else 
-                $("#time-start-label").html("К выдаче");
-            $("#time-end-label").html("К возврату");
-            $("#duration-label").html("На время [час]");
+                $("#time-start-label").html("to rent out at");
+            $("#time-end-label").html("to be returned at");
+            $("#duration-label").html("for a period [hour]");
 
         } else if (schedule_mode || draft_mode) {
-            $("#time-start-label").html("К выдаче");
-            $("#time-end-label").html("К возврату");
-            $("#duration-label").html("На время [час]");
+            $("#time-start-label").html("to rent out at");
+            $("#time-end-label").html("to be returned at");
+            $("#duration-label").html("for a period [hour]");
         }
     }
     $("#label-action-giveout").toggle(giveout);
@@ -400,11 +400,11 @@ function change_action() {
     $("#time-change").toggleClass("attention-text", extend_time != 0 );
 
   
-    $("#time-excess").html((excess && excess_time > 0) ? ("просрочен на " + duration2str(excess_time)) : "");
+    $("#time-excess").html((excess && excess_time > 0) ? ("overdue by " + duration2str(excess_time)) : "");
     $("#time-excess").toggleClass("attention-text", excess_time > 0);
     $("#time-excess").toggleClass("alert-text", excess_time > 0);
 
-    $("#time-overdue").html((overdue && overdue_time > 0) ? ("просрочен на " + duration2str(overdue_time)) : "");
+    $("#time-overdue").html((overdue && overdue_time > 0) ? ("overdue by " + duration2str(overdue_time)) : "");
     $("#time-overdue").toggleClass("attention-text", overdue_time > 0);
     $("#time-overdue").toggleClass("warning-text", overdue_time > 0);
   

@@ -6,7 +6,7 @@
 <div class="btn-group">
     @foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>())
     {
-            var val = DayOfWeekRu.ForDay(day);
+            var val = DayOfWeekLiterals.ForDay(day);
             var check = Model.Contains(day);
             var name = check ? "DaysOfWeek["+num+"]" : null;
             if (check){

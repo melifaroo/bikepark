@@ -2,12 +2,12 @@
 
 @{
     Layout = "_MainLayout";
-    ViewData["Title"] = "Назначить ремонт по номеру";
+    ViewData["Title"] = "Schedule Item Maintenance";
 }
 
-<h3>Отремонтировать</h3>
+<h3>Schedule Item Maintenance</h3>
 
-<h4>Введите номер велосипеда</h4>
+<h4>Enter Bike Number</h4>
 <div class="container-sm">
     <hr />
     <form asp-action="ControlNumberService" id="item-form">        
@@ -19,7 +19,7 @@
                     <span asp-validation-for="ItemNumber" class="text-danger"></span>
                 </div>
                 <div class="form-group mt-3">
-                    <button type="submit" class="btn btn-primary col-md-12">Назначить ремонт</button>
+                    <button type="submit" class="btn btn-primary col-md-12">Schedule Maintenance</button>
                 </div>
             </div>
         </div>

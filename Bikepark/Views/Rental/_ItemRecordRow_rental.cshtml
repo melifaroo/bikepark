@@ -1,12 +1,9 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model Bikepark.Models.ItemRecord
+﻿@model Bikepark.Models.ItemRecord
+
 @using Bikepark.Models
-@using Microsoft.EntityFrameworkCore;
-@using HtmlHelpers.BeginCollectionItemCore
+
 @{
-    int? PricingCategoryID = Model.Item.ItemType.PricingCategoryID;
+    int? PricingCategoryID = Model.Item!.ItemType!.PricingCategoryID;
     List<Pricing> actualprices = ViewBag.ActualPrices;
 }   
 
@@ -18,11 +15,11 @@
                     if (Model.Status == Status.Active)
                     {
                         <input type="radio"   id="chk-givenout-@Model.GetHashCode()" class="btn-check chk-givenout chk-item-action" name="status-action-@Model.GetHashCode()" value = "@Status.Active" checked data-irecid="@Model.GetHashCode()">
-                        <label               for="chk-givenout-@Model.GetHashCode()" class="btn btn-sm label-giveout btn-outline-success" title="В прокате"><i class="bi bi-bicycle"></i></label>
+                        <label               for="chk-givenout-@Model.GetHashCode()" class="btn btn-sm label-giveout btn-outline-success" title="Currently Rented"><i class="bi bi-bicycle"></i></label>
                         <input type="radio"   id="chk-getback-@Model.GetHashCode()" class="btn-check chk-getback chk-item-action" name="status-action-@Model.GetHashCode()" value = "@Status.Closed" unchecked data-irecid="@Model.GetHashCode()">
-                        <label               for="chk-getback-@Model.GetHashCode()" class="btn btn-sm btn-outline-primary" ><i class="bi bi-hand-thumbs-up" title="Принять"></i></label>
+                        <label               for="chk-getback-@Model.GetHashCode()" class="btn btn-sm btn-outline-primary" ><i class="bi bi-hand-thumbs-up" title="Accept Return"></i></label>
                         <input type="radio"   id="chk-service-@Model.GetHashCode()" class="btn-check chk-service chk-item-action" name="status-action-@Model.GetHashCode()" value = "@Status.Service" unchecked data-irecid="@Model.GetHashCode()">
-                        <label               for="chk-service-@Model.GetHashCode()" class="btn btn-sm btn-outline-danger" ><i class="bi bi-wrench-adjustable" title="Оформить ремонт"></i></label>
+                        <label               for="chk-service-@Model.GetHashCode()" class="btn btn-sm btn-outline-danger" ><i class="bi bi-wrench-adjustable" title="Schedule Maintenance"></i></label>
                     }else
                     if (Model.Status < Status.Active){
                         if (Model.Status == Status.Scheduled)
@@ -81,27 +78,27 @@
                     </select>
                 }else{
                     <input name="ItemRecords[@Model.GetHashCode()].PricingID"  value="@Model.PricingID" class="pricing" type="hidden"/>  
-                    @Html.DisplayFor(m => Model.Pricing.PricingName)
+                    @Html.DisplayFor(m => Model.Pricing!.PricingName)
                 }
         </td>
         <td > 
             <span class="pricing-info">                
-                @Html.DisplayFor(m => Model.Pricing.Price)
+                @Html.DisplayFor(m => Model.Pricing!.Price)
                 <span>-</span>
-                @Html.DisplayFor(m => Model.Pricing.PricingType)                  
+                @Html.DisplayFor(m => Model.Pricing!.PricingType)                  
              </span>
         </td>
         <td style="width : 10%; vertical-align: top">
             <div class="col-sm" style="display: none;">
-                <p class="half-row my-0" >Выдан:@Html.DisplayFor(m => Model.Start)</p>
-                <p class="half-row my-0" >Сдан:@Html.DisplayFor(m => Model.End)</p>
-                <p class="half-row my-0" >Статус @Html.DisplayFor(m => Model.Status)</p>
+                <p class="half-row my-0" >Rented:@Html.DisplayFor(m => Model.Start)</p>
+                <p class="half-row my-0" >Returned:@Html.DisplayFor(m => Model.End)</p>
+                <p class="half-row my-0" >Status:@Html.DisplayFor(m => Model.Status)</p>
             </div>       
-            <label >с @Model.Start?.ToString("HH:mm")</label>
+            <label >from @Model.Start?.ToString("HH:mm")</label>
             <input name="ItemRecords[@Model.GetHashCode()].Start" value="@Model.Start?.ToString("yyyy-MM-ddTHH:mm")"  class="start" type="hidden"/> 
         </td>     
         <td style="width : 10%; vertical-align: top">    
-            <label >по @Model.End?.ToString("HH:mm")</label>
+            <label >to @Model.End?.ToString("HH:mm")</label>
             <input name="ItemRecords[@Model.GetHashCode()].End"   value="@Model.End?.ToString("yyyy-MM-ddTHH:mm")"     class="end"  type="hidden"/>
         </td>      
 </tr>   

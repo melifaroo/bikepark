@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Bikepark.Models.Record>
 @{
     Layout = "_MainLayout";
-    ViewData["Title"] = "Журнал";
+    ViewData["Title"] = "Records Log";
 
     string Statuses = ViewBag.Statuses;
     DateTime? From    = ViewBag.From;
@@ -39,7 +39,7 @@
                                 <input name="To" value="@To?.ToString("yyyy-MM-dd")" class="form-control form-control-sm" type="date"/>
                             </li>  
                             <li class="nav-item col-md-2">
-                                <button type="submit" class="btn btn-sm btn-primary col-md-12" asp-action="Filter">Показать</button>
+                                <button type="submit" class="btn btn-sm btn-primary col-md-12" asp-action="Filter">Show</button>
                             </li>    
                         </ul> 
                     </div>
@@ -48,28 +48,28 @@
                             <li class="nav-item col-md-2">
                                 <div class="form-check form-switch">
                                     <input type="checkbox" id="active" class="form-check-input" name="Active" value="true" checked="@(StatusList.Contains(Status.Active))" />
-                                    <label for="active" class="form-check-label">Выданные</label>
+                                    <label for="active" class="form-check-label">Currently Rented</label>
                                     <input type="hidden" name="Active" value="false"  />
                                 </div>
                             </li>
                             <li class="nav-item col-md-2">
                                 <div class="form-check form-switch">
                                     <input type="checkbox" id="scheduled" class="form-check-input" name="Scheduled" value="true" checked="@(StatusList.Contains(Status.Scheduled))" />
-                                    <label for="scheduled" class="form-check-label">Брони</label>
+                                    <label for="scheduled" class="form-check-label">Scheduled Reservations</label>
                                     <input type="hidden" name="Scheduled" value="false"  />
                                 </div>
                             </li>
                             <li class="nav-item  col-md-2">
                                 <div class="form-check form-switch">
                                     <input type="checkbox" id="closed" class="form-check-input" name="Closed" value="true" checked="@(StatusList.Contains(Status.Closed))" />
-                                    <label for="closed" class="form-check-label">Завершенные</label>
+                                    <label for="closed" class="form-check-label">Completed</label>
                                     <input type="hidden" name="Closed" value="false"  />
                                 </div>
                             </li>
                             <li class="nav-item col-md-2">
                                 <div class="form-check form-switch">
                                     <input type="checkbox" id="draft" class="form-check-input" name="Draft" value="true" checked="@(StatusList.Contains(Status.Draft))" />
-                                    <label for="draft" class="form-check-label">Черновики</label>
+                                    <label for="draft" class="form-check-label">Drafts</label>
                                     <input type="hidden" name="Draft" value="false"  />
                                 </div>
                             </li>
@@ -84,15 +84,15 @@
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
     <ul class="nav col-md-6 justify-content-start">
         <li class="nav-item">
-            <a class="nav-link" asp-action="Create"><b>Новый заказ</b></a>
+            <a class="nav-link" asp-action="Create"><b>New Rental Record</b></a>
         </li>  
         <li class="nav-item">
-            <a class="nav-link" asp-controller="Log" asp-action="Index" asp-route-statuses="@Statuses" asp-route-from="@From?.ToString("yyyy-MM-dd")" asp-route-to="@To?.ToString("yyyy-MM-dd")"><b>Журнал по номерам</b></a>
+            <a class="nav-link" asp-controller="Log" asp-action="Index" asp-route-statuses="@Statuses" asp-route-from="@From?.ToString("yyyy-MM-dd")" asp-route-to="@To?.ToString("yyyy-MM-dd")"><b>Log by Items</b></a>
         </li> 
     </ul>
     <ul class="nav col-md-6 justify-content-end">  
         <li class="nav-item">
-            <a target="_blank" rel="noopener noreferrer" href="@ExportURL">Загрузить таблицу XLS</a>
+            <a target="_blank" rel="noopener noreferrer" href="@ExportURL">Downlod the XLS</a>
         </li>       
     </ul> 
 </div>

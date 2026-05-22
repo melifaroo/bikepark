@@ -19,17 +19,18 @@ namespace Bikepark.Views.Helpers
             if (html == null) throw new ArgumentNullException(nameof(html));
             if (expression == null) throw new ArgumentNullException(nameof(expression));
 
-            ModelExpressionProvider modelExpressionProvider = (ModelExpressionProvider)html.ViewContext.HttpContext.RequestServices.GetService(typeof(IModelExpressionProvider));
+            var modelExpressionProvider = html.ViewContext.HttpContext.RequestServices
+            .GetRequiredService<IModelExpressionProvider>() as ModelExpressionProvider;
 
-            var modelExplorer = modelExpressionProvider.CreateModelExpression(html.ViewData, expression);
-            if (modelExplorer == null) throw new InvalidOperationException($"Failed to get model explorer for {modelExpressionProvider.GetExpressionText(expression)}");
-
+            var modelExplorer = modelExpressionProvider!.CreateModelExpression(html.ViewData, expression) 
+            ?? throw new InvalidOperationException($"Failed to get model explorer for {modelExpressionProvider.GetExpressionText(expression)}");
+            
             return new HtmlString(property(modelExplorer.Metadata));
         }
 
         public static IHtmlContent DescriptionFor<TModel, TValue>(this IHtmlHelper<TModel> html, Expression<Func<TModel, TValue>> expression)
         {
-            return html.MetaDataFor(expression, m => m.Description);
+            return html.MetaDataFor(expression, m => m.Description ?? m.DisplayName ?? string.Empty);
         }
 
         public static IHtmlContent ShortNameFor<TModel, TValue>(this IHtmlHelper<TModel> html,
@@ -37,20 +38,18 @@ namespace Bikepark.Views.Helpers
         {
             return html.MetaDataFor(expression, m =>
             {
-                var defaultMetadata = m as
-                    Microsoft.AspNetCore.Mvc.ModelBinding.Metadata.DefaultModelMetadata;
-                if (defaultMetadata != null)
+                if (m is Microsoft.AspNetCore.Mvc.ModelBinding.Metadata.DefaultModelMetadata defaultMetadata)
                 {
                     var displayAttribute = defaultMetadata.Attributes.Attributes
                         .OfType<DisplayAttribute>()
                         .FirstOrDefault();
                     if (displayAttribute != null)
                     {
-                        return displayAttribute.ShortName;
+                        return displayAttribute.ShortName ?? m.DisplayName ?? string.Empty;
                     }
                 }
                 //Return a default value if the property doesn't have a DisplayAttribute
-                return m.DisplayName;
+                return m.DisplayName ?? string.Empty;
             });
         }
     }

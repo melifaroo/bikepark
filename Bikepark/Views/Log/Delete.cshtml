@@ -6,18 +6,18 @@
 
 @{
     Layout = "_MainLayout";
-    ViewData["Title"] = "Удаление записи";
+    ViewData["Title"] = "Delete Record";
     IEnumerable<Bikepark.Models.ItemRecord> ItemRecs = ViewBag.ItemRecs;
 }
 
 
 
 
-<h3>Удалить</h3>
-<h4>Вы действительно хотите удалить запись #@Model.ItemRecordID?</h4>
+<h3>Delete Record</h3>
+<h4>Do you really want to delete the Record #@Model.ItemRecordID?</h4>
 
 <div>
-    <h4>Запись #@Model.ItemRecordID</h4>
+    <h4>Record #@Model.ItemRecordID</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-4" >
@@ -50,9 +50,9 @@
             @Html.DisplayNameFor(model => Model.Pricing)
         </dt>
         <dd class = "col-sm-8">
-                @Html.DisplayFor(modelItem => Model.Pricing.PricingName)
+                @Html.DisplayFor(modelItem => Model.Pricing!.PricingName)
                 :
-                @Html.DisplayFor(modelItem => Model.Pricing.Price)
+                @Html.DisplayFor(modelItem => Model.Pricing!.Price)
                 
                     @if (Model.Pricing != null)
                     {
@@ -63,23 +63,23 @@
                     }
         </dd>
         <dt class = "col-sm-4">
-            @Html.DisplayNameFor(model => Model.Item.ItemType)
+            @Html.DisplayNameFor(model => Model.Item!.ItemType)
         </dt>
         <dd class = "col-sm-8">
-            @Html.DisplayFor(model => Model.Item.ItemType.ItemTypeName)
+            @Html.DisplayFor(model => Model.Item!.ItemType!.ItemTypeName)
         </dd>
         <dt class = "col-sm-4">
-            @Html.DisplayNameFor(model => Model.Item.ItemNumber)
+            @Html.DisplayNameFor(model => Model.Item!.ItemNumber)
         </dt>
         <dd class = "col-sm-8">
-            @Html.DisplayFor(model => Model.Item.ItemNumber)
+            @Html.DisplayFor(model => Model.Item!.ItemNumber)
         </dd>
     </dl>
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="ItemRecordID" />
-        <a asp-action="Index" class="btn btn-secondary" >Отмена</a>
-        <input type="submit" value="Удалить" class="btn btn-danger" /> 
+        <a asp-action="Index" class="btn btn-secondary" >Cancel</a>
+        <input type="submit" value="Delete" class="btn btn-danger" /> 
     </form>
     
 </div>

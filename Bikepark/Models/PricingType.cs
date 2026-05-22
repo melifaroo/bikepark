@@ -4,11 +4,11 @@ namespace Bikepark.Models
 {
     public enum PricingType
     {
-        [Display(Name = "Единоразовая")]
+        [Display(Name = "One-Time")]
         OneTime,
-        [Display(Name = "Почасовая")]
+        [Display(Name = "Hourly")]
         Hourly,
-        [Display(Name = "Ремонт")]
+        [Display(Name = "Service")]
         Service
     }
 }

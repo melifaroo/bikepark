@@ -17,7 +17,7 @@ function setupValidator() {
 
             return true;
 
-        }, " Некоторые позиции на это время недоступны ");
+        }, " Some items are unavailable at specified period. ");
 
     jQuery.validator.addMethod("dateGreaterThan",
         function (value, element, params) {
@@ -28,7 +28,7 @@ function setupValidator() {
 
             return isNaN(value) && isNaN($(params).val())
                 || (Number(value) > Number($(params).val()));
-        }, 'Время возврата должно быть позже выдачи.'
+        }, 'The return time must be later than the rent out time.'
     );
 
     jQuery.validator.addMethod("isOneDay",
@@ -43,12 +43,12 @@ function setupValidator() {
             }
 
             return isNaN(value) && isNaN(params);
-        }, 'Возврат должен быть в тот же день.'
+        }, 'The return must be made on the same day.'
     );
 
     var s = new Date(workingHoursStart);
     var e = new Date(workingHoursEnd);
-    var workingHoursMessage = 'Рабочее время велоцентра с ' + zeroPadded(s.getHours()) + ":" + zeroPadded(s.getMinutes()) + ' до ' + zeroPadded(e.getHours()) + ":" + zeroPadded(e.getMinutes());
+    var workingHoursMessage = 'Bikepark working hours are from ' + zeroPadded(s.getHours()) + ":" + zeroPadded(s.getMinutes()) + ' to ' + zeroPadded(e.getHours()) + ":" + zeroPadded(e.getMinutes());
     jQuery.validator.addMethod("onWorkingHours",
         function (value, element, params) {
 
@@ -81,7 +81,7 @@ function setupValidator() {
             },
             messages: {
                 "Customer.CustomerContactNumber": {
-                    required: "Укажите номер телефона"
+                    required: "Specify customer's phone number."
                 },
             },
             errorElement: 'span',

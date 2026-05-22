@@ -1,14 +1,14 @@
 ﻿@model Bikepark.Models.ItemCategory
 
 @{
-    ViewData["Title"] = "Создать категорию арендуемых единиц";
+    ViewData["Title"] = "Create Items Category";
     ViewData["menu"] = "storage";
     Layout = "_MainLayout";
 }
 
-<h3>Создать</h3>
+<h3>Create Items Category</h3>
 
-<h4>Категория арендуемых единиц</h4>
+<h4>Items Category</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -25,14 +25,14 @@
                 </label>
             </div>
             <div class="form-group">
-                <input type="submit" value="Создать" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </div>
 
 @section Scripts {

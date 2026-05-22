@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -39,8 +34,6 @@ namespace Bikepark.Controllers
 
 
         // POST: Storage/SettingsUpdate
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SettingsUpdate(BikeparkConfig config)
@@ -163,13 +156,11 @@ namespace Bikepark.Controllers
             ViewData["PricingCategoryID"] = new SelectList(_context.PricingCategories, "PricingCategoryID", "PricingCategoryName", itemType.PricingCategoryID);
             ViewData["ItemsCount"] = await _context.Items.Where(item => item.ItemTypeID == itemType.ItemTypeID).CountAsync();
             ViewData["ItemsArchivalCount"] = await _context.Items.IgnoreQueryFilters().Where(item => item.ItemTypeID == itemType.ItemTypeID).CountAsync();
-            ViewData["HasRecords"] = itemType.ItemTypeID == null ? false : await _context.ItemRecords.AnyAsync(irecord => irecord.Item.ItemTypeID == itemType.ItemTypeID);
+            ViewData["HasRecords"] = itemType.ItemTypeID != null && await _context.ItemRecords.AnyAsync(irecord => irecord!.Item!.ItemTypeID == itemType.ItemTypeID);
             return View("Edit", itemType);
         }
 
         // POST: Storage/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ItemTypeID,ItemTypeName,ItemCategoryID,PricingCategoryID,ItemAge,ItemGender,ItemSize,ItemWheelSize,ItemColor,ItemDescription,ItemExternalURL,ItemImageURL")] ItemType itemType)
@@ -185,8 +176,6 @@ namespace Bikepark.Controllers
         }
 
         // POST: Storage/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("ItemTypeID,ItemTypeName,ItemCategoryID,PricingCategoryID,ItemAge,ItemGender,ItemSize,ItemWheelSize,ItemColor,ItemDescription,ItemExternalURL,ItemImageURL")] ItemType itemType)
@@ -217,8 +206,6 @@ namespace Bikepark.Controllers
         }
 
         // POST: Storage/Replace/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Replace([Bind("ItemTypeID,ItemTypeName,ItemCategoryID,PricingCategoryID,ItemAge,ItemGender,ItemSize,ItemWheelSize,ItemColor,ItemDescription,ItemExternalURL,ItemImageURL")] ItemType itemType)
@@ -227,7 +214,7 @@ namespace Bikepark.Controllers
 
             if (ModelState.IsValid)
             {
-                ItemType replace = new ItemType
+                ItemType replace = new()
                 {
                     ItemTypeName = itemType.ItemTypeName,
                     ItemCategoryID = itemType.ItemCategoryID,
@@ -243,11 +230,11 @@ namespace Bikepark.Controllers
                 _context.Add(replace);
                 await _context.SaveChangesAsync();
 
-                var HasRecords = await _context.ItemRecords.AnyAsync(irecord => irecord.Item.ItemTypeID == id);
+                var HasRecords = await _context.ItemRecords.AnyAsync(irecord => irecord!.Item!.ItemTypeID == id);
                 if (HasRecords)
                 {
                     LinqHelper.ForEach(_context.Items.Where(item => item.ItemTypeID == id), item => {
-                        var hasRecords = _context.ItemRecords.Any(irecord => irecord.Item.ItemID == item.ItemID);
+                        var hasRecords = _context.ItemRecords.Any(irecord => irecord!.Item!.ItemID == item.ItemID);
                         if (hasRecords)
                         {
                             item.Archival = true;
@@ -277,8 +264,6 @@ namespace Bikepark.Controllers
         }
 
         // POST: Storage/UpdateNumbers
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateNumbers(NumbersOfType numbersOfType)
@@ -296,7 +281,7 @@ namespace Bikepark.Controllers
                 { 
                     if (otherTypes.Any(itemDB => itemDB.ItemNumber == item.ItemNumber))
                     {
-                        ViewData["Error"] = "номер используется " + item.ItemNumber;
+                        ViewData["Error"] = "The number " + item.ItemNumber + " is already assigned";
                         return View("Numbers", numbersOfType);
                     }
                 }
@@ -305,7 +290,7 @@ namespace Bikepark.Controllers
                 { // remove from record deleted items
                     if (!numbersOfType.ItemsList.Any(item => item.ItemID == itemDB.ItemID))
                     {
-                        var hasRecords = _context.ItemRecords.Any(irecord => irecord.Item.ItemID == itemDB.ItemID);
+                        var hasRecords = _context.ItemRecords.Any(irecord => irecord!.Item!.ItemID == itemDB.ItemID);
                         if (hasRecords)
                         {
                             itemDB.Archival = true;
@@ -348,7 +333,7 @@ namespace Bikepark.Controllers
 
             ViewData["ItemsCount"] = await _context.Items.Where(item => item.ItemTypeID == id).CountAsync();
             ViewData["ItemsArchivalCount"] = await _context.Items.IgnoreQueryFilters().Where(item => item.ItemTypeID == id).CountAsync();
-            ViewData["HasRecords"] = await _context.ItemRecords.AnyAsync(irecord => irecord.Item.ItemTypeID == id);
+            ViewData["HasRecords"] = await _context.ItemRecords.AnyAsync(irecord => irecord!.Item!.ItemTypeID == id);
             return View(itemType);
         }
 
@@ -361,11 +346,11 @@ namespace Bikepark.Controllers
             var itemType = await _context.ItemTypes.FindAsync(id);
             if (itemType != null)
             {
-                var HasRecords = await _context.ItemRecords.AnyAsync(irecord => irecord.Item.ItemTypeID == id);
+                var HasRecords = await _context.ItemRecords.AnyAsync(irecord => irecord!.Item!.ItemTypeID == id);
                 if (HasRecords)
                 {
                     LinqHelper.ForEach(_context.Items.Where(item => item.ItemTypeID == id), item => {
-                        var hasRecords = _context.ItemRecords.Any(irecord => irecord.Item.ItemID == item.ItemID);
+                        var hasRecords = _context.ItemRecords.Any(irecord => irecord!.Item!.ItemID == item.ItemID);
                         if (hasRecords)
                             item.Archival = true;
                         else
@@ -406,7 +391,7 @@ namespace Bikepark.Controllers
                 return Json(new
                 {
                     Status = 1,
-                    Message = ItemNumber + " номер используется"
+                    Message = "The number " + ItemNumber + " is already assigned"
                 });
             return PartialView("_Number", new Item { ItemNumber= ItemNumber, ItemTypeID = TypeID } );
         }
@@ -421,7 +406,7 @@ namespace Bikepark.Controllers
                     return Json(new
                     {
                         Status = 1,
-                        Message = "не более 10 номеров за раз"
+                        Message = "No more than 10 numbers at a time"
                     });                
                 }
                 var existedItems = await _context.Items.ToListAsync();//.Where(x => !x.Archival)
@@ -430,7 +415,7 @@ namespace Bikepark.Controllers
                     return Json(new
                     {
                         Status = 1,
-                        Message = String.Join(", ", existedItems.Select(item => item.ItemNumber).ToArray()) + " номера используется"
+                        Message = String.Join(", ", existedItems.Select(item => item.ItemNumber).ToArray()) + " numbers are used."
                     });
                 var ItemsList = new List<Item>();
                     for (int i = start; i <= end; i++)
@@ -441,7 +426,7 @@ namespace Bikepark.Controllers
                 return Json(new
                 {
                     Status = 1,
-                    Message = "Значения должны быть целочисленными"
+                    Message = "Values ​​must be integers"
                 });            
             }
         }
@@ -468,7 +453,7 @@ namespace Bikepark.Controllers
         public async Task<IActionResult> ContractUpload(UploadFile model)
         {
             model.IsResponse = true;
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && model.File != null)
             {
                 try
                 {
@@ -483,21 +468,20 @@ namespace Bikepark.Controllers
                         await model.File.CopyToAsync(fileStream);
                     }
 
-
                     var warningMessage = ExcelTableHelper.ValidateContractForm(path);
                     model.IsSuccess = true;
                     model.HasWarnings = warningMessage.Length>0;
-                    model.Message = "Форма успешно обновлена";
-                    if (model.HasWarnings) model.Message = model.Message + "; В форме отсутствуют именованные диапазоны (ячейки): " + warningMessage;
+                    model.Message = "Form successfully updated";
+                    if (model.HasWarnings) model.Message = model.Message + "; The form is missing named ranges (cells): " + warningMessage;
                     return View("Contract", model);
                 }
                 catch
                 {
-                    model.Message = "Не удалось загрузить форму";
+                    model.Message = "Failed to load Form";
                     return View("Contract", model);
                 }
             }
-            model.Message = "Не удалось загрузить форму";
+            model.Message = "Failed to load Form";
             return View("Contract", model);
 
         }

@@ -1,26 +1,26 @@
 ﻿@model Bikepark.Models.ItemCategory
 
 @{
-    ViewData["Title"] = "Удалить категорию арендуемых единиц";
+    ViewData["Title"] = "Delete Items Category";
     ViewData["menu"] = "storage";
     Layout = "_MainLayout";
     int typesCount = ViewBag.ItemTypesCount;
 }
 
-<h3>Удалить</h3>
+<h3>Delete Items Category</h3>
 
-<h4>Вы дейсвительно хотите удалить категорию?</h4>
+<h4>Do you really want to delete this Items Category?</h4>
 <div>
     
 <div class="col-md-4">  
     @if(typesCount==0){
-        <h5>В категории ничего нет</h5>
+        <h5>There is no Item Types in this Category.</h5>
     }
     else
     {
-        <h5 style="display:inline">Число моделей (велосипедов/аксессуаров) в этой категории:</h5>  <h3 style="display:inline">@typesCount</h3>
-        <p><a target="_blank" rel="noopener noreferrer" href="/Storage/InCategory/?id=@Model.ItemCategoryID">Просмотреть в новой вкладке?</a></p>
-        <p>Если удалить категорию модели остануться в базе склада, но без присвоенной категории</p>
+        <h5 style="display:inline">The amount of Bikes or Accessories in this Category:</h5>  <h3 style="display:inline">@typesCount</h3>
+        <p><a target="_blank" rel="noopener noreferrer" href="/Storage/InCategory/?id=@Model.ItemCategoryID">View all in a new tab?</a></p>
+        <p>If you delete a category, the Items will remain in the storage, but without an assigned category.</p>
     }
 </div>
 
@@ -43,7 +43,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="ItemCategoryID" />
-        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
-        <input type="submit" value="Удалить" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        <input type="submit" value="Delete" class="btn btn-danger" />
     </form>
 </div>

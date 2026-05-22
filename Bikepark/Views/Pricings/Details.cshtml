@@ -1,22 +1,15 @@
 ﻿@model Bikepark.Models.Pricing
 
 @{
-    ViewData["Title"] = "Тариф";
+    ViewData["Title"] = "Billing Plan Details";
     ViewData["menu"] = "pricing";
     Layout = "_MainLayout";
 
-
-    string archival = Model.Archival ? "(Архив)" : "";
+    string archival = Model.Archival ? "(archival)" : "";
 }
 
-
-    <h3>Просмотр</h3>
-    <h4>Тариф #@Model.PricingID @archival</h4>
-
-
-
-
-
+    <h3>Billing Plan Details</h3>
+    <h4>Billing Plan #@Model.PricingID @archival</h4>
 
 <hr />
 <div class="container-sm">  
@@ -33,7 +26,7 @@
                     @Html.DisplayNameFor(model => model.PricingCategory)
                 </dt>
                 <dd class = "row justify-content-start ms-3">
-                    @Html.DisplayFor(model => model.PricingCategory.PricingCategoryName)
+                    @Html.DisplayFor(model => model.PricingCategory!.PricingCategoryName)
                 </dd>
                 <dt class = "row justify-content-start ms-1">
                     @Html.DisplayNameFor(model => model.PricingType)
@@ -75,7 +68,7 @@
         </div>
     </div>
     <div>
-        <a asp-action="Index" class="btn btn-secondary" >Назад</a>
-        <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model?.PricingID">Изменить</a>
+        <a asp-action="Index" class="btn btn-secondary" >Back</a>
+        <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model?.PricingID">Change</a>
     </div>
 </div>

@@ -2,20 +2,20 @@
 
 @using Bikepark.Models
 @using Microsoft.EntityFrameworkCore
-@using Bikepark.Views.Helpers
+
 @{
     Layout = "_MainLayout";
-    ViewData["Title"] = "Велопарк";
+    ViewData["Title"] = "Bikepark";
     ViewData["menu"] = "storage";    
     DbSet<ItemRecord> ItemRecs = ViewBag.ItemRecs;
 }
 
-<h3>Велопарк</h3>
+<h3>Bikepark</h3>
 
-@if ( User.Identity.IsAuthenticated ){
+@if ( User?.Identity?.IsAuthenticated == true){
     if ( User.IsInRole(BikeparkConfig.ManagersRole) ){  
         <p>
-            <a asp-action="Create">Добавить велосипед или амуницию</a>
+            <a asp-action="Create">Add Bike or Accessory</a>
         </p>
     }
 }
@@ -29,7 +29,7 @@
                 @Html.DisplayNameFor(model => model.ItemNumber)
             </th>
             <th>
-                Статус
+                Status
             </th>
             <th></th>
         </tr>
@@ -42,16 +42,16 @@
             int onservice = await ItemRecs.Where(itemrec => itemrec.ItemID == item.ItemID).CountAsync(itemrec => itemrec.Status == Bikepark.Models.Status.OnService);
             int schedule = await ItemRecs.Where(itemrec => itemrec.ItemID == item.ItemID).CountAsync(itemrec => itemrec.Status == Bikepark.Models.Status.Scheduled);
         
-        var Status = ((active>0)?"Выдан ":"") + 
-                        ((active>1)?"Ошибка, кол-во одновременных выдач " + active:"") + 
-                        ((onservice>0)?"В ремонте ":"") + 
-                        ((active>0 && onservice>0)?"Ошибка, выдан, но в ремонте " + active:"") +
-                        ((schedule>0)?"Есть брони (" + schedule + ") ":"") +
-                        ((service>0)?"Требуется ремонт":"") ;
+        var Status = ((active>0)?"Currently rented ":"") + 
+                        ((active>1)?"Error: Number of simultaneous Rents of an Item in current Moment " + active:"") + 
+                        ((onservice>0)?"On maintenance ":"") + 
+                        ((active>0 && onservice>0)?"Error: Currently rented, but simultaneous listed as on maintenance " + active:"") +
+                        ((schedule>0)?"There are scheduled reservations (" + schedule + ") ":"") +
+                        ((service>0)?"Maintenance required":"") ;
 
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ItemType.ItemTypeName)
+                @Html.DisplayFor(modelItem => item.ItemType!.ItemTypeName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ItemNumber)
@@ -60,14 +60,14 @@
                 @Status
             </td>
             <td>
-                <a asp-controller="Rental" asp-action="ItemDetails" asp-route-id="@item.ItemID">Подробнее</a>
+                <a asp-controller="Rental" asp-action="ItemDetails" asp-route-id="@item.ItemID">Details</a>
                 
-                @if ( User.Identity.IsAuthenticated ){
+                @if ( User?.Identity?.IsAuthenticated == true ){
                     if ( User.IsInRole(BikeparkConfig.ManagersRole) ){  
                         <span>|</span>
-                        <a asp-action="Edit" asp-route-id="@item.ItemID">Изменить</a>
+                        <a asp-action="Edit" asp-route-id="@item.ItemID">Change</a>
                         <span>|</span>
-                        <a asp-action="Delete" asp-route-id="@item.ItemID">Удалить</a>
+                        <a asp-action="Delete" asp-route-id="@item.ItemID">Delete</a>
                     }
                 }
             </td>

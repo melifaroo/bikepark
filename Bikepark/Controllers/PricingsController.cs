@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -127,14 +123,12 @@ namespace Bikepark.Controllers
         private async Task<IActionResult> EditForm(Pricing pricing)
         {
             ViewData["PricingCategoryID"] = new SelectList(_context.PricingCategories, "PricingCategoryID", "PricingCategoryName", pricing.PricingCategoryID);
-            ViewData["HasRecords"] = pricing.PricingID == null ? false : await _context.ItemRecords.AnyAsync(irecord => irecord.Item.ItemTypeID == pricing.PricingID);
+            ViewData["HasRecords"] = pricing.PricingID != null && await _context.ItemRecords.AnyAsync(irecord => irecord.Item!.ItemTypeID == pricing.PricingID);
             return View("Edit", pricing);
         }
 
         [Authorize(Roles = "BikeparkManagers")]
         // POST: Pricings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PricingID,PricingName,PricingCategoryID,PricingType,DaysOfWeek,IsHoliday,IsReduced,MinDuration,Price,ExtraPrice")] Pricing pricing)
@@ -165,8 +159,6 @@ namespace Bikepark.Controllers
 
         [Authorize(Roles = "BikeparkManagers")]
         // POST: Pricings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit( [Bind("PricingID,PricingName,PricingCategoryID,PricingType,DaysOfWeek,IsHoliday,IsReduced,MinDuration,Price,ExtraPrice")] Pricing pricing)
@@ -213,8 +205,6 @@ namespace Bikepark.Controllers
 
         [Authorize(Roles = "BikeparkManagers")]
         // POST: Pricings/Replace/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Replace([Bind("PricingID,PricingName,PricingCategoryID,PricingType,DaysOfWeek,IsHoliday,IsReduced,MinDuration,Price")] Pricing pricing)
@@ -223,7 +213,8 @@ namespace Bikepark.Controllers
 
             if (ModelState.IsValid)
             {
-                Pricing replace = new Pricing { 
+                Pricing replace = new()
+                { 
                     PricingName = pricing.PricingName, 
                     PricingCategoryID = pricing.PricingCategoryID, 
                     PricingType = pricing.PricingType, 
@@ -328,9 +319,9 @@ namespace Bikepark.Controllers
                     PricingName = price.PricingName,
                     PricingCategoryName = price.PricingCategory?.PricingCategoryName,
                     PricingType = EnumHelper<PricingType>.GetDisplayValue(price.PricingType),
-                    DaysOfWeek = String.Join(",", price.DaysOfWeek.Select(day => DayOfWeekRu.ForDay(day).ShortRuName).ToArray()),
-                    IsHoliday = price.IsHoliday ? "Да" : "",
-                    IsReduced = price.IsReduced ? "Да" : "",
+                    DaysOfWeek = String.Join(",", price.DaysOfWeek.Select(day => DayOfWeekLiterals.ForDay(day).ShortRuName).ToArray()),
+                    IsHoliday = price.IsHoliday ? "Yes" : "",
+                    IsReduced = price.IsReduced ? "Yes" : "",
                     MinDuration = price.MinDuration,
                     Price = price.Price
                 })

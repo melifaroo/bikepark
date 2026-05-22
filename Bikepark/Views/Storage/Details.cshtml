@@ -1,22 +1,14 @@
 ﻿@model Bikepark.Models.ItemType
 
 @{
-    ViewData["Title"] = "Просмотр модели";
+    ViewData["Title"] = "Item Type Details";
     ViewData["menu"] = "storage";
     Layout = "_MainLayout";
-    string archival = Model.Archival ? "(Архив)" : "";
+    string archival = Model.Archival ? "(archival)" : "";
 }
 
-
-
-
-    <h3>Просмотр</h3>
-    <h4>Модель #@Model.ItemTypeID @archival</h4>
-
-
-
-
-
+    <h3>Item Type Details</h3>
+    <h4>Item Type #@Model.ItemTypeID @archival</h4>
 
 <hr />
 <div class="container-sm">  
@@ -34,13 +26,13 @@
                     @Html.DisplayNameFor(model => model.ItemCategory)
                 </dt>
                 <dd class = "row justify-content-start ms-3">
-                    @Html.DisplayFor(model => model.ItemCategory.ItemCategoryName)
+                    @Html.DisplayFor(model => model.ItemCategory!.ItemCategoryName)
                 </dd>
                 <dt class = "row justify-content-start ms-1">
                     @Html.DisplayNameFor(model => model.PricingCategory)
                 </dt>
                 <dd class = "row justify-content-start ms-3">
-                    @Html.DisplayFor(model => model.PricingCategory.PricingCategoryName)
+                    @Html.DisplayFor(model => model.PricingCategory!.PricingCategoryName)
                 </dd>
                 <dt class = "row justify-content-start ms-1">
                     @Html.DisplayNameFor(model => model.ItemDescription)
@@ -58,8 +50,7 @@
         </div>
     
         <div class="col-md-3">
-            <dl>
-        
+            <dl>        
                 <dt class = "row justify-content-start ms-1">
                     @Html.DisplayNameFor(model => model.ItemSize)
                 </dt>
@@ -92,14 +83,13 @@
                 </dd>
             </dl>
         </div>
-
     
         <div class="col-md-6">
             <row >
-                    Номера | 
-                    <a asp-action="Numbers" asp-route-id="@Model?.ItemTypeID">Изменить</a> 
+                    Items | 
+                    <a asp-action="Numbers" asp-route-id="@Model?.ItemTypeID">Change</a> 
                     @*| 
-                    <button type="button" class="btn btn-link" id="btn-item-numbers-view" data-typeid="@Model?.ItemTypeID">Показать</button>*@
+                    <button type="button" class="btn btn-link" id="btn-item-numbers-view" data-typeid="@Model?.ItemTypeID">Show</button>*@
                 
             </row>
             <div id = "item-numbers-preview">
@@ -108,8 +98,8 @@
         </div>
     </div>
     <div>
-        <a asp-action="Index"  class="btn btn-secondary">Назад</a>
-        <a asp-action="Edit"  class="btn btn-primary" asp-route-id="@Model?.ItemTypeID">Изменить</a>
+        <a asp-action="Index"  class="btn btn-secondary">Back</a>
+        <a asp-action="Edit"  class="btn btn-primary" asp-route-id="@Model?.ItemTypeID">Change</a>
      </div>   
 </div>
 

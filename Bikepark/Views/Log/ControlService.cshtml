@@ -1,21 +1,18 @@
 ﻿
-
 @model IEnumerable<Bikepark.Models.ItemRecord>
 
 @using Bikepark.Models
-@using Microsoft.EntityFrameworkCore
-@using Bikepark.Views.Helpers
 
 @{
     Layout = "_MainLayout";
-    ViewData["Title"] = "Ремонт";
+    ViewData["Title"] = "Repair/Maintenance";
     var RecordID = ViewBag.RecordID;
     ItemRecord someItemRecord = new ItemRecord();
 }
     <form  id="fixing-control" asp-controller="Log" class="container-lg">
         <div class="container-fluid"> 
             <div class="row justify-content-start mx-0 align-self-baseline" >  
-                <h5 class="row">Ремонт</h5> 
+                <h5 class="row">Repair/Maintenance</h5> 
             </div>
         </div>
         <hr />
@@ -25,11 +22,11 @@
                 <div class="d-flex justify-content-start col-3">
                     <button type="submit" asp-action="UpdateService" id="btn-update" class="btn btn-primary  col-12 mx-0 text-truncate" style="display: inline;" >        
                         <i class="bi bi-save"></i>                          
-                        Сохранить
+                        Save
                     </button>    
                 </div>  
                 <div class="d-flex justify-content-end col-6">                    
-                       <span class="px-1">Цена</span>
+                       <span class="px-1">Cost</span>
                        <span class="px-1" id="price"></span>
                 </div>
                 <div class="d-flex justify-content-end col-3">
@@ -54,10 +51,10 @@
             <thead>
                 <tr>
                     <th style="width : 150px">
-                        <div class="row-sm">Назначить</div>
+                        <div class="row-sm">Assign</div>
                     </th>
                     <th style="width : 5%">
-                        <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.Item.ItemNumber)</div>
+                        <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord!.Item!.ItemNumber)</div>
                     </th >
                     <th style="width : 15%">
                         <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.Start)</div>
@@ -66,10 +63,10 @@
                         <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.End)</div>
                     </th>
                     <th  style="width : 15%">
-                        <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.Pricing.PricingName)</div>
+                        <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord!.Pricing!.PricingName)</div>
                     </th>
                     <th style="width : 5%">
-                        <div class="row-sm">Стоимость</div>
+                        <div class="row-sm">Price</div>
                     </th>
                     <th style="width : 150px">
                     </th>

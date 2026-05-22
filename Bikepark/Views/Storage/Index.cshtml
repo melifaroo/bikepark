@@ -2,10 +2,9 @@
 
 @using Bikepark.Models
 @using Microsoft.EntityFrameworkCore
-@using Bikepark.Views.Helpers
 
 @{
-    ViewData["Title"] = "Велопарк";
+    ViewData["Title"] = "Bikepark";
     ViewData["Route"] = "Storage";
     Layout = "_MainLayout";
 
@@ -20,29 +19,29 @@
     List<SelectListItem> Ages = Model.DistinctBy(x => x.ItemAge).Select(x => new SelectListItem { Value =  EnumHelper<ItemAge>.GetDisplayValue(x.ItemAge ?? ItemAge.Adult), Text =  EnumHelper<ItemAge>.GetDisplayValue(x.ItemAge ?? ItemAge.Adult) }).ToList();
     List<SelectListItem> Genders = Model.DistinctBy(x => x.ItemGender).Select(x => new SelectListItem { Value = EnumHelper<ItemGender>.GetDisplayValue(x.ItemGender ?? ItemGender.Unisex), Text =  EnumHelper<ItemGender>.GetDisplayValue(x.ItemGender ?? ItemGender.Unisex) }).ToList();
 }
-<h3>Склад</h3>
+<h3>Storage</h3>
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom" id="storage-title">
     <ul class="nav col-md-8 justify-content-start">
         <li class="nav-item">
-            <a class="nav-link" asp-action="Create">Добавить</a>
+            <a class="nav-link" asp-action="Create">Add</a>
         </li> 
         <li class="nav-item">
-            <a class="nav-link" asp-action="Index" asp-controller="ItemCategories">Категории</a>
+            <a class="nav-link" asp-action="Index" asp-controller="ItemCategories">Categories</a>
         </li>     
         <li class="nav-item">
-            <a class="nav-link" asp-action="Index" asp-controller="PricingCategories">Категории тарифов</a>
+            <a class="nav-link" asp-action="Index" asp-controller="PricingCategories">Pricing Categories</a>
         </li>   
         <li class="nav-item">
-            <a class="nav-link" asp-action="Index" asp-controller="Items">Велосипеды</a>
+            <a class="nav-link" asp-action="Index" asp-controller="Items">Bikes</a>
         </li>     
     </ul>
 
     <ul class="nav  col-md-4 justify-content-end">
         <li class="nav-item">
-            <a class="nav-link" asp-action="Export" >Загрузить таблицу XLS</a>
+            <a class="nav-link" asp-action="Export" >Download the XLS</a>
         </li>    
         <li class="nav-item"> 
-            <a class="nav-link" asp-action="Main" >Управление</a> 
+            <a class="nav-link" asp-action="Main" >Management</a> 
         </li>    
     </ul>  
 </div>
@@ -53,56 +52,56 @@
             <th style="width: 10%">
                 <div class="row-cols-1">
                     @Html.DisplayNameFor(model => someItemType.ItemCategory)
-                    <select class="chooser-filter form-control form-control-sm" asp-items="@Cats" data-field="cat"><option value="All" label="Все" selected></option></select>
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Cats" data-field="cat"><option value="All" label="All" selected></option></select>
                 </div>
             </th>
             <th style="width: 10%">
                 <div class="row-cols-1">
-                    Кат.Тарифа
-                    <select class="chooser-filter form-control form-control-sm" asp-items="@PriceCats" data-field="pricingcat"><option value="All" label="Все" selected></option></select>
+                    Pricing Category
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@PriceCats" data-field="pricingcat"><option value="All" label="All" selected></option></select>
                 </div>
             </th>
             <th style="width: 5%">
                 <div class="row-cols-1">
                     @Html.DisplayNameFor(model => someItemType.ItemSize)
-                    <select class="chooser-filter form-control form-control-sm" asp-items="@Sizes" data-field="size"><option value="All" label="Все" selected></option></select>
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Sizes" data-field="size"><option value="All" label="All" selected></option></select>
                 </div>
             </th>
             <th style="width: 5%">
                 <div class="row-cols-1">
                     @Html.DisplayNameFor(model => someItemType.ItemWheelSize)
-                    <select class="chooser-filter form-control form-control-sm" asp-items="@Wheels" data-field="wheel"><option  value="All" label="Все" selected></option></select>
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Wheels" data-field="wheel"><option  value="All" label="All" selected></option></select>
                 </div>
             </th>
             <th style="width: 5%; display: none" class="chooser-filter-optional ">
                 <div class="row-cols-1">
                     @Html.DisplayNameFor(model => someItemType.ItemColor)
-                    <select class="chooser-filter form-control form-control-sm" asp-items="@Colors" data-field="color"><option  value="All" label="Все" selected></option></select>
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Colors" data-field="color"><option  value="All" label="All" selected></option></select>
                 </div>
             </th>
             <th style="width: 5%; display: none" class="chooser-filter-optional ">
                 <div class="row-cols-1">
                     @Html.DisplayNameFor(model => someItemType.ItemAge)
-                    <select class="chooser-filter form-control form-control-sm" asp-items="@Ages" data-field="age"><option  value="All" label="Все" selected></option></select>
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Ages" data-field="age"><option  value="All" label="All" selected></option></select>
                 </div>
             </th>
             <th style="width: 5%; display: none" class="chooser-filter-optional ">
                 <div class="row-cols-1">
                     @Html.DisplayNameFor(model => someItemType.ItemGender)
-                    <select class="chooser-filter form-control form-control-sm" asp-items="@Genders" data-field="gender"><option  value="All" label="Все" selected></option></select>
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Genders" data-field="gender"><option  value="All" label="All" selected></option></select>
                 </div>
             </th>
             <th style="width: 20%; vertical-align: text-top">
                 <div class="col">
                     @Html.DisplayNameFor(model => someItemType.ItemTypeName)
                     <div class="row">
-                        <button type="button" id="btn-toggle-filters" class="btn btn-sm btn-light col-10">дополнительно</button>
+                        <button type="button" id="btn-toggle-filters" class="btn btn-sm btn-light col-10">more</button>
                     </div>
                 </div>
             </th>
             <th style="width: 15%; vertical-align: text-top">
                 <div class="row-cols-1">
-                    Номера
+                    Numbers
                 </div>
             </th>
             <th style="width: 20%; vertical-align: text-top">
@@ -113,10 +112,10 @@
         @foreach (var type in Model) {
             <tr>
                 <td style="width: 10%" data-field='cat'>
-                    @Html.DisplayFor(m => type.ItemCategory.ItemCategoryName)
+                    @Html.DisplayFor(m => type!.ItemCategory!.ItemCategoryName)
                 </td>
                 <td style="width: 10%" data-field='pricingcat'>
-                    @Html.DisplayFor(m => type.PricingCategory.PricingCategoryName)
+                    @Html.DisplayFor(m => type!.PricingCategory!.PricingCategoryName)
                 </td>
                 <td style="width: 5%" data-field='size'>
                     @Html.DisplayFor(m => type.ItemSize)
@@ -144,9 +143,9 @@
                     </div>
                 </td>
                 <td style="width: 20%;">
-                    <a asp-action="Edit" asp-route-id="@type.ItemTypeID">Изменить</a> |
-                    <a asp-action="Details" asp-route-id="@type.ItemTypeID">Просмотр</a> |
-                    <a asp-action="Delete" asp-route-id="@type.ItemTypeID">Удалить</a>
+                    <a asp-action="Edit" asp-route-id="@type.ItemTypeID">Change</a> |
+                    <a asp-action="Details" asp-route-id="@type.ItemTypeID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@type.ItemTypeID">Delete</a>
                 </td>
             </tr>
         }

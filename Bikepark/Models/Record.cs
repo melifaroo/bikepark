@@ -7,13 +7,13 @@ namespace Bikepark.Models
     {
         public int? RecordID { get; set; }
         public int? CustomerID  { get; set; }
-        [Display(Name = "Клиент")]
+        [Display(Name = "Customer")]
         public virtual Customer? Customer { get; set; }
 
         [InverseProperty("Record")]        
         public virtual List<ItemRecord> ItemRecords { get; set; } = new List<ItemRecord>();
 
-        [Display(Name = "Стоимость")]
+        [Display(Name = "Price")]
         public double? Price { get; set; }
         
     }

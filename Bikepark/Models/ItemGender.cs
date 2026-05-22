@@ -7,9 +7,11 @@ namespace Bikepark.Models
     {
         [Display(Name = "") ]
         Unisex,
-        [Display(Name = "Ì")]
+
+        [Display(Name = "Men's")]
         M,
-        [Display(Name = "Æ")]
+
+        [Display(Name = "Women's")]
         W,
     }
 

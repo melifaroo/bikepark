@@ -7,10 +7,10 @@ namespace Bikepark.Models
     {
         public int HolidayID { get; set; }
 
-        [Display(Name = "Дата")]
+        [Display(Name = "Date")]
         public DateTime Date { get; set; }
 
-        [Display(Name = "Название")]
+        [Display(Name = "Holiday")]
         public string? Name { get; set; }
 
     }

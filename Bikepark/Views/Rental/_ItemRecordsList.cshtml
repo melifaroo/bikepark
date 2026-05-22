@@ -1,11 +1,8 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model Bikepark.Models.Record
+﻿@model Bikepark.Models.Record
 
 @using Bikepark.Models
 @using Microsoft.EntityFrameworkCore
-@using Bikepark.Views.Helpers
+
 @{
     ItemRecord someItemRecord = new ItemRecord();
     List<DateTime> Holidays = ViewBag.Holidays;
@@ -16,22 +13,22 @@
     <thead>
         <tr>
             <th style="width : 150px;">
-                <div class="row-sm">Управление</div>
+                <div class="row-sm">Management</div>
             </th>
             <th style="width : 10%">
-                <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.Item.ItemNumber)</div>
+                <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.Item!.ItemNumber)</div>
             </th >
             <th >
-                <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.Item.ItemType)</div>
+                <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.Item!.ItemType)</div>
             </th>
             <th  >
-                <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.Pricing.PricingName)</div>
+                <div class="row-sm">@Html.DisplayNameFor(m => someItemRecord.Pricing!.PricingName)</div>
             </th>
             <th >
                 <div class="row-sm"></div>
             </th>
             <th  style="width : 10%">
-                <div class="row-sm">Время</div>
+                <div class="row-sm">Time</div>
             </th>
             <th  style="width : 10%">
                 <div class="row-sm"></div>
@@ -42,7 +39,7 @@
         @foreach (var itemRecord in Model.ItemRecords)
         {
             var isHoliday = Holidays.Any(day =>  DateOnly.FromDateTime(day) == DateOnly.FromDateTime(itemRecord.Start ?? DateTime.Now));
-            List<Pricing> actualprices = await PricingFilter.ActualPricing(Pricings, itemRecord.Item.ItemType.PricingCategoryID, itemRecord.Start ?? DateTime.Now, itemRecord.End ?? (itemRecord.Start ?? DateTime.Now).AddHours(1), isHoliday);
+            List<Pricing> actualprices = await PricingFilter.ActualPricing(Pricings, itemRecord.Item!.ItemType!.PricingCategoryID, itemRecord.Start ?? DateTime.Now, itemRecord.End ?? (itemRecord.Start ?? DateTime.Now).AddHours(1), isHoliday);
             ViewData["ActualPrices"] = actualprices;
             <partial name="_ItemRecordRow_rental" model = "@itemRecord" />  
         }

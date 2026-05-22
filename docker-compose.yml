@@ -1,0 +1,17 @@
+services:
+  bikepark-postgres:
+    image: postgres:16-alpine
+    container_name: bikepark-postgres
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=bikepark
+      - POSTGRES_PASSWORD=bikepark
+      - POSTGRES_DB=bikepark
+    volumes:
+      - ./.data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bikepark -d bikepark"]
+      interval: 5s
+      timeout: 5s
+      retries: 5

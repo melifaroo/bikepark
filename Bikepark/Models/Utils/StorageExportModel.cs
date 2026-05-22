@@ -7,31 +7,37 @@ namespace Bikepark.Models
         [Display(Name = "#")]
         public int? ItemID { get; set; }
 
-        [Display(Name = "Номер")]
+        [Display(Name = "Number")]
         public string? ItemNumber { get; set; }
 
-        [Display(Name = "Категория ТС")]
+        [Display(Name = "Item Category")]
         public string? ItemCategoryName { get; set; }
 
-        [Display(Name = "Модель")]
+        [Display(Name = "Item Type")]
         public string? ItemTypeName { get; set; }
 
-        [Display(Name = "Категория тарифов")]
+        [Display(Name = "Pricing Category")]
         public string? PricingCategoryName { get; set; }
 
-        [Display(Name = "Возраст")]
+        [Display(Name = "Age")]
         public string? ItemAge { get; set; }
-        [Display(Name = "Пол")]
+
+        [Display(Name = "Gender")]
         public string? ItemGender { get; set; }
-        [Display(Name = "Размер")]
+
+        [Display(Name = "Size")]
         public string? ItemSize { get; set; }
-        [Display(Name = "Колесо")]
+
+        [Display(Name = "Wheel Size")]
         public string? ItemWheelSize { get; set; }
-        [Display(Name = "Цвет")]
+
+        [Display(Name = "Color")]
         public string? ItemColor { get; set; }
-        [Display(Name = "Описание")]
+
+        [Display(Name = "Description")]
         public string? ItemDescription { get; set; }
-        [Display(Name = "Ссылка")]
+
+        [Display(Name = "External Link")]
         public string? ItemExternalURL { get; set; }
     }
 }

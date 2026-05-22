@@ -90,12 +90,12 @@ $(document).on("click", "#add-new-item-number", async function () {
         } else {
             var $validator = $("#numbers-form").validate();
             /* Show errors on the form */
-            $validator.showErrors({ "new-item-number": "Такой номер уже добавлен" });
+            $validator.showErrors({ "new-item-number": "This number has already been assigned." });
         }
     } else {
         var $validator = $("#numbers-form").validate();
         /* Show errors on the form */
-        $validator.showErrors({ "new-item-number": "Введите номер" });
+        $validator.showErrors({ "new-item-number": "Enter the Number" });
     }
 });
 
@@ -121,11 +121,11 @@ $(document).on("click", "#add-new-items-number-range", async function () {
         } else {
             var $validator = $("#numbers-form").validate();
             /* Show errors on the form */
-            $validator.showErrors({ "new-items-range": "Такой номер уже добавлен" });
+            $validator.showErrors({ "new-items-range": "This number has already been assigned." });
         }
     } else {
         var $validator = $("#numbers-form").validate();
         /* Show errors on the form */
-        $validator.showErrors({ "new-items-range": "Укажите диапазон номеров" });
+        $validator.showErrors({ "new-items-range": "Specify the range of numbers." });
     }
 });

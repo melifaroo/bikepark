@@ -7,21 +7,28 @@ namespace Bikepark.Models
         [Display(Name = "#")]
         public int? PricingID { get; set; }
 
-        [Display(Name = "Тариф")]
+        [Display(Name = "Billing Plan")]
         public string? PricingName { get; set; }
-        [Display(Name = "Категория тарифа")]
+
+        [Display(Name = "Pricing Category")]
         public string? PricingCategoryName { get; set; }
-        [Display(Name = "Тарификация")]
+
+        [Display(Name = "Billing Model")]
         public string? PricingType { get; set; } 
-        [Display(Name = "Дни недели")]
+
+        [Display(Name = "Days Of Week")]
         public string? DaysOfWeek { get; set; } 
-        [Display(Name = "Праздничный")]
-        public string IsHoliday { get; set; }
-        [Display(Name = "Льготный")]
-        public string IsReduced { get; set; }
-        [Display(Name = "Минимум времени проката (часов)")]
+        
+        [Display(Name = "Holiday")]
+        public string IsHoliday { get; set; } ="False";
+
+        [Display(Name = "Concessional")]
+        public string IsReduced { get; set; } = "False";
+
+        [Display(Name = "Minimal Rental Period (hours)")]
         public int MinDuration { get; set; }
-        [Display(Name = "Цена")]
+
+        [Display(Name = "Price")]
         public double Price { get; set; }
     }
 }

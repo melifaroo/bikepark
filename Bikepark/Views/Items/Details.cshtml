@@ -1,22 +1,14 @@
 ﻿@model Bikepark.Models.Item
 
 @{
-    ViewData["Title"] = "Прокатная единица";
+    ViewData["Title"] = "Item";
     ViewData["menu"] = "items";
     Layout = "_MainLayout";
-    string archival = Model.Archival ? "(Архив)" : "";
+    string archival = Model.Archival ? "(archival)" : "";
 }
 
-
-
-
-    <h3>Просмотр</h3>
-    <h4>Номер #@Model.ItemID @archival</h4>
-
-
-
-
-
+<h3>Item Details</h3>
+<h4>Item #@Model.ItemID @archival</h4>
 
 <hr />
 <div class="container-sm">  
@@ -27,7 +19,7 @@
                     @Html.DisplayNameFor(model => model.ItemType)
                 </dt>
                 <dd class = "row justify-content-start ms-3">
-                    @Html.DisplayFor(model => model.ItemType.ItemTypeName)
+                    @Html.DisplayFor(model => model!.ItemType!.ItemTypeName)
                 </dd>
                 <dt class = "row justify-content-start ms-1">
                     @Html.DisplayNameFor(model => model.ItemNumber)
@@ -39,7 +31,7 @@
         </div>
     </div>
     <div>
-        <a asp-action="Index"  class="btn btn-secondary">Назад</a>
-        <a asp-action="Edit"  class="btn btn-primary" asp-route-id="@Model?.ItemID">Редактировать</a>
+        <a asp-action="Index"  class="btn btn-secondary">Back</a>
+        <a asp-action="Edit"  class="btn btn-primary" asp-route-id="@Model?.ItemID">Change</a>
     </div>
 </div>

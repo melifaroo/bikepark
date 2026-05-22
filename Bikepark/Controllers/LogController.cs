@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bikepark.Data;
 using Bikepark.Models;
-using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authorization;
 
@@ -65,12 +60,11 @@ namespace Bikepark.Controllers
                 .ThenByDescending(irecord => irecord.End);        
         }
 
-
         // GET: Log
         public async Task<IActionResult> Index(string? statuses = null, DateTime? from = null, DateTime? to = null, int? pageSize = null, int page = 1)
         {
             var log = await FilteredLog(statuses, from, to);
-            return await Log( log, "Записи", statuses, from , to, pageSize, page );
+            return await Log( log, "Records", statuses, from , to, pageSize, page );
         }
 
         public async Task<FileResult> Export(string? statuses = null, DateTime? from = null, DateTime? to = null)
@@ -95,7 +89,6 @@ namespace Bikepark.Controllers
                 })
                 .ToList();
 
-
             var (fileFullName, fileNameWithExt) = ExcelTableHelper.CreateExcelFile<LogExportModel>(data, folderPath, fileName);
 
             byte[] fileBytes = System.IO.File.ReadAllBytes(fileFullName);
@@ -103,8 +96,6 @@ namespace Bikepark.Controllers
         }
 
         // POST: Log
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Filter( [FromForm] bool Active, bool Scheduled, bool Closed, bool Draft, bool Service, bool OnService, bool Fixed, DateTime? From = null, DateTime? To = null)
@@ -121,7 +112,6 @@ namespace Bikepark.Controllers
             return RedirectToAction( nameof(Index), new { statuses = string.Join(",", statuses.Cast<int>()), from = From, to = To } );
         }
 
-
         // GET: Log/OfType/5
         public async Task<IActionResult> OfType(int? id)
         {
@@ -136,9 +126,9 @@ namespace Bikepark.Controllers
             }
             var name = type.ItemTypeName;
             var log = _context.ItemRecords
-                .Where(irecord => irecord.Item.ItemTypeID == id)
+                .Where(irecord => irecord.Item!.ItemTypeID == id)
                 .OrderByDescending(irecord => irecord.End);
-            return await Log(log, "Записи по модели " + name +" (#"+id+")" );
+            return await Log(log, "Records for Item Type " + name +" (#"+id+")" );
         }
 
         // GET: Log/OfItem/5
@@ -157,7 +147,7 @@ namespace Bikepark.Controllers
             var log = _context.ItemRecords
                 .Where(irecord => irecord.ItemID == id)
                 .OrderByDescending(record => record.End);
-            return await Log(log, "Записи по номеру #" + number );
+            return await Log(log, "Records for Item Number  #" + number );
         }
 
         // GET: Log/WithPricing/5
@@ -176,9 +166,8 @@ namespace Bikepark.Controllers
             var log = _context.ItemRecords
                 .Where(irecord => irecord.PricingID == id)
                 .OrderByDescending(record => record.End);
-            return await Log(log, "Записи по тарифу #" + name );
+            return await Log(log, "Records with Billing Plan #" + name );
         }
-
 
         // GET: Log/Create
         public IActionResult Create()
@@ -191,8 +180,6 @@ namespace Bikepark.Controllers
         }
 
         // POST: Log/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ItemRecordID,RecordID,ItemID,PricingID,Status,Start,End,CustomInformation,UserID")] ItemRecord itemRecord)
@@ -231,8 +218,6 @@ namespace Bikepark.Controllers
         }
 
         // POST: Log/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int? id, [Bind("ItemRecordID,RecordID,ItemID,PricingID,Status,Start,End,CustomInformation,UserID")] ItemRecord itemRecord)
@@ -287,7 +272,6 @@ namespace Bikepark.Controllers
             }
             return View(rentalRecord);
         }
-
 
         // POST: Rental/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -395,13 +379,13 @@ namespace Bikepark.Controllers
                 if (item == null)
                 {
                     number.IsSuccess = false;
-                    number.Message = "Номер не найден";
+                    number.Message = "Number not found";
                     return View("Service", number);
                 }
-                return await ControlService(new List<ItemRecord>() { new ItemRecord { ItemID = item.ItemID, Item = item, Start = DateTime.Now, End = DateTime.Now.AddDays(1), Status = Status.Service } });
+                return await ControlService(new List<ItemRecord>() { new() { ItemID = item.ItemID, Item = item, Start = DateTime.Now, End = DateTime.Now.AddDays(1), Status = Status.Service } });
             }
             number.IsSuccess = false;
-            number.Message = "Что-то пошло не так";
+            number.Message = "Something went wrong.";
             return View("Service", number);
         }
 
@@ -413,8 +397,6 @@ namespace Bikepark.Controllers
         }
 
         // POST: Rental/UpdateService
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateService(IEnumerable<ItemRecord> itemRecords)
@@ -423,7 +405,7 @@ namespace Bikepark.Controllers
             {
                 //if (!CheckServiceAvailability(itemRecords))
                 //{
-                //    ViewData["Error"] = "Некоторые позиции забронированы на указанное время ремонта";
+                //    ViewData["Error"] = "Some items have been reserved for the specified repair period.";
                 //    return await ControlService(itemRecords);
                 //}
                 foreach (ItemRecord itemRecord in itemRecords)
@@ -453,8 +435,6 @@ namespace Bikepark.Controllers
             }
         }
 
-
-
         // GET: Rental/ControlItemService/5
         public async Task<IActionResult> UpdateServiceFixed(int? id)
         {
@@ -478,7 +458,5 @@ namespace Bikepark.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index), new { statuses = string.Join(",", (new Status[] { Status.Service, Status.OnService }).Cast<int>()) });
         }
-
-
     }
 }

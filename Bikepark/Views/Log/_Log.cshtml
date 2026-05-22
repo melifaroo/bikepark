@@ -19,10 +19,10 @@
                 @Html.DisplayNameFor(model => model.Record)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Item.ItemType)
+                @Html.DisplayNameFor(model => model.Item!.ItemType)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Item.ItemNumber)
+                @Html.DisplayNameFor(model => model.Item!.ItemNumber)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Pricing)
@@ -57,15 +57,15 @@
                 }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Item.ItemType.ItemTypeName)
+                @Html.DisplayFor(modelItem => item.Item!.ItemType!.ItemTypeName)
             </td>
             <td>
-                <a asp-action="ItemRentalDetails" asp-route-id="@item.ItemID">#@Html.DisplayFor(modelItem => item.Item.ItemNumber)</a>   
+                <a asp-action="ItemRentalDetails" asp-route-id="@item.ItemID">#@Html.DisplayFor(modelItem => item!.Item!.ItemNumber)</a>   
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Pricing.PricingName)
+                @Html.DisplayFor(modelItem => item.Pricing!.PricingName)
                 :
-                @Html.DisplayFor(modelItem => item.Pricing.Price)
+                @Html.DisplayFor(modelItem => item.Pricing!.Price)
                     @if (item.Pricing != null)
                     {
                         @if (item.Pricing.PricingType != PricingType.Service)
@@ -77,14 +77,14 @@
                 </td>
             <td>
                 @if(@item.Status==Status.Service || @item.Status==Status.OnService ){
-                    <a asp-action="ControlItemService" asp-route-id="@item.ItemRecordID">Управление</a>
+                    <a asp-action="ControlItemService" asp-route-id="@item.ItemRecordID">Management</a>
                 }
                 @if( @item.Status==Status.OnService ){
-                    <a asp-action="UpdateServiceFixed" asp-route-id="@item.ItemRecordID">Завершить</a>
+                    <a asp-action="UpdateServiceFixed" asp-route-id="@item.ItemRecordID">Complete</a>
                 }
-                @if ( User.Identity.IsAuthenticated ){
+                @if ( User.Identity!.IsAuthenticated == true ){
                     if ( User.IsInRole(BikeparkConfig.ManagersRole) ){  
-                        <a asp-action="Delete" asp-route-id="@item.ItemRecordID">Удалить</a> 
+                        <a asp-action="Delete" asp-route-id="@item.ItemRecordID">Delete</a> 
                     }
                 }                
             </td>

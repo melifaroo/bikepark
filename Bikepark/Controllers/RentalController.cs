@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Bikepark.Data;
 using Bikepark.Models;
@@ -23,7 +18,7 @@ namespace Bikepark.Controllers
         private readonly IOptions<BikeparkConfig> _config;
         private readonly Status[] AllStatuses = Enum.GetValues(typeof(Status)).Cast<Status>().ToArray();
 
-        private static readonly Regex sWhitespace = new Regex(@"\s+");
+        private static readonly Regex sWhitespace = new(@"\s+");
         public static string ReplaceWhitespace(string input, string replacement)
         {
             return sWhitespace.Replace(input, replacement);
@@ -120,12 +115,10 @@ namespace Bikepark.Controllers
         public async Task<IActionResult> Index(string? statuses = null, DateTime? from = null, DateTime? to = null, int? pageSize = null, int page = 1)
         {
             var log = await FilteredLog(statuses, from, to);
-            return await Log(log, "Заказы", statuses, from, to, pageSize, page);
+            return await Log(log, "Rental Records", statuses, from, to, pageSize, page);
         }
 
         // POST: Rental
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Filter( [FromForm] bool Active, bool Scheduled, bool Closed, bool Draft, DateTime? From = null, DateTime? To = null )
@@ -154,7 +147,7 @@ namespace Bikepark.Controllers
             }
 
             var rentalRecord = await _context.Records.IgnoreQueryFilters()
-                    .Include(r => r.ItemRecords).ThenInclude(r => r.Item).ThenInclude(r => r.ItemType)
+                    .Include(r => r.ItemRecords).ThenInclude(r => r.Item).ThenInclude(r => r!.ItemType)
                     .Include(r => r.ItemRecords).ThenInclude(r => r.Pricing)
                     .FirstOrDefaultAsync(ir => ir.RecordID == id);
             if (rentalRecord == null)
@@ -213,8 +206,6 @@ namespace Bikepark.Controllers
         }
 
         // POST: Rental/UpdateOrCreate
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateOrCreate(Record rentalRecord)
@@ -229,10 +220,10 @@ namespace Bikepark.Controllers
                     var user = await _userManager.GetUserAsync(User);
                     if (Request.Form["CustomerForceCreate"] == "on")
                     {
-                        rentalRecord.Customer.CustomerID = null;
+                        rentalRecord.Customer!.CustomerID = null;
                     }
 
-                    if (rentalRecord.Customer.CustomerID != null)
+                    if (rentalRecord.Customer!.CustomerID != null)
                     {
                         rentalRecord.CustomerID = rentalRecord.Customer.CustomerID;
                         if (Request.Form["CustomerForceUpdate"] == "on")
@@ -361,8 +352,6 @@ namespace Bikepark.Controllers
         }
 
         // POST: Rental/UpdateOrCreate
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Contract(Record rentalRecord)
@@ -402,8 +391,6 @@ namespace Bikepark.Controllers
         }
 
         // POST: Rental/SaveServiceRecords
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdatePrepare(IEnumerable<Item> items)
@@ -432,7 +419,7 @@ namespace Bikepark.Controllers
             double price = 0;
             foreach (ItemRecord irec in rentalRecord.ItemRecords) {
                 var Pricing = await _context.Pricings.FindAsync(irec.PricingID);
-                price += Pricing.Price * (Pricing.PricingType == PricingType.Hourly ? (irec.End - irec.Start).GetValueOrDefault().Hours : 1);
+                price += Pricing!.Price * (Pricing.PricingType == PricingType.Hourly ? (irec.End - irec.Start).GetValueOrDefault().Hours : 1);
             }
             return price;
         }
@@ -452,17 +439,17 @@ namespace Bikepark.Controllers
             number.IsResponse = true;
             if (ModelState.IsValid)
             {
-                var itemRec = await _context.ItemRecords.FirstOrDefaultAsync(irec => irec.Item.ItemNumber == number.ItemNumber && irec.Status == Status.Active);
+                var itemRec = await _context.ItemRecords.FirstOrDefaultAsync(irec => irec.Item!.ItemNumber == number.ItemNumber && irec.Status == Status.Active);
                 if (itemRec == null || itemRec.Record==null) {
                     number.IsSuccess = false;
-                    number.Message = "Запись не найдена";
+                    number.Message = "Record not found";
                     return View("GetBack", number);
                 }
                 
                 return RedirectToAction(nameof(Control), new { id = itemRec.Record.RecordID });
             }
             number.IsSuccess = false;
-            number.Message = "Что-то пошло не так";
+            number.Message = "Something went wrong";
             return View("GetBack", number);
         }
 
@@ -559,6 +546,10 @@ namespace Bikepark.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var rentalRecord = await _context.Records.FindAsync(id);
+            if (rentalRecord == null)
+            {
+                return NotFound();
+            }
             foreach (ItemRecord itemRecord in rentalRecord.ItemRecords)
                 _context.ItemRecords.Remove(itemRecord);
             _context.Records.Remove(rentalRecord);
@@ -575,8 +566,12 @@ namespace Bikepark.Controllers
         public async Task<PartialViewResult> AddRentalItemRecord(int ItemID, DateTime Start, DateTime End)
         {
             var Item = await _context.Items.FindAsync(ItemID);
+            if (Item == null)
+            {
+                return PartialView("_ItemRecordRow_rental", null);
+            }
             var isHoliday = await _context.Holidays.AnyAsync(day => day.Date.DayOfYear == Start.DayOfYear);
-            List<Pricing> actualprices = await PricingFilter.ActualPricing(_context.Pricings, Item.ItemType.PricingCategoryID, Start, End, isHoliday);
+            List<Pricing> actualprices = await PricingFilter.ActualPricing(_context.Pricings, Item.ItemType!.PricingCategoryID, Start, End, isHoliday);
             ViewBag.ActualPrices = actualprices;
             return PartialView("_ItemRecordRow_rental", new ItemRecord { ItemID = ItemID, Item = Item, Start = Start, End = End });
         }
@@ -599,7 +594,7 @@ namespace Bikepark.Controllers
                 return NotFound();
             }
             var trimmedRequest = ReplaceWhitespace(Request.Trim(), "");
-            var foundCustomers = await _context.Customers.Where(customer => customer.CustomerPhoneNumber.Contains(trimmedRequest)).ToListAsync();
+            var foundCustomers = await _context.Customers.Where(customer => customer.CustomerPhoneNumber!.Contains(trimmedRequest)).ToListAsync();
             return PartialView("_CustomersSearchResults", foundCustomers);
         }
 

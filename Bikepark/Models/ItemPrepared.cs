@@ -6,9 +6,10 @@ namespace Bikepark.Models
     public class ItemPrepared
     {
         public int ItemPreparedID { get; set; }
+        
         public int ItemID { get; set; }
 
-        [Display(Name = "Номер")]
+        [Display(Name = "Item")]
         public virtual Item? Item { get; set; }
 
     }

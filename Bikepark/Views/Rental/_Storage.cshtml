@@ -1,10 +1,5 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-
-@using Bikepark.Models
+﻿@using Bikepark.Models
 @using Microsoft.EntityFrameworkCore
-@using Bikepark.Views.Helpers
 
 @{
     DbSet<Item> Items = ViewBag.Items;
@@ -17,7 +12,6 @@
     List<SelectListItem> Colors = Types.DistinctBy(x => x.ItemColor).Select(x => new SelectListItem { Value = x.ItemColor?.ToString()?? "", Text =  x.ItemColor?.ToString()?? "" }).ToList();
     List<SelectListItem> Ages = Types.DistinctBy(x => x.ItemAge).Select(x => new SelectListItem { Value =  EnumHelper<ItemAge>.GetDisplayValue(x.ItemAge ?? ItemAge.Adult), Text =  EnumHelper<ItemAge>.GetDisplayValue(x.ItemAge ?? ItemAge.Adult) }).ToList();
     List<SelectListItem> Genders = Types.DistinctBy(x => x.ItemGender).Select(x => new SelectListItem { Value = EnumHelper<ItemGender>.GetDisplayValue(x.ItemGender ?? ItemGender.Unisex), Text =  EnumHelper<ItemGender>.GetDisplayValue(x.ItemGender ?? ItemGender.Unisex) }).ToList();
-
 }
 
 <table class="tablealign scroll-table" style = "height: 200px;">
@@ -26,50 +20,50 @@
             <th style="min-width: 10%">
                 <div class="row-cols-1">
                     @Html.DisplayNameFor(model => someItemType.ItemCategory)
-                    <select class="chooser-filter form-control form-control-sm" asp-items="@Cats" data-field="cat"><option value="All" label="Все" selected></option></select>
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Cats" data-field="cat"><option value="All" label="All" selected></option></select>
                 </div>
             </th>
             <th style="width: 10%; display: none" class="chooser-filter-optional ">
                 <div class="row-cols-1">
                     @Html.DisplayNameFor(model => someItemType.ItemWheelSize)
-                    <select class="chooser-filter form-control form-control-sm" asp-items="@Wheels" data-field="wheel"><option  value="All" label="Все" selected></option></select>
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Wheels" data-field="wheel"><option  value="All" label="All" selected></option></select>
                 </div>
             </th>
             <th style="width: 10%; display: none" class="chooser-filter-optional ">
                 <div class="row-cols-1">
                     @Html.DisplayNameFor(model => someItemType.ItemSize)
-                    <select class="chooser-filter form-control form-control-sm" asp-items="@Sizes" data-field="size"><option value="All" label="Все" selected></option></select>
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Sizes" data-field="size"><option value="All" label="All" selected></option></select>
                 </div>
             </th>
             <th style="width: 10%; display: none" class="chooser-filter-optional ">
                 <div class="row-cols-1">
                     @Html.DisplayNameFor(model => someItemType.ItemColor)
-                    <select class="chooser-filter form-control form-control-sm" asp-items="@Colors" data-field="color"><option  value="All" label="Все" selected></option></select>
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Colors" data-field="color"><option  value="All" label="All" selected></option></select>
                 </div>
             </th>
             <th style="width: 10%; display: none" class="chooser-filter-optional ">
                 <div class="row-cols-1">
                     @Html.DisplayNameFor(model => someItemType.ItemAge)
-                    <select class="chooser-filter form-control form-control-sm" asp-items="@Ages" data-field="age"><option  value="All" label="Все" selected></option></select>
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Ages" data-field="age"><option  value="All" label="All" selected></option></select>
                 </div>
             </th>
             <th style="width: 10%; display: none" class="chooser-filter-optional ">
                 <div class="row-cols-1">
                     @Html.DisplayNameFor(model => someItemType.ItemGender)
-                    <select class="chooser-filter form-control form-control-sm" asp-items="@Genders" data-field="gender"><option  value="All" label="Все" selected></option></select>
+                    <select class="chooser-filter form-control form-control-sm" asp-items="@Genders" data-field="gender"><option  value="All" label="All" selected></option></select>
                 </div>
             </th>
             <th style="min-width: 25%; vertical-align: text-top">
                 <div class="col">
                     @Html.DisplayNameFor(model => someItemType.ItemTypeName)
                     <div class="row">
-                        <button type="button" id="btn-toggle-filters" class="btn btn-sm btn-light col-6">Фильтры</button>
+                        <button type="button" id="btn-toggle-filters" class="btn btn-sm btn-light col-6">Filters</button>
                     </div>
                 </div>
             </th>
             <th style="min-width: 100px; vertical-align: text-top">
                 <div class="row-cols-1">
-                    Номера
+                    Items
                 </div>
             </th>
         </tr>
@@ -78,7 +72,7 @@
         @foreach (var type in Types) {
             <tr>
                 <td style="min-width: 10%" data-field='cat'>
-                    @Html.DisplayFor(m => type.ItemCategory.ItemCategoryName)
+                    @Html.DisplayFor(m => type.ItemCategory!.ItemCategoryName)
                 </td>
                 <td style="width: 10%; display: none" data-field='wheel' class="chooser-filter-optional ">
                     @Html.DisplayFor(m => type.ItemWheelSize)

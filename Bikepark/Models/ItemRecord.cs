@@ -8,13 +8,17 @@ namespace Bikepark.Models
         public int? ItemRecordID { get; set; }
         public int? RecordID { get; set; }
 
-        [Display(Name = "Заказ")]
+        [Display(Name = "Order Record")]
         public virtual Record? Record { get; set; }
+
         public int? ItemID { get; set; }
-        [Display(Name = "Наименование")]
+
+        [Display(Name = "Item")]
         public virtual Item? Item { get; set; }
+
         public int? PricingID { get; set; }
-        [Display(Name = "Тариф")]
+
+        [Display(Name = "Billing Plan")]
         public virtual Pricing? Pricing { get; set; }
 
 

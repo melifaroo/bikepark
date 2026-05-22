@@ -6,11 +6,12 @@ namespace Bikepark.Models
     public class ItemCategory
     {
         public int ItemCategoryID { get; set; }
+
         [Required]
-        [Column(TypeName = "nvarchar(255)")]
-        [Display(Name = "Категория")]
+        [Display(Name = "Item Category")]
         public string? ItemCategoryName { get; set; }
-        [Display(Name = "Аксессуар")]
+
+        [Display(Name = "Accessories")]
         public bool Accessories { get; set; } = false;
 
     }

@@ -6,19 +6,26 @@ namespace Bikepark.Models
     public class Customer
     {
         public int? CustomerID { get; set; }
-        [Display(Name = "Контактный телефон")]
+
+        [Display(Name = "Phone Number")]
         public string? CustomerPhoneNumber { get; set; }
-        [Display(Name = "Имя Фамилия")]
+
+        [Display(Name = "Full Name")]
         public string? CustomerFullName { get; set; }
-        [Display(Name = "Документ")]
+
+        [Display(Name = "Identity Document")]
         public string? CustomerDocumentType { get; set; }
-        [Display(Name = "Серия документа")]
+
+        [Display(Name = "Document Serie")]
         public string? CustomerDocumentSeries { get; set; }
-        [Display(Name = "Номер документа")]
+
+        [Display(Name = "Document Number")]
         public string? CustomerDocumentNumber { get; set; }
-        [Display(Name = "e-Mail")]
+
+        [Display(Name = "E-Mail")]
         public string? CustomerEMail { get; set; }
-        [Display(Name = "Дополнительно")]
+
+        [Display(Name = "Additional Information")]
         public string? CustomerInformation { get; set; }
     }
 }

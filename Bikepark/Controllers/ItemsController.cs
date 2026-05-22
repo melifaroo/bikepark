@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -86,8 +82,6 @@ namespace Bikepark.Controllers
         }
 
         // POST: Items/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ItemID,ItemTypeID,ItemNumber")] Item item)
@@ -103,8 +97,6 @@ namespace Bikepark.Controllers
         }
 
         // POST: Items/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("ItemID,ItemTypeID,ItemNumber")] Item item)
@@ -115,7 +107,7 @@ namespace Bikepark.Controllers
             {
                 if (await _context.Items.AsNoTracking().AnyAsync(itemDB => itemDB.ItemNumber == item.ItemNumber))
                 {
-                    ViewData["Error"] = "номер используется " + item.ItemNumber;
+                    ViewData["Error"] = "The number " + item.ItemNumber + " is already assigned";
                     return await EditForm(item);
                 }
                 try
@@ -140,8 +132,6 @@ namespace Bikepark.Controllers
         }
 
         // POST: Items/Replace/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Replace([Bind("ItemID,ItemTypeID,ItemNumber")] Item item)
@@ -152,11 +142,12 @@ namespace Bikepark.Controllers
             {
                 if (await _context.Items.AsNoTracking().AnyAsync(itemDB => itemDB.ItemNumber == item.ItemNumber))
                 {
-                    ViewData["Error"] = "номер используется " + item.ItemNumber;
+                    ViewData["Error"] = "The number " + item.ItemNumber + " is already assigned";
                     return await EditForm(item);
                 }
 
-                Item replace = new Item { 
+                Item replace = new()
+                { 
                     ItemNumber = item.ItemNumber, 
                     ItemTypeID = item.ItemTypeID 
                 };

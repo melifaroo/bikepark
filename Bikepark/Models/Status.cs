@@ -5,20 +5,25 @@ namespace Bikepark.Models
 {
     public enum Status
     {
-        [Display(Name = "Не назначен")]
-        Draft,      
-        [Display(Name = "Запланирован")]
-        Scheduled,   
-        [Display(Name = "Выдан")]
-        Active,     
-        [Display(Name = "Завершен")]
+        [Display(Name = "Draft")]
+        Draft,
+
+        [Display(Name = "Scheduled")]
+        Scheduled,
+
+        [Display(Name = "Active")]
+        Active,
+
+        [Display(Name = "Closed")]
         Closed,
 
-        [Display(Name = "Нужен ремонт")]
+        [Display(Name = "Service required")]
         Service,
-        [Display(Name = "Ремонт")]
+
+        [Display(Name = "On Service")]
         OnService,
-        [Display(Name = "Отремонтирован")]
+
+        [Display(Name = "Service completed")]
         Fixed,     
     }
 }

@@ -1,7 +1,7 @@
 ﻿@model NumbersOfType
 
 @{
-    ViewData["Title"] = "Просмотр модели";
+    ViewData["Title"] = "View Items of Type";
     ViewData["menu"] = "storage";
     Layout = "_MainLayout";
     var Error = ViewBag.Error;
@@ -17,9 +17,9 @@
     var SuggestedEndNumder = SuggestedNumder+1;
 }
 
-<h3>Номера модели (типа)</h3>
+<h3>Items of Type</h3>
 
-<h4>Модель</h4>
+<h4>Item Type</h4>
 <hr />
 
 <form asp-controller="Storage" id="numbers-form" class="container-sm">
@@ -37,13 +37,13 @@
                 @Html.DisplayNameFor(model => ItemType.ItemCategory)
             </dt>
             <dd class = "row justify-content-start ms-3">
-                @Html.DisplayFor(model => ItemType.ItemCategory.ItemCategoryName)
+                @Html.DisplayFor(model => ItemType!.ItemCategory!.ItemCategoryName)
             </dd>
             <dt class = "row justify-content-start ms-1">
                 @Html.DisplayNameFor(model => ItemType.PricingCategory)
             </dt>
             <dd class = "row justify-content-start ms-3">
-                @Html.DisplayFor(model => ItemType.PricingCategory.PricingCategoryName)
+                @Html.DisplayFor(model => ItemType!.PricingCategory!.PricingCategoryName)
             </dd>
             <dt class = "row justify-content-start ms-1">
                 @Html.DisplayNameFor(model => ItemType.ItemDescription)
@@ -101,15 +101,15 @@
                     
         <div class = "row justify-content-start">
             <div class="row row-cols-2 flex-md-nowrap justify-content-start">
-                <span>Номера модели ( @Model.ItemsList.Count ) | </span>
-                <a asp-action="Edit" asp-route-id="@Model.ItemTypeID">Модель</a>   
+                <span>Items of Type ( @Model.ItemsList.Count ) | </span>
+                <a asp-action="Edit" asp-route-id="@Model.ItemTypeID">Type</a>   
             </div>
         </div>
         <hr />
         
         <div class="row row-cols-3 mt-1">
             <div class="form-group col-md-3">
-                <label for="new-item-number" class="control-label text-truncate">Добавить номер</label>
+                <label for="new-item-number" class="control-label text-truncate">Add Item with Number</label>
             
                 <div class="input-group">
                     <input id="new-item-number" name="new-item-number" class="form-control" type="text" inputmode="numeric"  placeholder="@SuggestedNumder" />
@@ -117,7 +117,7 @@
                 </div>
             </div>
             <div class="form-group col-md-6">
-                <label for="new-item-number" class="control-label text-truncate">Добавить диапазон номеров </label>
+                <label for="new-item-number" class="control-label text-truncate">Add Items with Numbers Range </label>
             
                 <div class="input-group">
                     <input id="new-items-start-number" name="new-items-range" class="form-control" type="text" inputmode="numeric" placeholder="@SuggestedStartNumder"  />
@@ -126,8 +126,8 @@
                 </div>
             </div>
             <div class="form-group col-md-3">
-                <label for="remove-selected-item-numbers" class="control-label text-truncate">Отметьте для удаления </label>
-                <input type="button" id="remove-selected-item-numbers" class="btn btn-outline-danger col-md-12" value="Удалить" disabled/>
+                <label for="remove-selected-item-numbers" class="control-label text-truncate">Mark for deletion </label>
+                <input type="button" id="remove-selected-item-numbers" class="btn btn-outline-danger col-md-12" value="Delete" disabled/>
             </div>
         </div>
 
@@ -141,12 +141,12 @@
 
 <div class="row  row-cols-3  flex-md-nowrap ">
     <div class="col-md-4">                
-        <a asp-action="Index"  class="btn btn-secondary">К списку</a>
+        <a asp-action="Index"  class="btn btn-secondary">To the List</a>
     </div>
     <div class="col-md-4">   
     </div>
     <div class="col-md-4">            
-        <button type="submit" asp-action="UpdateNumbers" name="error" class="btn btn-primary col-md-12">Сохранить номера</button>
+        <button type="submit" asp-action="UpdateNumbers" name="error" class="btn btn-primary col-md-12">Save the Numbers</button>
     </div>
 </div>
 

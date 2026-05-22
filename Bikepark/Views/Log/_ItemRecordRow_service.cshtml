@@ -1,14 +1,11 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Bikepark.Models.ItemRecord
 
-@model Bikepark.Models.ItemRecord
 @using Bikepark.Models
 @using Microsoft.EntityFrameworkCore;
-@using HtmlHelpers.BeginCollectionItemCore
+
 @{
     DbSet<Pricing> prices = ViewBag.Pricings;
-    IEnumerable<Pricing> serviceprices = await PricingFilter.ServicePricing(prices, Model.Item.ItemType.PricingCategoryID);
+    IEnumerable<Pricing> serviceprices = await PricingFilter.ServicePricing(prices, Model.Item!.ItemType!.PricingCategoryID);
     var Start = Model.Start ?? DateTime.Now;
     var End = Model.End ?? (Model.Start ?? DateTime.Now).AddDays(1);
 }
@@ -49,11 +46,11 @@
         </select>
     </td>
     <td style="width : 5%" class="pricing-info">
-        @Html.DisplayFor(m => Model.Pricing.Price)
+        @Html.DisplayFor(m => Model.Pricing!.Price)
     </td>
     <td style="width : 150px">
-        <button type="button" class="btn btn-link btn-remove" data-id="@Model.GetHashCode()">Удалить</button>
-        <button type="button" class="btn btn-link btn-restore" data-id="@Model.GetHashCode()" style="display: none">Восстановить</button>
-        <button type="button" class="btn btn-link btn-add"  data-id="@Model.GetHashCode()">Добавить</button>
+        <button type="button" class="btn btn-link btn-remove" data-id="@Model.GetHashCode()">Delete</button>
+        <button type="button" class="btn btn-link btn-restore" data-id="@Model.GetHashCode()" style="display: none">Restore</button>
+        <button type="button" class="btn btn-link btn-add"  data-id="@Model.GetHashCode()">Add</button>
     </td>
 </tr>

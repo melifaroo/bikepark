@@ -1,15 +1,15 @@
 ﻿@model Bikepark.Models.PricingCategory
 
 @{
-    ViewData["Title"] = "Категория тарифов";
+    ViewData["Title"] = "Pricing Category Details";
     ViewData["menu"] = "pricing-categories";
     Layout = "_MainLayout";
 }
 
-<h3>Просмотр</h3>
+<h3>Pricing Category Details</h3>
 
 <div>
-    <h4>Категория тарифов</h4>
+    <h4>Pricing Category</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -21,6 +21,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Index" class="btn btn-secondary">Назад</a>
-    <a asp-action="Edit" asp-route-id="@Model?.PricingCategoryID">Изменить</a> 
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+    <a asp-action="Edit" asp-route-id="@Model?.PricingCategoryID">Change</a> 
 </div>

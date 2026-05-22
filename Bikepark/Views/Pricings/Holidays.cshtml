@@ -5,18 +5,18 @@
 
 }
 
-<h3>Праздничные дни</h3> 
+<h3>Holidays</h3> 
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
     <ul class="nav col-md-9 justify-content-start"  >    
         <form asp-controller="Storage" >           
             <div class="row">  
                 <button type="submit" asp-action="AddHoliday" class="col-md-3 btn btn-link text-decoration-none" id="btn-add-holiday">
-                    Добавить
+                    Add
                 </button>                
                 <div class="col-md-4">  
                     <div class="input-group">  
                         <div class="input-group-prepend">
-                            <span class="input-group-text" >Дата</span>
+                            <span class="input-group-text" >Date</span>
                         </div>
                         <input  id="date" class="form-control" name="Date" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" autocomplete="nope" required/>
                     </div> 
@@ -24,9 +24,9 @@
                 <div class="col-md-5">  
                 <div class="input-group" >
                     <div class="input-group-prepend">
-                        <span class="input-group-text" >Название</span>
+                        <span class="input-group-text" >Holiday Name</span>
                     </div>
-                    <input  id="name" class="form-control customer-input" name="Name" value="" placeholder="Введите название" type="text"  autocomplete="nope" required/>
+                    <input  id="name" class="form-control customer-input" name="Name" value="" placeholder="Enter the Name" type="text"  autocomplete="nope" required/>
                 </div>
                 </div> 
             </div>
@@ -35,10 +35,10 @@
 
     <ul class="nav col-md-3 justify-content-end">  
         <li class="nav-item"> 
-            <a class="nav-link" asp-action="Index" >Тарифы</a> 
+            <a class="nav-link" asp-action="Index" >Billing Plans</a> 
         </li>    
         <li class="nav-item"> 
-            <a class="nav-link" asp-action="Main" asp-controller="Storage">Управление</a> 
+            <a class="nav-link" asp-action="Main" asp-controller="Storage">Management</a> 
         </li>    
     </ul>  
 </div>
@@ -68,7 +68,7 @@
                     @day.Date.ToShortDateString()
                 </td>
                 <td>
-                    <a asp-action="DeleteHoliday" asp-route-id="@day.HolidayID">Удалить</a>
+                    <a asp-action="DeleteHoliday" asp-route-id="@day.HolidayID">Delete</a>
                 </td>
             </tr>}
         </tbody>

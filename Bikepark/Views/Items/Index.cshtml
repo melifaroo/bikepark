@@ -1,27 +1,27 @@
 ﻿@model IEnumerable<Bikepark.Models.Item>
 
 @{
-    ViewData["Title"] = "Велосипеды";
+    ViewData["Title"] = "Bikes and Accessories";
     Layout = "_MainLayout";
 }
 
-<h3>Велосипеды и аксессуары</h3>
+<h3>Bikes and Accessories</h3>
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
     <ul class="nav col-md-6 justify-content-start">
         <li class="nav-item">
-            <a class="nav-link" asp-action="Create">Добавить</a>
+            <a class="nav-link" asp-action="Create">Add</a>
         </li> 
         <li class="nav-item">
-            <a class="nav-link" asp-action="Index" asp-controller="Storage" >Склад</a>
+            <a class="nav-link" asp-action="Index" asp-controller="Storage" >Storage</a>
         </li>     
     </ul>
 
     <ul class="nav  col-md-6 justify-content-end">
         <li class="nav-item">
-            <a class="nav-link" asp-action="Export" asp-controller="Storage" >Загрузить таблицу XLS</a>
+            <a class="nav-link" asp-action="Export" asp-controller="Storage" >Download the XLS</a>
         </li>    
         <li class="nav-item"> 
-            <a class="nav-link" asp-action="Main" asp-controller="Storage">Управление</a> 
+            <a class="nav-link" asp-action="Main" asp-controller="Storage">Management</a> 
         </li>    
     </ul>  
 </div>
@@ -42,14 +42,14 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ItemType.ItemTypeName)
+                @Html.DisplayFor(modelItem => item!.ItemType!.ItemTypeName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ItemNumber)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ItemID">Изменить</a> |
-                <a asp-action="Delete" asp-route-id="@item.ItemID">Удалить</a>
+                <a asp-action="Edit" asp-route-id="@item.ItemID">Change</a> |
+                <a asp-action="Delete" asp-route-id="@item.ItemID">Delete</a>
             </td>
         </tr>
 }

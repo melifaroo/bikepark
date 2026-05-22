@@ -6,22 +6,22 @@ namespace Bikepark.Models
 {
     public class RecordInfo
     {
-        [Display(Name = "Статус")]
+        [Display(Name = "Status")]
         public Status Status { get; set; } = Status.Draft;
 
-        [Display(Name = "Начало", ShortName = "C")]
+        [Display(Name = "Start", ShortName = "From")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime? Start { get; set; }
 
-        [Display(Name = "Завершение", ShortName = "До")]
+        [Display(Name = "End", ShortName = "To")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime? End { get; set; }
 
-        [Display(Name = "Дополнительные отметки")]
+        [Display(Name = "Custom Information")]
         public string? CustomInformation { get; set; }
 
         public string? UserID { get; set; }
-        [Display(Name = "Администратор")]
+        [Display(Name = "Receptionist")]
         public virtual IdentityUser? User { get; set; }
 
         public static bool Overlap(RecordInfo a, RecordInfo b, int minutesDelay)

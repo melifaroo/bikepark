@@ -7,6 +7,13 @@
       "commands": [
         "dotnet-msidentity"
       ]
+    },
+    "dotnet-ef": {
+      "version": "6.0.36",
+      "commands": [
+        "dotnet-ef"
+      ],
+      "rollForward": false
     }
   }
 }

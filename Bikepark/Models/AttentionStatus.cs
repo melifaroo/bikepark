@@ -5,11 +5,13 @@ namespace Bikepark.Models
 {
     public enum AttentionStatus
     {
-        [Display(Name = "Внимание")] 
+        [Display(Name = "Attention")] 
         Attention,
-        [Display(Name = "Предупреждение")] 
+
+        [Display(Name = "Warning")] 
         Warning,
-        [Display(Name = "Текущий")] 
+
+        [Display(Name = "")] 
         Current
     }
 }

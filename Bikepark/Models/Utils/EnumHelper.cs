@@ -1,8 +1,5 @@
 ﻿
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Reflection;
 
 namespace Bikepark.Models
@@ -37,14 +34,21 @@ namespace Bikepark.Models
             return GetNames(value).Select(obj => GetDisplayValue(Parse(obj))).ToList();
         }
 
-        private static string lookupResource(Type resourceManagerProvider, string resourceKey)
+        private static string LookupResource(Type? resourceManagerProvider, string? resourceKey)
         {
+            if (resourceManagerProvider == null || resourceKey == null)
+                return string.Empty;
+                
+            if (resourceManagerProvider == null)
+                return resourceKey;
+
             var resourceKeyProperty = resourceManagerProvider.GetProperty(resourceKey,
-                BindingFlags.Static | BindingFlags.Public, null, typeof(string),
-                new Type[0], null);
+                BindingFlags.Static | BindingFlags.Public, null, typeof(string), Array.Empty<Type>(), null);
+
             if (resourceKeyProperty != null)
             {
-                return (string)resourceKeyProperty.GetMethod.Invoke(null, null);
+                var result = resourceKeyProperty.GetMethod?.Invoke(null, null) as string;
+                return result ?? string.Empty;
             }
 
             return resourceKey; // Fallback with the key name
@@ -54,14 +58,16 @@ namespace Bikepark.Models
         {
             var fieldInfo = value.GetType().GetField(value.ToString());
 
-            var descriptionAttributes = fieldInfo.GetCustomAttributes(
-                typeof(DisplayAttribute), false) as DisplayAttribute[];
+            if (fieldInfo == null)
+                return value.ToString();
 
-            if (descriptionAttributes[0].ResourceType != null)
-                return lookupResource(descriptionAttributes[0].ResourceType, descriptionAttributes[0].Name);
+            if (fieldInfo.GetCustomAttributes(
+                typeof(DisplayAttribute), false) is not DisplayAttribute[] descriptionAttributes) return string.Empty;
 
-            if (descriptionAttributes == null) return string.Empty;
-            return (descriptionAttributes.Length > 0) ? descriptionAttributes[0].Name : value.ToString();
+            if (descriptionAttributes[0].ResourceType != null && descriptionAttributes.Length > 0)
+                return LookupResource(descriptionAttributes[0].ResourceType, descriptionAttributes[0].Name);
+
+            return value.ToString();
         }
     }
 }

@@ -43,14 +43,14 @@
                 @Html.DisplayFor(modelItem => item.End)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Customer.CustomerFullName)
-                @Html.DisplayFor(modelItem => item.Customer.CustomerPhoneNumber)
+                @Html.DisplayFor(modelItem => item.Customer!.CustomerFullName)
+                @Html.DisplayFor(modelItem => item.Customer!.CustomerPhoneNumber)
             </td>
             <td>
-                <a asp-action="Control" asp-route-id="@item.RecordID">Управление</a>
-                @if ( User.Identity.IsAuthenticated ){
+                <a asp-action="Control" asp-route-id="@item.RecordID">Management</a>
+                @if ( User.Identity?.IsAuthenticated == true ){
                     if ( User.IsInRole(BikeparkConfig.ManagersRole) || item.Status == Status.Draft ){  <span>|</span>
-                        <a asp-action="Delete" asp-route-id="@item.RecordID">Удалить</a> 
+                        <a asp-action="Delete" asp-route-id="@item.RecordID">Delete</a> 
                     }
                 }
                 

@@ -1,23 +1,23 @@
 ﻿@model Bikepark.Models.ItemType
 
 @{
-    ViewData["Title"] = "Редактирование модели";
+    ViewData["Title"] = "Item Type Edit";
     ViewData["menu"] = "storage";
     Layout = "_MainLayout";
     int itemsCount = ViewBag.ItemsCount;
     var hasRecords = ViewBag.HasRecords;
-    string archival = Model.Archival ? "(Архив)" : "";
+    string archival = Model.Archival ? "(archival)" : "";
 }
 <div class="col-md-6">  
 @if (Model.ItemTypeID != null)
 {
-    <h3>Редактировать</h3>
-    <h4>Модель #@Model.ItemTypeID @archival</h4>
+    <h3>Change Item Type</h3>
+    <h4>Item Type #@Model.ItemTypeID @archival</h4>
 }
 else
 {
-    <h3>Добавить</h3>
-    <h4>Модель</h4>    
+    <h3>Add Item Type</h3>
+    <h4>New Item Type</h4>    
 }
 </div>
 <hr />
@@ -36,14 +36,14 @@ else
                 <div class="form-group">
                     <label asp-for="ItemCategoryID" class="control-label"></label>
                     <select asp-for="ItemCategoryID" class="form-control" asp-items="ViewBag.ItemCategoryID">
-                        <option value="">Не указана</option>
+                        <option value="">Not specified</option>
                     </select>
                     <span asp-validation-for="ItemCategoryID" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="PricingCategoryID" class="control-label"></label>
                     <select asp-for="PricingCategoryID" class="form-control" asp-items="ViewBag.PricingCategoryID">
-                        <option value="">Не указана</option>
+                        <option value="">Not specified</option>
                     </select>
                     <span asp-validation-for="PricingCategoryID" class="text-danger"></span>
                 </div>
@@ -90,16 +90,15 @@ else
                     <span asp-validation-for="ItemColor" class="text-danger"></span>
                 </div>
             </div>
-        
 
             <div class="col-md-6">                
                 @if (Model.ItemTypeID != null)
                 {
                     <row >
-                        Номера (@itemsCount) |  
-                        <a asp-action="Numbers" asp-route-id="@Model?.ItemTypeID">Изменить</a>
+                        Items (@itemsCount) |  
+                        <a asp-action="Numbers" asp-route-id="@Model?.ItemTypeID">Change</a>
                         @*| 
-                            <button type="button" class="btn btn-link" id="btn-item-numbers-view" data-typeid="@Model?.ItemTypeID">Показать</button>   *@             
+                            <button type="button" class="btn btn-link" id="btn-item-numbers-view" data-typeid="@Model?.ItemTypeID">Show</button>   *@             
                     </row>
                     <div id = "item-numbers-preview">
 
@@ -111,17 +110,17 @@ else
         <div class="flex-row justify-content-start">
             <div class="row row-cols-4 col-md-9 mt-3">
                 <div class="form-group col-md-2 ">  
-                    <a asp-action="Index" class="btn btn-secondary col-md-12">Отмена</a>
+                    <a asp-action="Index" class="btn btn-secondary col-md-12">Cancel</a>
                 </div>
-                @if (Model.ItemTypeID != null)
+                @if (Model!.ItemTypeID != null)
                 {
                     <div class="form-group col-md-2 ">
-                        <button type="submit" asp-action="Edit" class="btn btn-dark col-md-12" >Исправить</button>
+                        <button type="submit" asp-action="Edit" class="btn btn-dark col-md-12" >Change</button>
                     </div>
                     @if (hasRecords)
                     {
                         <div class="form-group col-md-2 ">
-                            <button type="submit"  asp-action="Replace" class="btn btn-primary col-md-12"  title="Заменить старую модель у всех номеров, предыдущая модель и номера будут заархивированы">Заменить</button>
+                            <button type="submit"  asp-action="Replace" class="btn btn-primary col-md-12"  title="Replace the old Type for all its Items; the previous Type and Items of Type will be archived.">Replace</button>
                         </div>
                     }
                     else
@@ -130,13 +129,13 @@ else
                         </div>                        
                     }
                     <div class="form-group col-md-2 ">
-                        <button type="submit"  asp-action="Create" class="btn btn-info col-md-12" title="Скопировать описание и создать новую модель без присвоенных номеров">Копировать</button>
+                        <button type="submit"  asp-action="Create" class="btn btn-info col-md-12" title="Copy and create a new Item Type; there will be no Items of this new Type in Storage.">Copy</button>
                     </div>
                 }
                 else
                 {
                     <div class="form-group col-md-2 ">
-                        <button type="submit"  asp-action="Create" class="btn btn-primary col-md-12" >Создать</button>
+                        <button type="submit"  asp-action="Create" class="btn btn-primary col-md-12" >Create</button>
                     </div>
                     <div class="col-md-2 ">
                     </div>
@@ -153,25 +152,25 @@ else
 {
     @if (hasRecords)
     { 
-        <h5 style="display:inline">В журнале есть записи о выдаче номеров этой модели</h5>  
-        <p><a target="_blank" rel="noopener noreferrer" href="/Log/OfType/?id=@Model.ItemTypeID">Просмотреть в новой вкладке?</a></p>
+        <h5 style="display:inline">The log contains records regarding the rental of Items of this Type.</h5>  
+        <p><a target="_blank" rel="noopener noreferrer" href="/Log/OfType/?id=@Model.ItemTypeID">View the log excerpt in a new tab?</a></p>
         
-        <h5 style="display:inline">Число велосипедов этой модели (или аксессуаров этого типа):</h5>  
+        <h5 style="display:inline">The amount of Bikes or Accessories of this Type:</h5>  
         <h4 style="display:inline">@itemsCount</h4>
-        <p><a target="_blank" rel="noopener noreferrer" href="/Items/OfType/?id=@Model.ItemTypeID">Просмотреть в новой вкладке?</a></p>
+        <p><a target="_blank" rel="noopener noreferrer" href="/Items/OfType/?id=@Model.ItemTypeID">View all in a new tab?</a></p>
 
-        <p>Если ее исправить - это изменение отразится на всех записях журнала </p>
-        <p>Если ее заменить - данная модель будет заархивирована (в записях журнала будет отображаться прежняя модель), вместо нее будет создана новая</p>
-        <p>Если ее скопировать - данная модель останется без изменений, но на ее основе будет создана новая без присвоенных номеров </p>
+        <p>If you CHANGE it, this affect all existing log Records.</p>
+        <p>If you REPLACE it, the old Type will be archived (and will appear in the existing log Records), and a new one will be created.</p>
+        <p>If you COPY it, the original Type will remain unchanged, but a new one will be created based on it (without any assigned numbers).</p>
     } 
     else
     {
-        <h5 style="display:inline">Число велосипедов этой модели (или аксессуаров этого типа):</h5>  
+        <h5 style="display:inline">The amount of Bikes or Accessories of this Type:</h5>  
         <h4 style="display:inline">@itemsCount</h4>
-        <p><a target="_blank" rel="noopener noreferrer" href="/Items/OfType/?id=@Model.ItemTypeID">Просмотреть в новой вкладке?</a></p>
+        <p><a target="_blank" rel="noopener noreferrer" href="/Items/OfType/?id=@Model.ItemTypeID">View all in a new tab?</a></p>
 
-        <p>Если ее исправить - это изменение отразится на всех номерах </p>
-        <p>Если ее скопировать - данная модель останется без изменений, но на ее основе будет создана новая без присвоенных номеров </p>        
+        <p>If you CHANGE it, this affect all existing log Records.</p>
+        <p>If you COPY it, the original Type will remain unchanged, but a new one will be created based on it (without any assigned numbers).</p>        
     }
 }
 </div>

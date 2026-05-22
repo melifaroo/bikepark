@@ -1,10 +1,9 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Велопарк: @ViewData["Title"]</title>
+    <title>Bikepark: @ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/bikepark.css" asp-append-version="true" />
@@ -14,40 +13,40 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 ">
             <div class="container-fluid">                
-                <a class="navbar-brand" href="#">Велопрокат</a>
+                <a class="navbar-brand" href="#">Bike Rental</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
-                    @if ( User.Identity.IsAuthenticated ){
+                    @if ( User.Identity?.IsAuthenticated == true ){
                     <ul class="nav navbar-nav col-9"  >       
 
                            <li class="nav-item col-md-2 px-2">    
-                                <a class="nav-link btn btn-outline-success col-12 text-truncate"  asp-area="" asp-controller="Rental" asp-action="Create">Выдать</a>    
+                                <a class="nav-link btn btn-outline-success col-12 text-truncate"  asp-area="" asp-controller="Rental" asp-action="Create">Rent out</a>    
                             </li>
                             <li class="nav-item col-md-2 px-2">    
-                                <a class="nav-link btn btn-outline-primary col-12 text-truncate"  asp-area="" asp-controller="Rental" asp-action="GetBack">Принять</a>    
+                                <a class="nav-link btn btn-outline-primary col-12 text-truncate"  asp-area="" asp-controller="Rental" asp-action="GetBack">Accept Return</a>    
                             </li>
                             <li class="nav-item col-md-2 px-2">     
-                                <a class="nav-link btn btn-light col-12 text-truncate" asp-area="" asp-controller="Rental" asp-action="Index">Журнал    
+                                <a class="nav-link btn btn-light col-12 text-truncate" asp-area="" asp-controller="Rental" asp-action="Index">Log    
                                 </a>         
                             </li>
                             <li class="nav-item col-md-2 px-2">
-                                <a class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="Index" asp-route-statuses="@((int) Status.Active )" id="active-link" style="text-overflow: ellipsis;  white-space:nowrap;">Прокат
+                                <a class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="Index" asp-route-statuses="@((int) Status.Active )" id="active-link" style="text-overflow: ellipsis;  white-space:nowrap;">Currently Rented
                                   <span class="nav-alert" style="display: none;">(<i id="active-record-count">0</i>)</span>                               
                                   <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-warning nav-alert"  id="active-warning" style="display: none;"></span>
                                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger nav-alert"  id="active-overdue" style="display: none;"></span>
                                 </a>     
                             </li> 
                             <li class="nav-item col-md-2 px-2">
-                                <a class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="Index" asp-route-statuses="@((int)Status.Scheduled)"  id="scheduled-link" style="text-overflow: ellipsis;  white-space:nowrap;">Бронь
+                                <a class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Rental" asp-action="Index" asp-route-statuses="@((int)Status.Scheduled)"  id="scheduled-link" style="text-overflow: ellipsis;  white-space:nowrap;">Schedule Renting
                                   <span class="nav-alert" style="display: none;">(<i id="scheduled-record-count">0</i>)</span> 
                                   <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-warning nav-alert"  id="scheduled-warning" style="display: none;"></span>
                                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger nav-alert"  id="scheduled-overdue" style="display: none;"></span>
                                 </a>     
                             </li> 
                             <li class="nav-item col-md-2 px-2">     
-                                <a class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Log" asp-action="Index" asp-route-statuses="@((int)Status.Service),@((int)Status.OnService)" id="service-link" style="text-overflow: ellipsis;  white-space:nowrap;">Ремонт    
+                                <a class="nav-link btn btn-light col-12 position-relative" asp-area="" asp-controller="Log" asp-action="Index" asp-route-statuses="@((int)Status.Service),@((int)Status.OnService)" id="service-link" style="text-overflow: ellipsis;  white-space:nowrap;">Maintenance    
                                   <span class="nav-alert" style="display: none;">(<i id="service-record-count">0</i>)</span> 
                                   <span class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-warning nav-alert" id="service-warning" style="display: none;"></span>
                                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger nav-alert" id="service-needaction" style="display: none;"></span> 
@@ -58,13 +57,13 @@
                             @if (User.IsInRole(BikeparkConfig.ManagersRole))
                             {
                                 <li class="nav-item">      
-                                    <a type="button"  class="nav-link btn btn-dark col-12 text-truncate"  style="color:white;" asp-area="" asp-controller="Storage" asp-action="Main">Управление</a>        
+                                    <a type="button"  class="nav-link btn btn-dark col-12 text-truncate"  style="color:white;" asp-area="" asp-controller="Storage" asp-action="Main">Management</a>        
                                 </li>
                             }
                             @if (User.IsInRole(BikeparkConfig.AdministratorsRole))
                             {
                                 <li class="nav-item">      
-                                    <a class="nav-link btn btn-light col-12 text-truncate" style="color:black;" asp-area="" asp-controller="Rental" asp-action="Main">Управление</a>        
+                                    <a class="nav-link btn btn-light col-12 text-truncate" style="color:black;" asp-area="" asp-controller="Rental" asp-action="Main">Management</a>        
                                 </li>
                             }
                     </ul>   

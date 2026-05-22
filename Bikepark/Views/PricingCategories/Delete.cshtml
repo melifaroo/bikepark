@@ -1,36 +1,36 @@
 ﻿@model Bikepark.Models.PricingCategory
 
 @{
-    ViewData["Title"] = "Удалить категорию тарифов";
+    ViewData["Title"] = "Delete Pricing Category";
     ViewData["menu"] = "pricing-categories";
     Layout = "_MainLayout";
     int typesCount = ViewBag.ItemTypesCount;
     int pricingsCount = ViewBag.PricingsCount;
 }
 
-<h3>Удалить</h3>
+<h3>Delete Pricing Category</h3>
 
-<h4>Вы дейсвительно хотите удалить категорию тарифов?</h4>
+<h4>Do you really want to delete the Pricing Category?</h4>
 <div>
     @if(typesCount==0 && pricingsCount==0 ){
-        <h5>В категории ничего нет</h5>
+        <h5>There is no Billing Plan of or Item Types billed within this Pricing Category.</h5>
     }
     else
     {
         if (typesCount > 0)
         {
-            <h4 style="display:inline">Число моделей (велосипедов/амуниции) тарифицируемых по этой категории:</h4>  
+            <h4 style="display:inline">The amount of Bikes or Accessories billed within this Pricing Category: </h4>  
             <h3 style="display:inline">@typesCount</h3>
-            <p><a target="_blank" rel="noopener noreferrer" href="/Storage/WithPricingCategory/?id=@Model.PricingCategoryID">Просмотреть в новой вкладке?</a></p>
-            <p>Если удалить категорию тарификации, велосипеды этих моделей можно будет выдать в прокат с любым тарифом</p>        
+            <p><a target="_blank" rel="noopener noreferrer" href="/Storage/WithPricingCategory/?id=@Model.PricingCategoryID">View all in a new tab?</a></p>
+            <p>If you delete this category, these Items could be rented out using any other Billing Plan.</p>        
             <hr />
         }
         if (pricingsCount > 0)
         {
-            <h4 style="display:inline">Число тарифов в этой категории:</h4>  
+            <h4 style="display:inline">The amount of Billing Plans of this Pricing Category: </h4>  
             <h3 style="display:inline">@pricingsCount</h3>
-            <p><a target="_blank" rel="noopener noreferrer" href="/Pricings/InCategory/?id=@Model.PricingCategoryID">Просмотреть в новой вкладке?</a></p>
-            <p>Если удалить категорию тарификации, эти тарифы можно будет назначать при выдаче любого велосипеда или амуниции </p>
+            <p><a target="_blank" rel="noopener noreferrer" href="/Pricings/InCategory/?id=@Model.PricingCategoryID">View all in a new tab?</a></p>
+            <p>If you delete this category, these Billing Plans could be assigned on  any Item Type Renting.</p>
         }
     }
     <hr />
@@ -45,7 +45,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="PricingCategoryID" />
-        <a asp-action="Index" class="btn btn-secondary" >Отмена</a>
-        <input type="submit" value="Удалить" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary" >Cancel</a>
+        <input type="submit" value="Delete" class="btn btn-danger" />
     </form>
 </div>

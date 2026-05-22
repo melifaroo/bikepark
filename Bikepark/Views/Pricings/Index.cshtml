@@ -1,30 +1,30 @@
 ﻿@model IEnumerable<Bikepark.Models.Pricing>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Billing Plans";
     ViewData["menu"] = "pricing";
     Layout = "_MainLayout";
 }
 
-<h3>Тарифы</h3>
+<h3>Billing Plans</h3>
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
     <ul class="nav col-md-8 justify-content-start">
         <li class="nav-item">
-            <a class="nav-link" asp-action="Create">Добавить</a> 
+            <a class="nav-link" asp-action="Create">Add</a> 
         </li> 
         <li class="nav-item">
-            <a class="nav-link" asp-action="Index" asp-controller="PricingCategories" >Категории тарифов</a> 
+            <a class="nav-link" asp-action="Index" asp-controller="PricingCategories" >Pricing Categories</a> 
         </li>     
         <li class="nav-item">
-            <a class="nav-link" asp-action="Holidays">Праздничные дни</a> 
+            <a class="nav-link" asp-action="Holidays">Holidays</a> 
         </li>  
     </ul>
 
     <ul class="nav  col-md-4 justify-content-end">
         <li class="nav-item">
-            <a class="nav-link" asp-action="Export" >Загрузить таблицу XLS</a>
+            <a class="nav-link" asp-action="Export" >Download the XLS</a>
         </li>    
         <li class="nav-item"> 
-            <a class="nav-link" asp-action="Main" asp-controller="Storage">Управление</a> 
+            <a class="nav-link" asp-action="Main" asp-controller="Storage">Management</a> 
         </li>    
     </ul>  
 </div>
@@ -65,7 +65,7 @@
                 @Html.DisplayFor(modelItem => item.PricingName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PricingCategory.PricingCategoryName)
+                @Html.DisplayFor(modelItem => item.PricingCategory!.PricingCategoryName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PricingType)
@@ -98,8 +98,8 @@
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.PricingID">Изменить</a> |
-                <a asp-action="Delete" asp-route-id="@item.PricingID">Удалить</a>
+                <a asp-action="Edit" asp-route-id="@item.PricingID">Change</a> |
+                <a asp-action="Delete" asp-route-id="@item.PricingID">Delete</a>
             </td>
         </tr>
 }

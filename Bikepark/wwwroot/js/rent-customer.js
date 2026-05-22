@@ -3,8 +3,8 @@
     var url = url_rental_searchcustomer;
     $.get(url, { Request: request },
         function (result) {
-            $("#сustomer-search-results").html(result);
-            $("#сustomer-search-results").show("slow");
+            $("#customer-search-results").html(result);
+            $("#customer-search-results").show("slow");
         }
     );
 });
@@ -14,7 +14,7 @@ $("#btn-more-customer-detail").on("click", function () {
 });
 
 $(document).on("click", ".btn-cancel-customer", function () {
-    $("#сustomer-search-results").hide("slow");
+    $("#customer-search-results").hide("slow");
 });
 
 $(document).on("click", ".btn-select-customer", function () {
@@ -34,7 +34,7 @@ $(document).on("click", ".btn-select-customer", function () {
             $("#chk-upd-customer").prop("checked", false).prop("disabled", true);
         }
     );
-    $("#сustomer-search-results").hide("slow");
+    $("#customer-search-results").hide("slow");
 });
 
 function new_upd_customer_mode() {

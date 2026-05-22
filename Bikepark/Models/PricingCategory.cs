@@ -6,9 +6,9 @@ namespace Bikepark.Models
     public class PricingCategory
     {
         public int PricingCategoryID { get; set; }
+
         [Required]
-        [Column(TypeName = "nvarchar(255)")]
-        [Display(Name = "Категория тарификации")]
+        [Display(Name = "Pricing Category")]
         public string? PricingCategoryName { get; set; }
 
     }

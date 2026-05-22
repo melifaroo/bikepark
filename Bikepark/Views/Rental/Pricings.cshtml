@@ -1,25 +1,25 @@
 ﻿@model IEnumerable<Bikepark.Models.Pricing>
 
 @{
-    ViewData["Title"] = "Тарифы";
+    ViewData["Title"] = "Billing Plans";
     ViewData["menu"] = "pricing";
     Layout = "_MainLayout";
 }
 
-<h1>Тарифы</h1>
+<h1>Billing Plans</h1>
 <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom">
     <ul class="nav col-md-6 justify-content-start">
         <li class="nav-item">
-            <a class="nav-link" asp-action="Prepare" asp-controller="Rental" >Склад и подготовка велосипедов</a>
+            <a class="nav-link" asp-action="Prepare" asp-controller="Rental" >Storage and Bike Preparation</a>
         </li>   
     </ul>
 
     <ul class="nav  col-md-6 justify-content-end">
         <li class="nav-item">
-            <a class="nav-link" asp-controller="Pricings" asp-action="Export">Загрузить таблицу XLS</a>
+            <a class="nav-link" asp-controller="Pricings" asp-action="Export">Download the XLS</a>
         </li>    
         <li class="nav-item"> 
-            <a class="nav-link" asp-action="Main" asp-controller="Rental">Управление</a> 
+            <a class="nav-link" asp-action="Main" asp-controller="Rental">Management</a> 
         </li>    
     </ul>  
 </div>
@@ -60,7 +60,7 @@
                 @Html.DisplayFor(modelItem => item.PricingName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PricingCategory.PricingCategoryName)
+                @Html.DisplayFor(modelItem => item.PricingCategory!.PricingCategoryName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PricingType)
