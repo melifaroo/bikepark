@@ -6,7 +6,9 @@ namespace Bikepark.Models
     public class Record : RecordInfo
     {
         public int? RecordID { get; set; }
+        
         public int? CustomerID  { get; set; }
+
         [Display(Name = "Customer")]
         public virtual Customer? Customer { get; set; }
 

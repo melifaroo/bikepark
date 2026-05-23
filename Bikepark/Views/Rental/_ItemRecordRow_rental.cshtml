@@ -1,10 +1,12 @@
-﻿@model Bikepark.Models.ItemRecord
+﻿@* @model Bikepark.Models.ItemRecord *@
+@model Bikepark.Models.ViewModels.ItemRecordViewModel
 
 @using Bikepark.Models
+@using Bikepark.Models.ViewModels
 
 @{
-    int? PricingCategoryID = Model.Item!.ItemType!.PricingCategoryID;
-    List<Pricing> actualprices = ViewBag.ActualPrices;
+    int? PricingCategoryID = Model.Pricing?.PricingCategoryID;
+    Dictionary<int, List<PricingViewModel> > actualprices = ViewBag.ActualPrices;
 }   
 
 <tr class="item-record" data-itemid="@Model.ItemID" data-id="@Model.GetHashCode()" status="@Model.Status">  
@@ -59,21 +61,25 @@
         </td>      
         <td  style="width : 10%; font-weight: bold">
             <a target="_blank" rel="noopener noreferrer" href="/Log/ItemRentalDetails?id=@Model.ItemID">
-                @Html.DisplayFor(m => Model.Item.ItemNumber)
+                @Html.DisplayFor(m => Model.ItemNumber)
             </a>
         </td>   
         <td  >
-            @Html.DisplayFor(m => Model.Item.ItemType.ItemTypeName)
+            @Html.DisplayFor(m => Model.ItemTypeName)
         </td>
         <td  >
                 <input name="ItemRecords[@Model.GetHashCode()].PricingID0"  value="@Model.PricingID" class="pricing0" type="hidden"/>  
                 @if (Model.Status < Status.Active)
                 {
                     <select name="ItemRecords[@Model.GetHashCode()].PricingID" value="@Model.PricingID" class="form-control form-control-sm pricing" title="price"> 
-                        @foreach (var price in actualprices)
-                        {
-                            var selected = ViewBag.PricingID == price.PricingID;
-                            <option value="@price.PricingID" selected="@selected">@price.PricingName</option>
+                        @{if (Model.ItemRecordID.HasValue)
+                            {
+                                foreach (var price in actualprices[Model.ItemRecordID.Value])
+                                {
+                                    var selected = ViewBag.PricingID == price.PricingID;
+                                    <option value="@price.PricingID" selected="@selected">@price.PricingName</option>
+                                }
+                            }
                         }
                     </select>
                 }else{

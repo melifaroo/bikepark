@@ -1,13 +1,20 @@
-﻿@model IEnumerable<DayOfWeek>
+﻿@model DaysOfWeekFlags
+
 @{
     var num = 0;
 }
 
 <div class="btn-group">
-    @foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>())
+    @* @foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>()) *@
+    @foreach (DaysOfWeekFlags day in Enum.GetValues(typeof(DaysOfWeekFlags)))
     {
-            var val = DayOfWeekLiterals.ForDay(day);
-            var check = Model.Contains(day);
+        if (day == DaysOfWeekFlags.None || day == DaysOfWeekFlags.Weekdays || 
+            day == DaysOfWeekFlags.Weekend || day == DaysOfWeekFlags.AllDays || 
+            day == DaysOfWeekFlags.LongWeekend || day == DaysOfWeekFlags.WeekdayShort)
+            continue;
+
+            var val = DayOfWeekLiterals.GetDaysString(day);
+            var check = Model.HasFlag(day);
             var name = check ? "DaysOfWeek["+num+"]" : null;
             if (check){
                 <input type="hidden" name="DaysOfWeek.index" autocomplete="nope" value="@num" class="idx-dayofweek"/>

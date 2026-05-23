@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Bikepark.Data;
 
-var builder = WebApplication.CreateBuilder(args);
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
+var builder = WebApplication.CreateBuilder(args);
 builder.Configuration
             .SetBasePath(Environment.CurrentDirectory)
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)

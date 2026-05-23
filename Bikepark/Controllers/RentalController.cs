@@ -6,6 +6,8 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Bikepark.Models.ViewModels;
+using Bikepark.Mappers;
 
 namespace Bikepark.Controllers
 {
@@ -135,7 +137,7 @@ namespace Bikepark.Controllers
         // GET: Rental/Create
         public async Task<IActionResult> Create()
         {
-            return await Control(new Record());
+            return await Control(new RecordViewModel());
         }
 
         // GET: Rental/Control/5
@@ -154,30 +156,101 @@ namespace Bikepark.Controllers
             {
                 return NotFound();
             }
-            return await Control(rentalRecord);
+
+            return await Control( rentalRecord.ToViewModel() );
+        }
+        
+        private async Task< Dictionary<int, List<PricingViewModel> > > ActualPricings( List<ItemRecordViewModel> itemRecordViewModels )//DayOfWeek dayOfWeek
+        {
+            // var Duration = Math.Ceiling(end.Subtract(start).TotalHours);
+            // return await pricing
+            //     .FromSqlRaw($"SELECT * FROM 'Pricings' WHERE DaysOfWeek LIKE '%{start.DayOfWeek}%'")
+            //     //.Where(x => !x.Archival)
+            //     .Where(price => 
+            //     ((price.PricingCategoryID == null || PricingCategoryID == null) ? true : price.PricingCategoryID == PricingCategoryID) && 
+            //     price.PricingType < PricingType.Service && 
+            //     price.MinDuration <= Duration && (!price.IsHoliday || isHoliday )).ToListAsync();
+            
+            var Holidays = await _context.Holidays.Select(day => day.Date).ToListAsync();
+
+            Dictionary<int, List<PricingViewModel> > actualPricings = new();
+
+            foreach (var irec in itemRecordViewModels )
+            {
+                var pricingCategoryID = irec.PricingCategoryID;
+                var start = irec.Start ?? DateTime.Now;
+                var end = irec.End ?? (irec.Start ?? DateTime.Now).AddHours(1);
+                var isHoliday = Holidays.Any(day =>  DateOnly.FromDateTime(day) == DateOnly.FromDateTime(start) );
+                var duration = Math.Ceiling(end.Subtract(start).TotalHours);
+                // string dayOfWeekPattern = $"%{start.DayOfWeek}%";
+
+                // var actualItemPricings= await _context.Pricings
+                //         .Where(p => p.DaysOfWeek.Contains(start.DayOfWeek))
+                //         // .Where(price => !price.Archival) 
+                //         .Where(p => 
+                //             (p.PricingCategoryID == null || pricingCategoryID == null || p.PricingCategoryID == pricingCategoryID) && 
+                //             p.PricingType < PricingType.Service && 
+                //             p.MinDuration <= duration && 
+                //             (!p.IsHoliday || isHoliday))
+                //         .ToListAsync();
+                DaysOfWeekFlags currentDayFlag = start.DayOfWeek switch
+                {
+                    DayOfWeek.Monday    => DaysOfWeekFlags.Monday,
+                    DayOfWeek.Tuesday   => DaysOfWeekFlags.Tuesday,
+                    DayOfWeek.Wednesday => DaysOfWeekFlags.Wednesday,
+                    DayOfWeek.Thursday  => DaysOfWeekFlags.Thursday,
+                    DayOfWeek.Friday    => DaysOfWeekFlags.Friday,
+                    DayOfWeek.Saturday  => DaysOfWeekFlags.Saturday,
+                    DayOfWeek.Sunday    => DaysOfWeekFlags.Sunday,
+                    _ => DaysOfWeekFlags.None
+                };
+
+                var actualItemPricingsVM = (await _context.Pricings
+                    .Where(p => 
+                        (p.PricingCategoryID == null || pricingCategoryID == null || p.PricingCategoryID == pricingCategoryID) && 
+                        p.PricingType < PricingType.Service && 
+                        p.MinDuration <= duration && 
+                        (!p.IsHoliday || isHoliday) &&
+                        (p.DaysOfWeek & currentDayFlag) != DaysOfWeekFlags.None) 
+                    .ToListAsync())
+                    .Select(p => p.ToViewModel())
+                    .ToList();
+
+                actualPricings.Add(
+                    irec.ItemRecordID ?? -1, 
+                    actualItemPricingsVM
+                    );
+            }
+
+            return actualPricings; 
         }
 
-        private async Task<IActionResult> Control(Record rentalRecord)
+        private async Task<IActionResult> Control( RecordViewModel rentalRecordViewModel )
         {
+            var Holidays = await _context.Holidays.Select(day => day.Date).ToListAsync();
+            var Pricings = await _context.Pricings.ToListAsync();
+            
             ViewData["Items"] = _context.Items;
             ViewData["Types"] = await _context.ItemTypes.ToListAsync();
-            ViewData["Pricings"] = _context.Pricings;
-            ViewData["Holidays"] = await _context.Holidays.Select(day => day.Date).ToListAsync();
+            ViewData["Pricings"] = Pricings;
+            ViewData["Holidays"] = Holidays;
             ViewData["Prepared"] = await _context.Prepared.Select(prep=> prep.ItemID).ToListAsync();
 
             ViewData["ArchivalPricings"] = await _context.Pricings.IgnoreQueryFilters().ToListAsync();
-            ViewData["Availability"] = _context.GetAvailability(rentalRecord.RecordID );
+            ViewData["Availability"] = _context.GetAvailability( rentalRecordViewModel.RecordID );
 
             ViewData["WorkingHoursStart"] = _config.Value.WorkingHoursStart;
             ViewData["WorkingHoursEnd"] = _config.Value.WorkingHoursEnd;
             ViewData["MinServiceDelayBetweenRentsMinutes"] = _config.Value.MinServiceDelayBetweenRentsMinutes;
             ViewData["DefaultRentTimeHours"] = _config.Value.DefaultRentTimeHours;
 
-            foreach (var irec in rentalRecord.ItemRecords)
-                if (irec.Item == null && irec.ItemID != null)
-                    irec.Item = await _context.Items.IgnoreQueryFilters().FirstOrDefaultAsync(ir => ir.ItemID == irec.ItemID);
+            ViewData["ActualPrices"] = await ActualPricings(rentalRecordViewModel.ItemRecords);
 
-            return View("Control", rentalRecord);
+            // foreach (var irec in rentalRecord.ItemRecords)
+            //     if (irec.Item == null && irec.ItemID != null)
+            //         irec.Item = await _context.Items.IgnoreQueryFilters().FirstOrDefaultAsync(ir => ir.ItemID == irec.ItemID);
+
+            return View("Control", rentalRecordViewModel);
         }
 
         public bool CheckAvailability(Record rentalRecord, Status Action, DateTime ActionTime) {
@@ -342,7 +415,7 @@ namespace Bikepark.Controllers
 
             if ((rentalRecord.RecordID ?? 0) <= 0)
             {
-                return await Control(rentalRecord);
+                return await Control(rentalRecord.ToViewModel());
             }
             else
             {
@@ -351,7 +424,7 @@ namespace Bikepark.Controllers
 
         }
 
-        // POST: Rental/UpdateOrCreate
+        // POST: Rental/????
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Contract(Record rentalRecord)
@@ -382,7 +455,7 @@ namespace Bikepark.Controllers
 
             if ((rentalRecord.RecordID ?? 0) <= 0)
             {
-                return await Control(rentalRecord);
+                return await Control(rentalRecord.ToViewModel());
             }
             else
             {
@@ -570,10 +643,16 @@ namespace Bikepark.Controllers
             {
                 return PartialView("_ItemRecordRow_rental", null);
             }
-            var isHoliday = await _context.Holidays.AnyAsync(day => day.Date.DayOfYear == Start.DayOfYear);
-            List<Pricing> actualprices = await PricingFilter.ActualPricing(_context.Pricings, Item.ItemType!.PricingCategoryID, Start, End, isHoliday);
-            ViewBag.ActualPrices = actualprices;
-            return PartialView("_ItemRecordRow_rental", new ItemRecord { ItemID = ItemID, Item = Item, Start = Start, End = End });
+
+            ItemRecordViewModel itemRecordViewModel = new()
+            {
+                ItemID = ItemID,
+                Start = Start,
+                End = End
+            };
+
+            ViewData["ActualPrices"] = await ActualPricings( new List<ItemRecordViewModel>() { itemRecordViewModel } );
+            return PartialView("_ItemRecordRow_rental", itemRecordViewModel);
         }
 
         public async Task<PartialViewResult> AddPreparedItemRecord(int ItemID)

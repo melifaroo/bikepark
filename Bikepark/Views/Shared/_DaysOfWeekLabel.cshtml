@@ -1,11 +1,17 @@
-﻿@model IEnumerable<DayOfWeek>
+﻿@model DaysOfWeekFlags
 @{}
 
 <div class="btn-group">
-    @foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>())
+    @* foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>()) *@
+    @foreach (DaysOfWeekFlags day in Enum.GetValues(typeof(DaysOfWeekFlags)))
     {
-        var val = DayOfWeekLiterals.ForDay(day);
-        var style = Model.Contains(day)?"alert-success":"alert-light";
+        if (day == DaysOfWeekFlags.None || day == DaysOfWeekFlags.Weekdays || 
+            day == DaysOfWeekFlags.Weekend || day == DaysOfWeekFlags.AllDays || 
+            day == DaysOfWeekFlags.LongWeekend || day == DaysOfWeekFlags.WeekdayShort)
+            continue;
+            
+        var val = DayOfWeekLiterals.GetDaysString(day);
+        var style = (Model.HasFlag(day))?"alert-success":"alert-light";
         <label class ="btn btn-sm @style" > @val </label>
     }
 </div>

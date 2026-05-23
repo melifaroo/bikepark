@@ -16,6 +16,9 @@ function updateprices(row) {
     var dayOfWeek = date.getDay();//
     var isHoliday = false;
 
+    const dayFlags = [64,  1,  2,  4,  8, 16, 32];
+    const currentDayFlag = dayFlags[dayOfWeek];
+
     var BreakException = {};
     try {
         holidays.forEach(day => {
@@ -33,7 +36,8 @@ function updateprices(row) {
     $(row).find("select.pricing").empty();
     const actualprices = prices.filter(p =>
         ((p.PricingCategoryID==null || !pricingCategoryID)?true:p.PricingCategoryID == pricingCategoryID) &&
-        p.DaysOfWeek.filter(d => d == dayOfWeek).length > 0 &&
+        // p.DaysOfWeek.filter(d => d == dayOfWeek).length > 0 &&
+        (p.DaysOfWeek & currentDayFlag) !== 0 &&
         p.MinDuration <= duration &&
         p.PricingType < 2 && (!p.IsHoliday || isHoliday));
     actualprices.forEach(price => {

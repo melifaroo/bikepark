@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Bikepark.Models
 {
     public class ItemRecord : RecordInfo
     {
         public int? ItemRecordID { get; set; }
+
         public int? RecordID { get; set; }
 
         [Display(Name = "Order Record")]

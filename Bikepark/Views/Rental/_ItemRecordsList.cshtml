@@ -1,12 +1,11 @@
-﻿@model Bikepark.Models.Record
+﻿@* @model Bikepark.Models.Record *@
+@model Bikepark.Models.ViewModels.RecordViewModel
 
 @using Bikepark.Models
 @using Microsoft.EntityFrameworkCore
 
 @{
     ItemRecord someItemRecord = new ItemRecord();
-    List<DateTime> Holidays = ViewBag.Holidays;
-    DbSet<Pricing> Pricings = ViewBag.Pricings;
 }
 
 <table>
@@ -36,12 +35,11 @@
         </tr>
     </thead>
     <tbody id="itemrecords-list">
-        @foreach (var itemRecord in Model.ItemRecords)
-        {
-            var isHoliday = Holidays.Any(day =>  DateOnly.FromDateTime(day) == DateOnly.FromDateTime(itemRecord.Start ?? DateTime.Now));
-            List<Pricing> actualprices = await PricingFilter.ActualPricing(Pricings, itemRecord.Item!.ItemType!.PricingCategoryID, itemRecord.Start ?? DateTime.Now, itemRecord.End ?? (itemRecord.Start ?? DateTime.Now).AddHours(1), isHoliday);
-            ViewData["ActualPrices"] = actualprices;
-            <partial name="_ItemRecordRow_rental" model = "@itemRecord" />  
+        @{
+            foreach (var itemRecord in  Model.ItemRecords.ToList())
+            {
+                <partial name="_ItemRecordRow_rental" model = "@itemRecord" />  
+            }
         }
     </tbody>
 </table>

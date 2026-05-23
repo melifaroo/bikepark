@@ -137,15 +137,7 @@ namespace Bikepark.Controllers
             {
                 pricing.PricingID = null;
                 if (pricing.PricingType == PricingType.Service) { 
-                    pricing.DaysOfWeek = new List<DayOfWeek> {
-                            DayOfWeek.Monday,
-                            DayOfWeek.Tuesday,
-                            DayOfWeek.Wednesday,
-                            DayOfWeek.Thursday,
-                            DayOfWeek.Friday,
-                            DayOfWeek.Saturday,
-                            DayOfWeek.Sunday,
-                    };
+                    pricing.DaysOfWeek = DaysOfWeekFlags.AllDays;
                     pricing.IsReduced = false;
                     pricing.IsHoliday = false;
                     pricing.MinDuration = 0;
@@ -171,15 +163,7 @@ namespace Bikepark.Controllers
                 {
                     if (pricing.PricingType == PricingType.Service)
                     {
-                        pricing.DaysOfWeek = new List<DayOfWeek> {
-                            DayOfWeek.Monday,
-                            DayOfWeek.Tuesday,
-                            DayOfWeek.Wednesday,
-                            DayOfWeek.Thursday,
-                            DayOfWeek.Friday,
-                            DayOfWeek.Saturday,
-                            DayOfWeek.Sunday,
-                        };
+                        pricing.DaysOfWeek = DaysOfWeekFlags.AllDays;
                         pricing.IsReduced = false;
                         pricing.IsHoliday = false;
                         pricing.MinDuration = 0;
@@ -226,15 +210,7 @@ namespace Bikepark.Controllers
                 };
                 if (replace.PricingType == PricingType.Service)
                 {
-                    replace.DaysOfWeek = new List<DayOfWeek> {
-                            DayOfWeek.Monday,
-                            DayOfWeek.Tuesday,
-                            DayOfWeek.Wednesday,
-                            DayOfWeek.Thursday,
-                            DayOfWeek.Friday,
-                            DayOfWeek.Saturday,
-                            DayOfWeek.Sunday,
-                        };
+                    replace.DaysOfWeek = DaysOfWeekFlags.AllDays;
                     replace.IsReduced = false;
                     replace.IsHoliday = false;
                     replace.MinDuration = 0;
@@ -319,7 +295,7 @@ namespace Bikepark.Controllers
                     PricingName = price.PricingName,
                     PricingCategoryName = price.PricingCategory?.PricingCategoryName,
                     PricingType = EnumHelper<PricingType>.GetDisplayValue(price.PricingType),
-                    DaysOfWeek = String.Join(",", price.DaysOfWeek.Select(day => DayOfWeekLiterals.ForDay(day).ShortRuName).ToArray()),
+                    DaysOfWeek = DayOfWeekLiterals.GetDaysString(price.DaysOfWeek),//String.Join(",", price.DaysOfWeek.Select(day => DayOfWeekLiterals.ForDay(day).ShortRuName).ToArray()),
                     IsHoliday = price.IsHoliday ? "Yes" : "",
                     IsReduced = price.IsReduced ? "Yes" : "",
                     MinDuration = price.MinDuration,

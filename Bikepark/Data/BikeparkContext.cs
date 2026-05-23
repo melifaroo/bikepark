@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Bikepark.Models;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Globalization;
 
 namespace Bikepark.Data
 {
@@ -110,15 +111,15 @@ namespace Bikepark.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Pricing>()
-                .Property(e => e.DaysOfWeek)
-                .HasConversion(
-                      v => string.Join(",", v.Select(e => e.ToString()).ToArray()),
-                      v => v.Split(new[] { ',' })
-                        .Select(e => (DayOfWeek)(Enum.Parse(typeof(DayOfWeek), e)))
-                        .Cast<DayOfWeek>()
-                        .ToList()
-                );
+            // modelBuilder.Entity<Pricing>()
+            //     .Property(e => e.DaysOfWeek)
+            //     .HasConversion(
+            //           v => string.Join(",", v.Select(e => e.ToString()).ToArray()),
+            //           v => v.Split(new[] { ',' })
+            //             .Select(e => (DayOfWeek)(Enum.Parse(typeof(DayOfWeek), e)))
+            //             .Cast<DayOfWeek>()
+            //             .ToList()
+            //     );
             modelBuilder.Entity<ItemType>().HasQueryFilter(m => EF.Property<bool>(m, "Archival") == false);
             modelBuilder.Entity<Item>().HasQueryFilter(m => EF.Property<bool>(m, "Archival") == false);
             modelBuilder.Entity<Pricing>().HasQueryFilter(m => EF.Property<bool>(m, "Archival") == false);
@@ -128,46 +129,6 @@ namespace Bikepark.Data
 
         private static void DemoSeed(ModelBuilder modelBuilder)
         {
-            List<DayOfWeek> EveryDay = new List<DayOfWeek> {
-                    DayOfWeek.Monday,
-                    DayOfWeek.Tuesday,
-                    DayOfWeek.Wednesday,
-                    DayOfWeek.Thursday,
-                    DayOfWeek.Friday,
-                    DayOfWeek.Saturday,
-                    DayOfWeek.Sunday,
-            };
-
-            List<DayOfWeek> WeekDay = new List<DayOfWeek> {
-                    DayOfWeek.Monday,
-                    DayOfWeek.Tuesday,
-                    DayOfWeek.Wednesday,
-                    DayOfWeek.Thursday,
-                    DayOfWeek.Friday,
-            };
-
-            List<DayOfWeek> WeekDayShort = new List<DayOfWeek> {
-                    DayOfWeek.Monday,
-                    DayOfWeek.Tuesday,
-                    DayOfWeek.Wednesday,
-                    DayOfWeek.Thursday
-            };
-
-            List<DayOfWeek> Friday = new List<DayOfWeek> {
-                    DayOfWeek.Friday,
-            };
-
-            List<DayOfWeek> WeekEnd = new List<DayOfWeek> {
-                    DayOfWeek.Saturday,
-                    DayOfWeek.Sunday,
-            };
-
-            List<DayOfWeek> WeekEndLong = new List<DayOfWeek> {
-                    DayOfWeek.Friday,
-                    DayOfWeek.Saturday,
-                    DayOfWeek.Sunday,
-            };
-
             modelBuilder.Entity<ItemCategory>().HasData(new ItemCategory { ItemCategoryID = 1, ItemCategoryName = "MTB" });
             modelBuilder.Entity<ItemCategory>().HasData(new ItemCategory { ItemCategoryID = 2, ItemCategoryName = "MTB Teenage" });
             modelBuilder.Entity<ItemCategory>().HasData(new ItemCategory { ItemCategoryID = 3, ItemCategoryName = "BMX" });
@@ -276,43 +237,43 @@ namespace Bikepark.Data
             modelBuilder.Entity<Item>().HasData(new Item { ItemID = 56, ItemTypeID = 35, ItemNumber = "23" });//, ItemStatus = ItemStatus.Available });
             modelBuilder.Entity<Item>().HasData(new Item { ItemID = 57, ItemTypeID = 35, ItemNumber = "24" });//, ItemStatus = ItemStatus.Available });
 
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 1, PricingName = "MTB - weekday - 1 hour", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = WeekDayShort, IsHoliday = false, IsReduced = false, Price = 150 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 2, PricingName = "MTB - friday - 1 hour", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = Friday, IsHoliday = false, IsReduced = false, Price = 150 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 3, PricingName = "MTB - day-off - 1 hour", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = WeekEnd, IsHoliday = false, IsReduced = false, Price = 200 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 4, PricingName = "MTB - day-off - 1 hour", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = EveryDay, IsHoliday = true, IsReduced = false, Price = 200 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 5, PricingName = "MTB - concessional - 1 hour", PricingCategoryID = null, PricingType = PricingType.Hourly, DaysOfWeek = EveryDay, IsHoliday = false, IsReduced = true, Price = 100 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 1, PricingName = "MTB - weekday - 1 hour", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.WeekdayShort, IsHoliday = false, IsReduced = false, Price = 150 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 2, PricingName = "MTB - friday - 1 hour", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.Friday, IsHoliday = false, IsReduced = false, Price = 150 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 3, PricingName = "MTB - day-off - 1 hour", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.Weekend, IsHoliday = false, IsReduced = false, Price = 200 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 4, PricingName = "MTB - day-off - 1 hour", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.AllDays, IsHoliday = true, IsReduced = false, Price = 200 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 5, PricingName = "MTB - concessional - 1 hour", PricingCategoryID = null, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.AllDays, IsHoliday = false, IsReduced = true, Price = 100 });
 
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 28, PricingName = "MTB - weekday - 2 hours", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = WeekDayShort, IsHoliday = false, IsReduced = false, Price = 250 / 2, MinDuration = 2 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 29, PricingName = "MTB - friday - 2 hours", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = Friday, IsHoliday = false, IsReduced = false, Price = 250 / 2, MinDuration = 2 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 30, PricingName = "MTB - day-off - 2 hours", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = WeekEnd, IsHoliday = false, IsReduced = false, Price = 300 / 2, MinDuration = 2 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 31, PricingName = "MTB - holiday - 2 hours", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = EveryDay, IsHoliday = true, IsReduced = false, Price = 300 / 2, MinDuration = 2 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 32, PricingName = "MTB - concessional - 2 hours", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = EveryDay, IsHoliday = false, IsReduced = true, Price = 150 / 2, MinDuration = 2 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 28, PricingName = "MTB - weekday - 2 hours", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.WeekdayShort, IsHoliday = false, IsReduced = false, Price = 250 / 2, MinDuration = 2 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 29, PricingName = "MTB - friday - 2 hours", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.Friday, IsHoliday = false, IsReduced = false, Price = 250 / 2, MinDuration = 2 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 30, PricingName = "MTB - day-off - 2 hours", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.Weekend, IsHoliday = false, IsReduced = false, Price = 300 / 2, MinDuration = 2 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 31, PricingName = "MTB - holiday - 2 hours", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.AllDays, IsHoliday = true, IsReduced = false, Price = 300 / 2, MinDuration = 2 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 32, PricingName = "MTB - concessional - 2 hours", PricingCategoryID = 1, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.AllDays, IsHoliday = false, IsReduced = true, Price = 150 / 2, MinDuration = 2 });
 
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 6, PricingName = "MTB - weekday - whole day (1 day)", PricingCategoryID = 1, PricingType = PricingType.OneTime, DaysOfWeek = WeekDayShort, IsHoliday = false, IsReduced = false, Price = 800 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 7, PricingName = "MTB - friday - whole day (1 day)", PricingCategoryID = 1, PricingType = PricingType.OneTime, DaysOfWeek = Friday, IsHoliday = false, IsReduced = false, Price = 1000 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 8, PricingName = "MTB - day-off - whole day (1 day)", PricingCategoryID = 1, PricingType = PricingType.OneTime, DaysOfWeek = WeekEnd, IsHoliday = false, IsReduced = false, Price = 1000 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 9, PricingName = "MTB - holiday - whole day (1 day)", PricingCategoryID = 1, PricingType = PricingType.OneTime, DaysOfWeek = EveryDay, IsHoliday = true, IsReduced = false, Price = 1000 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 10, PricingName = "MTB - concessional - whole day (1 day)", PricingCategoryID = 1, PricingType = PricingType.OneTime, DaysOfWeek = EveryDay, IsHoliday = false, IsReduced = true, Price = 400 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 6, PricingName = "MTB - weekday - whole day (1 day)", PricingCategoryID = 1, PricingType = PricingType.OneTime, DaysOfWeek = DaysOfWeekFlags.WeekdayShort, IsHoliday = false, IsReduced = false, Price = 800 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 7, PricingName = "MTB - friday - whole day (1 day)", PricingCategoryID = 1, PricingType = PricingType.OneTime, DaysOfWeek = DaysOfWeekFlags.Friday, IsHoliday = false, IsReduced = false, Price = 1000 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 8, PricingName = "MTB - day-off - whole day (1 day)", PricingCategoryID = 1, PricingType = PricingType.OneTime, DaysOfWeek = DaysOfWeekFlags.Weekend, IsHoliday = false, IsReduced = false, Price = 1000 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 9, PricingName = "MTB - holiday - whole day (1 day)", PricingCategoryID = 1, PricingType = PricingType.OneTime, DaysOfWeek = DaysOfWeekFlags.AllDays, IsHoliday = true, IsReduced = false, Price = 1000 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 10, PricingName = "MTB - concessional - whole day (1 day)", PricingCategoryID = 1, PricingType = PricingType.OneTime, DaysOfWeek = DaysOfWeekFlags.AllDays, IsHoliday = false, IsReduced = true, Price = 400 });
 
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 11, PricingName = "MTB Teenager - weekday - 1 hour", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = WeekDayShort, IsHoliday = false, IsReduced = false, Price = 100 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 12, PricingName = "MTB Teenager - friday - 1 hour", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = Friday, IsHoliday = false, IsReduced = false, Price = 100 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 13, PricingName = "MTB Teenager - day-off - 1 hour", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = WeekEnd, IsHoliday = false, IsReduced = false, Price = 150 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 14, PricingName = "MTB Teenager - holiday - 1 hour", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = EveryDay, IsHoliday = true, IsReduced = false, Price = 150 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 15, PricingName = "MTB Teenager - concessional - 1 hour", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = EveryDay, IsHoliday = false, IsReduced = true, Price = 50 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 11, PricingName = "MTB Teenager - weekday - 1 hour", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.WeekdayShort, IsHoliday = false, IsReduced = false, Price = 100 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 12, PricingName = "MTB Teenager - friday - 1 hour", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.Friday, IsHoliday = false, IsReduced = false, Price = 100 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 13, PricingName = "MTB Teenager - day-off - 1 hour", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.Weekend, IsHoliday = false, IsReduced = false, Price = 150 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 14, PricingName = "MTB Teenager - holiday - 1 hour", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.AllDays, IsHoliday = true, IsReduced = false, Price = 150 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 15, PricingName = "MTB Teenager - concessional - 1 hour", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.AllDays, IsHoliday = false, IsReduced = true, Price = 50 });
 
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 16, PricingName = "MTB Teenager - weekday - whole day (1 day)", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = WeekDayShort, IsHoliday = false, IsReduced = false, Price = 500 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 17, PricingName = "MTB Teenager - friday - whole day (1 day)", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = Friday, IsHoliday = false, IsReduced = false, Price = 600 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 18, PricingName = "MTB Teenager - day-off - whole day (1 day)", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = WeekEnd, IsHoliday = false, IsReduced = false, Price = 700 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 19, PricingName = "MTB Teenager - holiday - whole day (1 day)", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = EveryDay, IsHoliday = true, IsReduced = false, Price = 700 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 20, PricingName = "MTB Teenager - concessional - whole day (1 day)", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = EveryDay, IsHoliday = false, IsReduced = true, Price = 300 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 16, PricingName = "MTB Teenager - weekday - whole day (1 day)", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.WeekdayShort, IsHoliday = false, IsReduced = false, Price = 500 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 17, PricingName = "MTB Teenager - friday - whole day (1 day)", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.Friday, IsHoliday = false, IsReduced = false, Price = 600 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 18, PricingName = "MTB Teenager - day-off - whole day (1 day)", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.Weekend, IsHoliday = false, IsReduced = false, Price = 700 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 19, PricingName = "MTB Teenager - holiday - whole day (1 day)", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.AllDays, IsHoliday = true, IsReduced = false, Price = 700 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 20, PricingName = "MTB Teenager - concessional - whole day (1 day)", PricingCategoryID = 2, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.AllDays, IsHoliday = false, IsReduced = true, Price = 300 });
 
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 21, PricingName = "BMX - weekday - 1 hour", PricingCategoryID = 3, PricingType = PricingType.Hourly, DaysOfWeek = WeekDayShort, IsHoliday = false, IsReduced = false, Price = 100 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 22, PricingName = "BMX - weekend+Fri - 1 hour", PricingCategoryID = 3, PricingType = PricingType.Hourly, DaysOfWeek = WeekEndLong, IsHoliday = false, IsReduced = false, Price = 150 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 23, PricingName = "BMX - holiday - 1 hour", PricingCategoryID = 3, PricingType = PricingType.Hourly, DaysOfWeek = EveryDay, IsHoliday = true, IsReduced = false, Price = 150 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 24, PricingName = "Balance - 1 hour", PricingCategoryID = 4, PricingType = PricingType.Hourly, DaysOfWeek = EveryDay, IsHoliday = false, IsReduced = false, Price = 100 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 25, PricingName = "Electro - 1 hour", PricingCategoryID = 5, PricingType = PricingType.Hourly, DaysOfWeek = EveryDay, IsHoliday = false, IsReduced = false, Price = 300 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 26, PricingName = "Accessory - 1 hour", PricingCategoryID = 6, PricingType = PricingType.Hourly, DaysOfWeek = EveryDay, IsHoliday = false, IsReduced = false, Price = 50 });
-            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 27, PricingName = "Accessory - whole day (1 day)", PricingCategoryID = 6, PricingType = PricingType.OneTime, DaysOfWeek = EveryDay, IsHoliday = false, IsReduced = false, Price = 300 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 21, PricingName = "BMX - weekday - 1 hour", PricingCategoryID = 3, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.WeekdayShort, IsHoliday = false, IsReduced = false, Price = 100 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 22, PricingName = "BMX - DaysOfWeekFlags.Weekend+Fri - 1 hour", PricingCategoryID = 3, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.LongWeekend, IsHoliday = false, IsReduced = false, Price = 150 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 23, PricingName = "BMX - holiday - 1 hour", PricingCategoryID = 3, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.AllDays, IsHoliday = true, IsReduced = false, Price = 150 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 24, PricingName = "Balance - 1 hour", PricingCategoryID = 4, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.AllDays, IsHoliday = false, IsReduced = false, Price = 100 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 25, PricingName = "Electro - 1 hour", PricingCategoryID = 5, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.AllDays, IsHoliday = false, IsReduced = false, Price = 300 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 26, PricingName = "Accessory - 1 hour", PricingCategoryID = 6, PricingType = PricingType.Hourly, DaysOfWeek = DaysOfWeekFlags.AllDays, IsHoliday = false, IsReduced = false, Price = 50 });
+            modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 27, PricingName = "Accessory - whole day (1 day)", PricingCategoryID = 6, PricingType = PricingType.OneTime, DaysOfWeek = DaysOfWeekFlags.AllDays, IsHoliday = false, IsReduced = false, Price = 300 });
 
             modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 33, PricingName = "Tire Repair", PricingCategoryID = null, PricingType = PricingType.Service, Price = 2000 });
             modelBuilder.Entity<Pricing>().HasData(new Pricing { PricingID = 34, PricingName = "Chain Repair", PricingCategoryID = null, PricingType = PricingType.Service, Price = 2000 });
@@ -321,32 +282,31 @@ namespace Bikepark.Data
             modelBuilder.Entity<Customer>().HasData(new Customer { CustomerID = 1, CustomerFullName = "John Doe", CustomerDocumentNumber = "00 000001", CustomerPhoneNumber = "05551234567", CustomerEMail = "john.doe@fake.domain" });
             modelBuilder.Entity<Customer>().HasData(new Customer { CustomerID = 2, CustomerFullName = "Jane Doe", CustomerDocumentNumber = "00 000002", CustomerPhoneNumber = "05550123456", CustomerEMail = "jane.doe@fake.domain" });
 
-            // modelBuilder.Entity<Record>().HasData(new Record { RecordID = 1, CustomerID = 1, Status = Status.Closed, Start = DateTime.Parse("19.04.2026 09:00"), End = DateTime.Parse("19.04.2026 12:00"), Price = 1200 });
-            // modelBuilder.Entity<Record>().HasData(new Record { RecordID = 2, CustomerID = 2, Status = Status.Scheduled, Start = DateTime.Parse("15.05.2026 16:00"), End = DateTime.Parse("15.05.2026 19:00"), Price = 750 });
-            // modelBuilder.Entity<Record>().HasData(new Record { RecordID = 3, CustomerID = 2, Status = Status.Active, Start = DateTime.Parse("14.05.2026 18:00"), End = DateTime.Parse("14.05.2026 23:00"), Price = 3000 });
-            // modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 1, RecordID = 1, ItemID = 1, PricingID = 1, Status = Status.Closed, Start = DateTime.Parse("19.04.2026 09:00"), End = DateTime.Parse("19.04.2026 12:00") });
-            // modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 2, RecordID = 1, ItemID = 2, PricingID = 1, Status = Status.Closed, Start = DateTime.Parse("19.04.2026 09:00"), End = DateTime.Parse("19.04.2026 11:00") });
-            // modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 3, RecordID = 1, ItemID = 3, PricingID = 1, Status = Status.Closed, Start = DateTime.Parse("19.04.2026 10:00"), End = DateTime.Parse("19.04.2026 12:00") });
-            // modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 4, RecordID = 1, ItemID = 4, PricingID = 1, Status = Status.Closed, Start = DateTime.Parse("19.04.2026 10:00"), End = DateTime.Parse("19.04.2026 11:00") });
-            // modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 5, RecordID = 1, ItemID = 34, PricingID = 26, Status = Status.Closed, Start = DateTime.Parse("19.04.2026 09:00"), End = DateTime.Parse("19.04.2026 12:00") });
-            // modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 6, RecordID = 2, ItemID = 1, PricingID = 1, Status = Status.Scheduled, Start = DateTime.Parse("01.06.2026 16:00"), End = DateTime.Parse("01.06.2026 19:00") });
-            // modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 7, RecordID = 2, ItemID = 34, PricingID = 26, Status = Status.Scheduled, Start = DateTime.Parse("01.06.2026 16:00"), End = DateTime.Parse("01.06.2026 19:00") });
-            // modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 8, RecordID = 3, ItemID = 2, PricingID = 1, Status = Status.Scheduled, Start = DateTime.Parse("01.06.2026 16:00"), End = DateTime.Parse("01.06.2026 19:00") });
-            // modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 9, RecordID = 3, ItemID = 35, PricingID = 26, Status = Status.Scheduled, Start = DateTime.Parse("01.06.2026 16:00"), End = DateTime.Parse("01.06.2026 19:00") });
-            // modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 10, RecordID = 4, ItemID = 29, PricingID = 25, Status = Status.Scheduled, Start = DateTime.Parse("02.06.2026 10:00"), End = DateTime.Parse("02.06.2026 14:00") });
-            // modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 11, RecordID = 5, ItemID = 29, PricingID = 25, Status = Status.Active, Start = DateTime.Parse("14.05.2026 18:00"), End = DateTime.Parse("14.05.2026 23:00") });
-            // modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 12, RecordID = 5, ItemID = 30, PricingID = 25, Status = Status.Closed, Start = DateTime.Parse("14.05.2026 18:00"), End = DateTime.Parse("14.05.2026 19:00") });
-            // modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 13, RecordID = 5, ItemID = 31, PricingID = 25, Status = Status.Active, Start = DateTime.Parse("14.05.2026 19:00"), End = DateTime.Parse("14.05.2026 23:00") });
+            modelBuilder.Entity<Record>().HasData(new Record { RecordID = 1, CustomerID = 1, Status = Status.Closed, Start = new DateTime(2026, 4, 30, 9, 0, 0, DateTimeKind.Local), End = new DateTime(2026, 4, 30, 12, 0, 0, DateTimeKind.Local), Price = 1200 });
+            modelBuilder.Entity<Record>().HasData(new Record { RecordID = 2, CustomerID = 2, Status = Status.Scheduled, Start = new DateTime(2026, 5, 31, 16, 0, 0, DateTimeKind.Local), End = new DateTime(2026, 5, 31, 19, 0, 0, DateTimeKind.Local), Price = 750 });
+            modelBuilder.Entity<Record>().HasData(new Record { RecordID = 3, CustomerID = 2, Status = Status.Active, Start = new DateTime(2026, 5, 23, 9, 0, 0, DateTimeKind.Local), End = new DateTime(2026, 5, 23, 19, 0, 0, DateTimeKind.Local), Price = 3000 });
 
-            modelBuilder.Entity<Holiday>().HasData(new Holiday { HolidayID = 1, Date = DateTime.Parse("01.05.2026"), Name = "Labor Day" });
-            modelBuilder.Entity<Holiday>().HasData(new Holiday { HolidayID = 2, Date = DateTime.Parse("31.12.2026"), Name = "New Year's Eve" });
-            modelBuilder.Entity<Holiday>().HasData(new Holiday { HolidayID = 3, Date = DateTime.Parse("01.01.2027"), Name = "New Year" });
-            modelBuilder.Entity<Holiday>().HasData(new Holiday { HolidayID = 4, Date = DateTime.Parse("01.05.2027"), Name = "Labor Day" });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 1, RecordID = 1, ItemID = 1, PricingID = 1, Status = Status.Closed, Start = new DateTime(2026, 4, 30, 9, 0, 0, DateTimeKind.Local), End = new DateTime(2026, 4, 30, 10, 0, 0, DateTimeKind.Local) });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 2, RecordID = 1, ItemID = 2, PricingID = 1, Status = Status.Closed, Start = new DateTime(2026, 4, 30, 9, 0, 0, DateTimeKind.Local), End = new DateTime(2026, 4, 30, 10, 0, 0, DateTimeKind.Local) });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 3, RecordID = 1, ItemID = 34, PricingID = 26, Status = Status.Closed, Start = new DateTime(2026, 4, 30, 9, 0, 0, DateTimeKind.Local), End = new DateTime(2026, 4, 30, 12, 0, 0, DateTimeKind.Local) });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 4, RecordID = 1, ItemID = 3, PricingID = 1, Status = Status.Closed, Start = new DateTime(2026, 4, 30, 10, 0, 0, DateTimeKind.Local), End = new DateTime(2026, 4, 30, 12, 0, 0, DateTimeKind.Local) });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 5, RecordID = 1, ItemID = 4, PricingID = 1, Status = Status.Closed, Start = new DateTime(2026, 4, 30, 10, 0, 0, DateTimeKind.Local), End = new DateTime(2026, 4, 30, 12, 0, 0, DateTimeKind.Local) });
+            
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 6, RecordID = 2, ItemID = 1, PricingID = 1, Status = Status.Scheduled, Start = new DateTime(2026, 5, 31, 16, 0, 0, DateTimeKind.Local), End = new DateTime(2026, 5, 31, 19, 0, 0, DateTimeKind.Local) });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 7, RecordID = 2, ItemID = 34, PricingID = 26, Status = Status.Scheduled, Start = new DateTime(2026, 5, 31, 16, 0, 0, DateTimeKind.Local), End = new DateTime(2026, 5, 31, 19, 0, 0, DateTimeKind.Local) });
+            
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 8, RecordID = 3, ItemID = 2, PricingID = 1, Status = Status.Active, Start = new DateTime(2026, 5, 23, 9, 0, 0, DateTimeKind.Local), End = new DateTime(2026, 5, 23, 19, 0, 0, DateTimeKind.Local) });
+            modelBuilder.Entity<ItemRecord>().HasData(new ItemRecord { ItemRecordID = 9, RecordID = 3, ItemID = 35, PricingID = 26, Status = Status.Active, Start = new DateTime(2026, 5, 23, 9, 0, 0, DateTimeKind.Local), End = new DateTime(2026, 5, 23, 19, 0, 0, DateTimeKind.Local) });
+          
+            modelBuilder.Entity<Holiday>().HasData(new Holiday { HolidayID = 1, Date = new DateTime(2026, 5, 1, 0, 0, 0, DateTimeKind.Local), Name = "Labor Day" });
+            modelBuilder.Entity<Holiday>().HasData(new Holiday { HolidayID = 2, Date = new DateTime(2026, 12, 31, 0, 0, 0, DateTimeKind.Local), Name = "New Year's Eve" });
+            modelBuilder.Entity<Holiday>().HasData(new Holiday { HolidayID = 3, Date = new DateTime(2027, 1, 1, 0, 0, 0, DateTimeKind.Local), Name = "New Year" });
+            modelBuilder.Entity<Holiday>().HasData(new Holiday { HolidayID = 4, Date = new DateTime(2027, 5, 1, 0, 0, 0, DateTimeKind.Local), Name = "Labor Day" });
 
-            // modelBuilder.Entity<ItemPrepared>().HasData(new ItemPrepared { ItemPreparedID = 1, ItemID = 10 });
-            // modelBuilder.Entity<ItemPrepared>().HasData(new ItemPrepared { ItemPreparedID = 2, ItemID = 11 });
-            // modelBuilder.Entity<ItemPrepared>().HasData(new ItemPrepared { ItemPreparedID = 3, ItemID = 31 });
-            // modelBuilder.Entity<ItemPrepared>().HasData(new ItemPrepared { ItemPreparedID = 4, ItemID = 32 });
+            modelBuilder.Entity<ItemPrepared>().HasData(new ItemPrepared { ItemPreparedID = 1, ItemID = 10 });
+            modelBuilder.Entity<ItemPrepared>().HasData(new ItemPrepared { ItemPreparedID = 2, ItemID = 11 });
+            modelBuilder.Entity<ItemPrepared>().HasData(new ItemPrepared { ItemPreparedID = 3, ItemID = 31 });
+            modelBuilder.Entity<ItemPrepared>().HasData(new ItemPrepared { ItemPreparedID = 4, ItemID = 32 });
         }
 
         private void UpdateSoftDeleteStatus(EntityEntry entry) { 

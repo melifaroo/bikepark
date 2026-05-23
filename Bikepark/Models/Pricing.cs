@@ -20,15 +20,16 @@ namespace Bikepark.Models
         public PricingType PricingType { get; set; } = PricingType.Hourly;
 
         [Display(Name = "Days Of Week")]
-        public List<DayOfWeek> DaysOfWeek { get; set; } = new List<DayOfWeek> {
-                    DayOfWeek.Monday,
-                    DayOfWeek.Tuesday,
-                    DayOfWeek.Wednesday,
-                    DayOfWeek.Thursday,
-                    DayOfWeek.Friday,
-                    DayOfWeek.Saturday,
-                    DayOfWeek.Sunday,
-            };
+        public DaysOfWeekFlags DaysOfWeek { get; set; } = DaysOfWeekFlags.AllDays;
+        // public List<DayOfWeek> DaysOfWeek { get; set; } = new List<DayOfWeek> {
+        //             DayOfWeek.Monday,
+        //             DayOfWeek.Tuesday,
+        //             DayOfWeek.Wednesday,
+        //             DayOfWeek.Thursday,
+        //             DayOfWeek.Friday,
+        //             DayOfWeek.Saturday,
+        //             DayOfWeek.Sunday,
+        //     };
 
         [Display(Name = "Holiday")]
         public Boolean IsHoliday { get; set; }
